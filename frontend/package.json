@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "workspaces": [
+        "app",
+        "data-lib",
+        "data-lib/dist"
+    ]
+}
