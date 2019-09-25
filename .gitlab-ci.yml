@@ -4,9 +4,20 @@ cache:
   paths:
     - frontend/node_modules
 
-test_frontend:
+test-frontend:
   stage: test
   script:
     - cd frontend
     - yarn install
     - yarn test
+
+build-frontend:
+  stage: build
+  script:
+    - cd frontend
+    - yarn install
+    - yarn build:prod
+  artifacts:
+    paths:
+      - frontend/app/dist/
+    name: "telemetry-frontend-$CI_COMMIT_REF_SLUG"
