@@ -6,6 +6,15 @@
         "sourceMap": true,
         "lib": ["es2017", "dom"],
         "module": "commonjs",
-        "target": "es2015"
-    }
+        "target": "es2015",
+        "baseUrl": ".",
+        "paths": {
+            "@estcube/data-components": ["../data-lib/src"],
+            "*": ["src/*"]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "**/*.spec.*"
+    ]
 }

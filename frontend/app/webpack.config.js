@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     entry: ["./src/index.tsx"],
@@ -26,9 +27,11 @@ module.exports = {
         extensions: ['*', '.ts', '.tsx', '.js', '.jsx'],
         symlinks: false,
 
-        alias: {
-            '@estcube/data-components': path.resolve(__dirname, '../data-lib/src')
-        }
+        plugins: [
+            new TsconfigPathsPlugin({
+                configFile: path.resolve(__dirname, 'tsconfig.json')
+            })
+        ]
     },
 
     devServer: {
