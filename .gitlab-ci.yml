@@ -37,3 +37,5 @@ deploy-frontend:
     - cd frontend/app/dist
     - (ssh -l deploy "$TEST_ENV_IP" "./clean.sh") || true
     - scp -r * deploy@"$TEST_ENV_IP":/srv/ec2/
+  only:
+    - master
