@@ -1,8 +1,14 @@
 {
     "private": true,
+    "scripts": {
+        "build": "cd app && yarn build",
+        "build:prod": "cd app && yarn build:prod",
+        "serve": "cd app && yarn serve",
+        "test": "cd app && yarn test",
+        "build:lib": "cd data-lib && yarn build"
+    },
     "workspaces": [
         "app",
-        "data-lib",
-        "data-lib/dist"
+        "data-lib"
     ]
 }
