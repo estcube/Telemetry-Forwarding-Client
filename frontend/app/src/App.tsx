@@ -9,6 +9,8 @@ export class App extends React.Component {
       <div className="app-root">
         <h1>Hello, World!</h1>
         <Counter />
+
+        <h5>CI Test</h5>
       </div>
     );
   }
