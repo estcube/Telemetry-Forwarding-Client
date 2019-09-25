@@ -22,3 +22,18 @@ build-frontend:
       - frontend/app/dist
     name: "telemetry-frontend-$CI_COMMIT_REF_SLUG"
     expire_in: 5 days
+
+deploy-frontend:
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$DEPOY_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - cd frontend/app/dist
+    - ssh -l deploy "$TEST_ENV_IP" "./clean.sh"
+    - scp -r * "$TEST_ENV_IP:/srv/ec2/"
