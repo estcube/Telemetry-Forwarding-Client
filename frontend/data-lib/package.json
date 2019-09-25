@@ -6,12 +6,19 @@
     "typings": "dist/index.d.ts",
     "scripts": {
         "build": "webpack --mode production",
-        "serve": "webpack --mode production --watch"
+        "serve": "webpack --mode production --watch",
+        "lint": "eslint \"src/**\" --ignore-path=../.eslintignore",
+        "lint:fix": "eslint \"src/**\" --ignore-path=../.eslintignore --fix"
     },
     "devDependencies": {
         "@types/react": "^16.9.3",
+        "@typescript-eslint/eslint-plugin": "^2.3.1",
+        "@typescript-eslint/parser": "^2.3.1",
         "copy-webpack-plugin": "^5.0.4",
         "css-loader": "^3.2.0",
+        "eslint": "^6.4.0",
+        "eslint-loader": "^3.0.0",
+        "eslint-plugin-react": "^7.14.3",
         "node-sass": "^4.12.0",
         "react": "^16.9.0",
         "sass-loader": "^8.0.0",

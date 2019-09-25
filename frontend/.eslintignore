@@ -1,0 +1,6 @@
+**/webpack.config.js
+**/node_modules/
+**/jest.config.js
+**/dist
+**/*.scss
+**/*.css
