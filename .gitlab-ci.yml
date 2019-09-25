@@ -35,5 +35,5 @@ deploy-frontend:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - cd frontend/app/dist
-    - ssh -l deploy "$TEST_ENV_IP" "./clean.sh"
+    - (ssh -l deploy "$TEST_ENV_IP" "./clean.sh") || true
     - scp -r * "$TEST_ENV_IP:/srv/ec2/"
