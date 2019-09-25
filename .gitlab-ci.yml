@@ -1,0 +1,12 @@
+image: node:latest
+
+cache:
+  paths:
+    - frontend/node_modules
+
+test_frontend:
+  stage: test
+  script:
+    - cd frontend
+    - yarn install
+    - yarn test
