@@ -19,5 +19,6 @@ build-frontend:
     - yarn build:prod
   artifacts:
     paths:
-      - frontend/app/dist/
+      - frontend/app/dist
     name: "telemetry-frontend-$CI_COMMIT_REF_SLUG"
+    expire_in: 5 days
