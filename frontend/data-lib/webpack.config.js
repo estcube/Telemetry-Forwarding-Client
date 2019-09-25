@@ -22,7 +22,9 @@ module.exports = {
 
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: "index.js"
+        filename: "index.js",
+        library: 'data-components',
+        libraryTarget: 'umd'
     },
 
     resolve: {
@@ -34,5 +36,7 @@ module.exports = {
         ])
     ],
 
-    externals: ['react']
+    externals: {
+        react: 'react'
+    }
 }
