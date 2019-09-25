@@ -9,8 +9,7 @@
     },
     "dependencies": {
         "react": "^16.9.0",
-        "react-dom": "^16.9.0",
-        "@estcube/data-components": "*"
+        "react-dom": "^16.9.0"
     },
     "devDependencies": {
         "@types/react": "^16.9.3",

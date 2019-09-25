@@ -24,7 +24,11 @@ module.exports = {
 
     resolve: {
         extensions: ['*', '.ts', '.tsx', '.js', '.jsx'],
-        symlinks: false
+        symlinks: false,
+
+        alias: {
+            '@estcube/data-components': path.resolve(__dirname, '../data-lib/src')
+        }
     },
 
     devServer: {
