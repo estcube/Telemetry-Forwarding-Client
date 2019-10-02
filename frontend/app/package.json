@@ -11,8 +11,11 @@
         "lint:fix": "eslint \"{src/**,test/**}\" --ignore-path=../.eslintignore --fix"
     },
     "dependencies": {
+        "@material-ui/core": "^4.5.0",
         "react": "^16.9.0",
-        "react-dom": "^16.9.0"
+        "react-dom": "^16.9.0",
+        "react-leaflet": "^2.4.0",
+        "react-router-dom": "^5.1.2"
     },
     "devDependencies": {
         "@testing-library/react": "^9.1.4",
