@@ -16,6 +16,6 @@ describe('Counter', () => {
       <Counter />
     );
 
-    expect(getByText('This is the Counter component.')).toBeTruthy();
+    expect(getByText('This is the Counter component with a Material button!')).toBeTruthy();
   });
 });
