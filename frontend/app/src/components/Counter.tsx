@@ -8,9 +8,9 @@ export class Counter extends React.Component {
     return (
       <div className="counter common">
         This is the Counter component with a Material button!
-		<Button variant="contained" color="primary">
-			A button!
-		</Button>	
+        <Button variant="contained" color="primary">
+            A button!
+        </Button>	
         <Data />
       </div>
     );
