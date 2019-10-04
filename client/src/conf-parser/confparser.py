@@ -20,7 +20,7 @@ def getConf(section, element):
 # example: setConf("Mission Control", "relay-enabled", False)
 def setConf(section, element, value):
     
-    if(section not in config.sections()):
+    if(section not in sections):
         raise ValueError("Section", sections, "does not exist")
     
     if(element not in constraints):
