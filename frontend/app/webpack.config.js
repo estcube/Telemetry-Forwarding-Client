@@ -48,7 +48,8 @@ module.exports = {
   },
 
   devServer: {
-    hot: true
+    hot: true,
+    historyApiFallback: true
   },
 
   devtool: 'inline-source-map',
