@@ -6,8 +6,24 @@ from bitarray import bitarray
 IP = "localhost"
 PORT = 3030
 
-frame = b'~\xa8\x8a\x98@@@`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0\x10\x1eiN+K\x92*\xcf\x07\xfc\x00'
+# frame = b'~\xa8\x8a\x98@@@`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0\x10\x1eiN+K\x92*\xcf\x07\xfc\x00'
+# The FCS values might not be correct.
+frame = b'~\xa8\x8a\x98\x8a\x9a\x8a`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0Telemetry data: \xcf\x07\xfc\x00'
 
+class AXFrame(object):
+    def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int, info: bytearray, fcs: bytearray):
+        self.dest = dest
+        self.source = source
+        self.repeaters = repeaters
+        self.ctrl = ctrl
+        self.pid = pid
+        self.info = info
+        self.fcs = fcs
+
+    def __repr__(self):
+        return "Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {}; FCS: {};".format(
+            self.dest, self.source, ", ".join([x[0] for x in self.repeaters]), self.ctrl, self.pid, self.info.hex(), self.fcs.hex()
+        )
 
 class AXListener(object):
     """
@@ -32,7 +48,7 @@ class AXListener(object):
         pass
 
     def receive(self, frame: bytearray):
-        # TODO: Log frame to file.
+        # TODO: Should we log and send a clean or unclean frame?
 
         f = self.cleanFrame(frame)
 
@@ -42,6 +58,8 @@ class AXListener(object):
             self._logger.warning("Destination address had the 'last address' bit set.")
             return
         (source, _, isLast) = self.extractAddress(f[7:14])
+
+        # TODO: Check the source is ESTCube-2.
 
         # Repeater address parsing.
         i = 0
@@ -54,15 +72,34 @@ class AXListener(object):
             repeaters.append((r, s))
             i += 1
 
+        # Pointer to the current byte
+        byteP = 7 * (i+2)
+
         # Control byte
+        control = f[byteP]
+        if control & 0x3 != 0x3:
+            self._logger.debug("Read an AX.25 frame that is not an UI Frame. Discarding..")
+            return
+        byteP += 1
 
         # PID byte
+        pid = f[byteP]
+        byteP += 1
 
         # Info
+        infoBytes = f[byteP:-2]
+        try:
+            self._logger.debug("Information bytes ({}) decoded: {}".format(infoBytes.hex(), infoBytes.decode('utf-8')))
+        except:
+            self._logger.debug("Failed to decode bytes: {}".format(infoBytes.hex()))
 
         # FCS Control
+        fcs = f[-2:]
+        # TODO
 
         # Send Frame obj to callbacks.
+        axFrame = AXFrame(dest, source, repeaters, control, pid, infoBytes, fcs)
+        print(axFrame)
 
     def extractAddress(self, framePart: bytearray) -> (str, int, bool):
         if len(framePart) != 7:
@@ -120,6 +157,23 @@ def main():
     print("Unclean frame: ", bytearray(frame))
     print("Cleaned frame: ", l.cleanFrame(bytearray(frame)))
     l.receive(bytearray(frame))
+
+    clean = l.cleanFrame(bytearray(frame))
+    i = 0
+    isLast = False
+    while not isLast:
+        a = clean[7 * i : 7 * (i+1)]
+        isLast = a[-1] & 0x01 == 0x01
+        print(a.hex(), end="  ")
+        i += 1
+    bP = 7*i
+    print(hex(clean[bP]), end="  ")
+    bP += 1
+    print(hex(clean[bP]), end="  ")
+    bP += 1
+    print(clean[bP: -2].hex(), end="  ")
+    print(clean[-2:].hex(), end="  ")
+
 
 if __name__ == "__main__":
     main()
