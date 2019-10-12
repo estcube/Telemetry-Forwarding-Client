@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Router, Route } from 'react-router-dom';
 // @ts-ignore
 import { createBrowserHistory } from 'history';
-import { Container } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 
 import './styles.scss';
 import Header from 'components/Header';
@@ -16,13 +16,14 @@ export class App extends React.Component {
   customHistory = createBrowserHistory();
   render() {
     return (
-      <Container maxWidth="xl" className="app-root">
-        <Router history={this.customHistory}>
-          <Header />
-          <Route path="/" exact component={MainPage}/>
-          <Route path="/data" exact component={ConfigurationPage}/>
-        </Router>
-      </Container>
+      /*<Container maxWidth="xl" className="app-root">*/
+      <Router history={this.customHistory}>
+        <CssBaseline />
+        <Header />
+        <Route path="/" exact component={MainPage}/>
+        <Route path="/configure" exact component={ConfigurationPage}/>
+      </Router>
+      /*</Container>*/
     );
   }
 }

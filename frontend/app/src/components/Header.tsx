@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   AppBar,
-  Button,
+  Box,
   createStyles,
   makeStyles,
   Toolbar,
@@ -12,11 +12,14 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       flexGrow: 1,
-      marginBottom: 5
+      marginBottom: 5,
+      width: '100%',
+      textAlign: 'center'
     },
-    spacing: {
+    link: {
       flexGrow: 1,
-    },
+      display: 'inline-block',
+    }
   }),
 );
 
@@ -27,9 +30,14 @@ const Header = () => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Link className={classes.spacing} color="inherit" variant="h6"  href='/'>EstCube 2 Telemetry</Link>
-          <Button color="primary" variant="contained" className={classes.spacing}>Upload Data</Button>
-          <Button color="primary" variant="contained" className={classes.spacing} href='/data'>Configure</Button>
+          <Box width={1/3}>
+            <Link className={classes.link} color="inherit" variant="h6"  href='/'>EstCube 2 Telemetry</Link>
+          </Box>
+          <Box width={1/3}>
+            <Link className={classes.link} color="inherit" variant="h6">Upload Data</Link>
+          </Box><Box width={1/3}>
+            <Link className={classes.link} color="inherit" variant="h6" href='/configure'>Configure</Link>
+          </Box>
         </Toolbar>
       </AppBar>
     </div>

@@ -8,11 +8,12 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Typography
   // @ts-ignore
 } from '@material-ui/core';
 
-const SatelliteDataTable = () => {
+const SatelliteDataTables = () => {
 
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,13 +21,17 @@ const SatelliteDataTable = () => {
         width: '100%',
       },
       paper: {
-        marginTop: theme.spacing(3),
-        width: '100%',
+        width: 'auto',
         overflowX: 'auto',
-        marginBottom: theme.spacing(2),
+        margin: theme.spacing(3,1,2,1),
+        border: 'solid',
+        borderWidth: 0.5
+      },
+      tableHeader: {
+        margin: theme.spacing(1, 0, 0,2),
       },
       table: {
-        width: 'inherit',
+        width: '100%',
       },
     }),
   );
@@ -47,8 +52,11 @@ const SatelliteDataTable = () => {
 
   return(
     <div className={classes.root}>
-      Some plotted sample data
+      <Typography variant='body1'>Some plotted sample data</Typography>
       <Paper className={classes.paper}>
+        <Typography variant="h6" className={classes.tableHeader}>
+          A table
+        </Typography>
         <Table className={classes.table} size="small">
           <TableHead>
             <TableRow>
@@ -72,4 +80,4 @@ const SatelliteDataTable = () => {
   );
 };
 
-export default SatelliteDataTable;
+export default SatelliteDataTables;

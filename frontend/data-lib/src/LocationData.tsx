@@ -1,20 +1,41 @@
 import React from 'react';
 // @ts-ignore
-import {Box} from '@material-ui/core';
+import {Paper} from '@material-ui/core';
 // @ts-ignore
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import SignalDataAcquisition from './locationData/SignalDataAcquisition';
-import SignalDataLossAndLoc from './locationData/SignalDataLossAndLoc';
-import LocationMapContainer from './locationData/LocationMapContainer';
+// eslint-disable-next-line no-unused-vars
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import SignalData from './locationData/SignalData';
+import SateliteLocationParams from './locationData/SateliteLocationParams';
+import {LocationMap} from './locationData/LocationMap';
 
 const LocationData = () => {
 
   const useStyles = makeStyles(() =>
     createStyles({
-      map: {
-        width: '100%',
-        textAlign: 'center'
+      papers: {
+        padding: 1,
+        marginRight: 5,
+        marginLeft: 5,
+        marginBottom: 2,
+        marginTop: 1,
+        width: 'auto',
+        display: 'flex',
+        flexWrap: 'wrap'
       },
+      div1: {
+        width: '50%'
+      },
+      div2: {
+        width: '50%'
+      },
+      div3: {
+        width: '100%',
+        'text-align': 'center'
+      },
+      break: {
+        flexBasis: '100%',
+        width: 0
+      }
     }),
   );
 
@@ -22,21 +43,18 @@ const LocationData = () => {
 
   return(
     <div>
-      <Box p={1} bgcolor="grey.300" display="flex" flexDirection="column">
-        <Box p={1} bgcolor="grey.200" width="auto">
-          <SignalDataAcquisition />
-        </Box>
-        <Box p={1} bgcolor="grey.200" display="flex" flexDirection="row">
-          <Box p={1} bgcolor="grey.200" width="100%">
-            <SignalDataLossAndLoc />
-          </Box>
-        </Box>
-        <Box pb={1} bgcolor="grey.200" display="flex" flexDirection="row">
-          <Box bgcolor="grey.200" width="auto" className={classes.map}>
-            <LocationMapContainer />
-          </Box>
-        </Box>
-      </Box>
+      <Paper className={classes.papers}>
+        <div className={classes.div1}>
+          <SignalData />
+        </div>
+        <div className={classes.div2}>
+          <SateliteLocationParams />
+        </div>
+        <div className={classes.break}></div>
+        <div className={classes.div3}>
+          <LocationMap />
+        </div>
+      </Paper>
     </div>
   );
 };

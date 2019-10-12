@@ -1,19 +1,42 @@
 import React from 'react';
 // @ts-ignore
 import {Box} from '@material-ui/core';
+// @ts-ignore
+import {Paper} from '@material-ui/core';
+// @ts-ignore
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import SatelliteDataCharts from './satelliteData/SatelliteDataCharts';
-import SatelliteDataTable from './satelliteData/SatelliteDataTable';
+import SatelliteDataTables from './satelliteData/SatelliteDataTables';
 
 const SatelliteData = () => {
+
+  const useStyles = makeStyles(() =>
+    createStyles({
+      paper: {
+        padding: 1,
+        marginRight: 5,
+        marginLeft: 5,
+        marginBottom: 2,
+        marginTop: 1,
+        width: '50%'
+      },
+      box: {
+        position: 'absolute'
+      }
+    }),
+  // console.log(window.innerWidth)
+  );
+
+  const classes = useStyles();
   return(
     <div>
-      <Box display="flex" flexDirection="row" bgcolor="grey.400" width="100%">
-        <Box m={1} p={1} bgcolor="grey.200" width="100%">
+      <Box display="flex" flexDirection="row" width="100%" className={classes.box}>
+        <Paper className={classes.paper}>
           <SatelliteDataCharts />
-        </Box>
-        <Box m={1} p={1} bgcolor="grey.200" width="100%">
-          <SatelliteDataTable />
-        </Box>
+        </Paper>
+        <Paper className={classes.paper}>
+          <SatelliteDataTables />
+        </Paper>
       </Box>
     </div>
   );

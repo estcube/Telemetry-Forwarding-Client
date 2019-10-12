@@ -4,7 +4,7 @@ export class ConfigurationPage extends React.Component {
   render() {
     return (
       <div className="common">
-                Here will be configuration page!
+        Here will be configuration page!
       </div>
     );
   }

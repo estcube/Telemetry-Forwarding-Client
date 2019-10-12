@@ -1,15 +1,17 @@
 import React from 'react';
 // @ts-ignore
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+// @ts-ignore
+import { Typography } from '@material-ui/core';
 
-const SignalDataAcquisition = () => {
+const SateliteLocationParams = () => {
 
   const useStyles = makeStyles(() =>
     createStyles({
       root: {
         width: '100%',
         textAlign: 'center'
-      },
+      }
     }),
   );
 
@@ -17,9 +19,14 @@ const SignalDataAcquisition = () => {
 
   return(
     <div className={classes.root}>
-        Next acquisition of signal at 00:00
+      <Typography variant='h6'>
+          Current azimuth: 202.5°
+      </Typography>
+      <Typography variant='h6'>
+          Current elevation: 200000m
+      </Typography>
     </div>
   );
 };
 
-export default SignalDataAcquisition;
+export default SateliteLocationParams;
