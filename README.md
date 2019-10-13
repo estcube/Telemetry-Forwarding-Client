@@ -54,7 +54,7 @@ When using this, the client programs (`main.py`) should be exited before the moc
 
 ### Frontend
 
-The client currently serves only static pages with sample data displayed.
+The frontend currently serves only static pages with sample data displayed.
 
 #### Requirements
 
