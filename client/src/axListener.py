@@ -3,13 +3,6 @@ import kiss
 from typing import Callable
 from bitarray import bitarray
 
-IP = "localhost"
-PORT = 3030
-
-# frame = b'~\xa8\x8a\x98@@@`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0\x10\x1eiN+K\x92*\xcf\x07\xfc\x00'
-# The FCS values might not be correct.
-frame = b'~\xa8\x8a\x98\x8a\x9a\x8a`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0Telemetry data: \xcf\x07\xfc\x00'
-
 class AXFrame(object):
     def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int, info: bytearray, fcs: bytearray):
         self.dest = dest
@@ -31,7 +24,7 @@ class AXListener(object):
     Specification: https://tapr.org/pub_ax25.html
     """
 
-    _logger = logging.getLogger(__name__)
+    _logger = logging.getLogger(__name__)\
 
     def __init__(self):
         self.interface = kiss.TCPKISS(IP, PORT, strip_df_start=True)
@@ -152,6 +145,13 @@ class AXListener(object):
         return None
 
 def main():
+    IP = "localhost"
+    PORT = 3030
+
+    # frame = b'~\xa8\x8a\x98@@@`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0\x10\x1eiN+K\x92*\xcf\x07\xfc\x00'
+    # The FCS values might not be correct.
+    frame = b'~\xa8\x8a\x98\x8a\x9a\x8a`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0Telemetry data: \xcf\x07\xfc\x00'
+
     logging.basicConfig(level=logging.DEBUG)
     l = AXListener()
     print("Unclean frame: ", bytearray(frame))
