@@ -29,4 +29,17 @@ When run from the root directory `frontend/`, the available scripts are:
 * ```yarn lint``` will run the linter on all sub-projects.
 * ```yarn lint:fix``` will run the linter on all sub-projects with the auto-fixer on.
 
-TODO: Write commands of sub-projects.
+### `app` sub-directory
+
+To install dependencies to whole project, dependencies must be installed in `frontend/app/` directory.  
+When run from the app directory `frontend/app/`, the avialable scripts are:
+
+* ```yarn build``` will build the development bundle of the `app` sub-project.
+* ```yarn build:prod``` will build the production bundle of the `app` sub-project.
+* ```yarn serve``` will serve the `app` sub-project locally (default port: 3000)
+* ```yarn test``` will run the tests for the `app` sub-project.
+* ```yarn lint``` will run the linter on `app` sub-project.
+* ```yarn lint:fix``` will run the linter on `app` sub-projects with the auto-fixer on.
+ 
+
+TODO: Add available commands for `data-lib`
