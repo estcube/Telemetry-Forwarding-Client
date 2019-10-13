@@ -19,7 +19,7 @@ def main():
 
     ax.addCallback(printFrame)
 
-    k = kiss.TCPKISS(conf.getConf("TNC interface", "tnc-ip"), conf.getConf("TNC interface", "tnc-port"));
+    k = kiss.TCPKISS(conf.getConf("TNC interface", "tnc-ip"), conf.getConf("TNC interface", "tnc-port"), strip_df_start=True)
 
     try:
         k.start()
@@ -27,7 +27,7 @@ def main():
         _logger.error("Could not initialize a TCP connection to %s:%s",
                 conf.getConf("TNC interface", "tnc-ip"),
                 conf.getConf("TNC interface", "tnc-port")
-        );
+        )
         exit(-1)
 
     try:
