@@ -32,6 +32,7 @@ class TCPKISSServer(kiss.KISS):
             logging.info("Closed client socket.")
         if self.interface:
             self.interface.shutdown(socket.SHUT_RDWR)
+            self.interface.close()
             self.interface = None
             logging.info("Closed server socket.")
 
@@ -46,6 +47,29 @@ class TCPKISSServer(kiss.KISS):
         self._logger.info('Listening for a connection on %s', self.address)
         self.clientSock, addr = self.interface.accept()
         self._write_handler = self.clientSock.send
+
+    def write(self, frame):
+        """
+        Writes frame to KISS interface.
+
+        :param frame: Frame to write.
+        """
+        self._logger.debug('frame(%s)="%s"', len(frame), frame)
+
+        frame_escaped = kiss.escape_special_codes(frame)
+        self._logger.debug(
+            'frame_escaped(%s)="%s"', len(frame_escaped), frame_escaped)
+
+        frame_kiss = b''.join([
+            kiss.FEND,
+            kiss.DATA_FRAME,
+            frame_escaped,
+            kiss.FEND
+        ])
+        self._logger.debug(
+            'frame_kiss(%s)="%s"', len(frame_kiss), frame_kiss)
+
+        self._write_handler(frame_kiss)
 
 
 def main():
