@@ -4,7 +4,7 @@ from typing import Callable
 from bitarray import bitarray
 
 class AXFrame(object):
-    def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int, info: bytearray, fcs: bytearray):
+    def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int, info: bytearray, fcs: bytearray, frame: bytearray):
         self.dest = dest
         self.source = source
         self.repeaters = repeaters
@@ -12,6 +12,7 @@ class AXFrame(object):
         self.pid = pid
         self.info = info
         self.fcs = fcs
+        self.frame = frame
 
     def __repr__(self):
         return "Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {}; FCS: {};".format(
@@ -24,10 +25,10 @@ class AXListener(object):
     Specification: https://tapr.org/pub_ax25.html
     """
 
-    _logger = logging.getLogger(__name__)\
+    _logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self.interface = kiss.TCPKISS(IP, PORT, strip_df_start=True)
+        # self.interface = kiss.TCPKISS(IP, PORT, strip_df_start=True)
         # self.interface.start()
         self.callbacks = []
 
@@ -91,8 +92,11 @@ class AXListener(object):
         # TODO
 
         # Send Frame obj to callbacks.
-        axFrame = AXFrame(dest, source, repeaters, control, pid, infoBytes, fcs)
-        print(axFrame)
+        axFrame = AXFrame(dest, source, repeaters, control, pid, infoBytes, fcs, f)
+        self._logger.debug(axFrame)
+
+        for callback in self.callbacks:
+            callback(axFrame)
 
     def extractAddress(self, framePart: bytearray) -> (str, int, bool):
         if len(framePart) != 7:
@@ -145,34 +149,35 @@ class AXListener(object):
         return None
 
 def main():
-    IP = "localhost"
-    PORT = 3030
+    pass
+    # IP = "localhost"
+    # PORT = 3030
 
-    # frame = b'~\xa8\x8a\x98@@@`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0\x10\x1eiN+K\x92*\xcf\x07\xfc\x00'
-    # The FCS values might not be correct.
-    frame = b'~\xa8\x8a\x98\x8a\x9a\x8a`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0Telemetry data: \xcf\x07\xfc\x00'
+    # # frame = b'~\xa8\x8a\x98@@@`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0\x10\x1eiN+K\x92*\xcf\x07\xfc\x00'
+    # # The FCS values might not be correct.
+    # frame = b'~\xa8\x8a\x98\x8a\x9a\x8a`\x8a\xa6\xa8\x86\xaa\x84`\x03\xf0Telemetry data: \xcf\x07\xfc\x00'
 
-    logging.basicConfig(level=logging.DEBUG)
-    l = AXListener()
-    print("Unclean frame: ", bytearray(frame))
-    print("Cleaned frame: ", l.cleanFrame(bytearray(frame)))
-    l.receive(bytearray(frame))
+    # logging.basicConfig(level=logging.DEBUG)
+    # l = AXListener()
+    # print("Unclean frame: ", bytearray(frame))
+    # print("Cleaned frame: ", l.cleanFrame(bytearray(frame)))
+    # l.receive(bytearray(frame))
 
-    clean = l.cleanFrame(bytearray(frame))
-    i = 0
-    isLast = False
-    while not isLast:
-        a = clean[7 * i : 7 * (i+1)]
-        isLast = a[-1] & 0x01 == 0x01
-        print(a.hex(), end="  ")
-        i += 1
-    bP = 7*i
-    print(hex(clean[bP]), end="  ")
-    bP += 1
-    print(hex(clean[bP]), end="  ")
-    bP += 1
-    print(clean[bP: -2].hex(), end="  ")
-    print(clean[-2:].hex(), end="  ")
+    # clean = l.cleanFrame(bytearray(frame))
+    # i = 0
+    # isLast = False
+    # while not isLast:
+    #     a = clean[7 * i : 7 * (i+1)]
+    #     isLast = a[-1] & 0x01 == 0x01
+    #     print(a.hex(), end="  ")
+    #     i += 1
+    # bP = 7*i
+    # print(hex(clean[bP]), end="  ")
+    # bP += 1
+    # print(hex(clean[bP]), end="  ")
+    # bP += 1
+    # print(clean[bP: -2].hex(), end="  ")
+    # print(clean[-2:].hex(), end="  ")
 
 
 if __name__ == "__main__":
