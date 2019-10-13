@@ -1,0 +1,32 @@
+# These currently are not used.
+[Mission Control]
+relay-enabled = False
+mcs-relay-url = String
+mcs-configuration-url = String
+receiver-callsign = String
+norad-id = 2
+
+[TNC interface]
+# Protocol to use for TNC communication (AGW / KISS). (Currently only KISS is supported).
+tnc-protocol-type = KISS
+# Type of connection over which the TNC sends packets to the software (TCP/IP / RS232). (Currently only TCP/IP is supported).
+tnc-connection-type = TCP/IP
+# IP of the TNC if TCP/IP is used.
+tnc-ip = localhost
+# Port of the TNC if TCP/IP is used.
+tnc-port = 3030
+# Device name of the serial port if RS232 is used. Currently unsupported.
+tnc-device =
+
+# DO NOT TOUCH THIS SECTION. These will be removed in further iterations.
+[Constraints]
+relay-enabled = bool
+mcs-relay-url = str
+mcs-configuration-url = str
+receiver-callsign = str
+norad-id = int
+tnc-protocol-type = str
+tnc-connection-type = str
+tnc-ip = str
+tnc-port = str
+tnc-device = str
