@@ -2,11 +2,13 @@ import React from 'react';
 import {
   AppBar,
   Box,
+  Button,
   createStyles,
   makeStyles,
-  Toolbar,
-  Link
+  Toolbar
 } from '@material-ui/core';
+// @ts-ignore
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -16,9 +18,16 @@ const useStyles = makeStyles(() =>
       width: '100%',
       textAlign: 'center'
     },
-    link: {
+    button: {
       flexGrow: 1,
       display: 'inline-block',
+      fontSize: '18px'
+    },
+    linkbutton: {
+      flexGrow: 1,
+      display: 'inline-block',
+      color: 'white',
+      fontSize: '18px'
     }
   }),
 );
@@ -26,17 +35,23 @@ const useStyles = makeStyles(() =>
 const Header = () => {
   const classes = useStyles();
 
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
           <Box width={1/3}>
-            <Link className={classes.link} color="inherit" variant="h6"  href='/'>EstCube 2 Telemetry</Link>
+            <Link to="/">
+              <Button className={classes.linkbutton} color="default" >EstCube 2 Telemetry</Button>
+            </Link>
           </Box>
           <Box width={1/3}>
-            <Link className={classes.link} color="inherit" variant="h6">Upload Data</Link>
-          </Box><Box width={1/3}>
-            <Link className={classes.link} color="inherit" variant="h6" href='/configure'>Configure</Link>
+            <Button className={classes.button} color="inherit">Upload Data</Button>
+          </Box>
+          <Box width={1/3}>
+            <Link to="/configure">
+              <Button className={classes.linkbutton} color="default" >Configure</Button>
+            </Link>
           </Box>
         </Toolbar>
       </AppBar>
