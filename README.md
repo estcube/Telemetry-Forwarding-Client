@@ -16,6 +16,16 @@ The client is currently able to receive KISS packets over TCP/IP and decode AX.2
 
 The libraries can be installed with pip (`pip install kiss bitarray`)
 
+##### Installation on Windows
+
+Installation of the `kiss` package might fail on Windows. If it does clone the fork [https://github.com/martmaemees/aprs](https://github.com/martmaemees/aprs) and run the `setup.py` file
+
+```
+python setup.py install
+```
+
+This should properly install the aprs package and the kiss package which it depends on.
+
 #### Configuration file
 
 The configuration file should be located at `client/configuration.ini`. A sample configuration file that can be used as a baseline is located at `client/configuration.ini.sample`.
