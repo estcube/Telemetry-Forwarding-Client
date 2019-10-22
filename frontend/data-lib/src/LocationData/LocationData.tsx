@@ -4,20 +4,16 @@ import {Paper} from '@material-ui/core';
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import SignalData from './locationData/SignalData';
-import SateliteLocationParams from './locationData/SateliteLocationParams';
-import {LocationMap} from './locationData/LocationMap';
+import LocationDataSignalData from './LocationDataSignalData';
+import LocationDataParams from './LocationDataParams';
+import {LocationDataMap} from './LocationDataMap';
 
 const LocationData = () => {
 
-  const useStyles = makeStyles(() =>
+  const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       papers: {
-        padding: 1,
-        marginRight: 5,
-        marginLeft: 5,
-        marginBottom: 2,
-        marginTop: 1,
+        margin: theme.spacing(2),
         width: 'auto',
         display: 'flex',
         flexWrap: 'wrap'
@@ -45,14 +41,14 @@ const LocationData = () => {
     <div>
       <Paper className={classes.papers}>
         <div className={classes.div1}>
-          <SignalData />
+          <LocationDataSignalData />
         </div>
         <div className={classes.div2}>
-          <SateliteLocationParams />
+          <LocationDataParams />
         </div>
         <div className={classes.break}></div>
         <div className={classes.div3}>
-          <LocationMap />
+          <LocationDataMap />
         </div>
       </Paper>
     </div>

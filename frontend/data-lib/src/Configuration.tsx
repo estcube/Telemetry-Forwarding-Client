@@ -1,16 +1,14 @@
 import * as React from 'react';
-import ConfigurationForm from './configurations/ConfigurationForm';
-// @ts-ignore
-import { Paper } from '@material-ui/core';
-
+import ConfigurationForm from './Configurations/ConfigurationForm';
 
 export class Configuration extends React.Component {
+
   render() {
     return (
       <div>
-        <Paper>
+        <div className="conf-form">
           <ConfigurationForm />
-        </Paper>
+        </div>
       </div>
     );
   }

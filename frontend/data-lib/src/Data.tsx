@@ -1,11 +1,9 @@
 import * as React from 'react';
-import LocationData from './LocationData';
-import SatelliteData from './SatelliteData';
+import LocationData from './LocationData/LocationData';
+import SatelliteData from './SatelliteData/SatelliteData';
 
 export class Data extends React.Component {
-  fun() {
 
-  }
   render() {
     return (
       <div>

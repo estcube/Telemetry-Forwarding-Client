@@ -4,7 +4,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 // @ts-ignore
 import { Typography } from '@material-ui/core';
 
-const SateliteLocationParams = () => {
+const LocationDataParams = () => {
 
   const useStyles = makeStyles(() =>
     createStyles({
@@ -29,4 +29,4 @@ const SateliteLocationParams = () => {
   );
 };
 
-export default SateliteLocationParams;
+export default LocationDataParams;

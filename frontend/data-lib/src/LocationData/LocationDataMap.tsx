@@ -8,7 +8,7 @@ type MapState = {
   mapOpened: Boolean
 }
 
-export class LocationMap extends React.Component<{}, MapState> {
+export class LocationDataMap extends React.Component<{}, MapState> {
   private readonly mapRef: React.RefObject<any>;
   constructor(props: Readonly<{}>) {
     super(props);

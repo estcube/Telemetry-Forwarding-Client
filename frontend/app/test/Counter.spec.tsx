@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cleanup, render } from '@testing-library/react';
-import { MainPage } from '../src/components/MainPage';
+import { MainPage } from '../src/Components/MainPage';
 
 describe('Counter', () => {
   afterEach(cleanup);
