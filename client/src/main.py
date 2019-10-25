@@ -4,8 +4,10 @@ import kiss
 import os
 import logging
 
+
 def printFrame(frame: AXFrame):
     print(frame)
+
 
 def main():
     confPath = os.path.join(os.path.dirname(__file__), "../configuration.ini")

@@ -13,7 +13,7 @@ import time
 # print(c.fetchmany(5))
 
 def dataIntoDBtest(data):
-    conn = sqlite3.connect('decoded_data.db')
+    conn = sqlite3.connect('../../db/decoded_data.db')
     c = conn.cursor()
     currenttime = str(int(time.time()))
     c.execute("INSERT INTO decoded_data_test VALUES (" + currenttime + ", " + data + ")")
@@ -21,7 +21,7 @@ def dataIntoDBtest(data):
     conn.close()
     
 def querylastentry():
-    conn = sqlite3.connect('decoded_data.db')
+    conn = sqlite3.connect('../../db/decoded_data.db')
     c = conn.cursor()
     c.execute("SELECT * FROM decoded_data_test ORDER BY time DESC LIMIT 1")
     out = c.fetchone()

@@ -19,6 +19,17 @@ class Configuration(object):
     def getConf(self, section, element):
         return self.config.get(section, element)
 
+    def getAllConf(self):
+        conf = {}
+        config = self.config
+        for each_section in config.sections():
+            section = {}
+            for (each_key, each_val) in config.items(each_section):
+                section[each_key] = each_val
+            conf[each_section] = section
+
+        return conf
+
     # example: setConf("Mission Control", "relay-enabled", False)
     def setConf(self, section, element, value):
 
