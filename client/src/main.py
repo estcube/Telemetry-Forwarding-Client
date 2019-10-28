@@ -1,39 +1,49 @@
-from axListener import AXListener, AXFrame
-from conf import Configuration
-import kiss
+"""Main entrypoint file for the Telemetry decoder."""
+
 import os
+import sys
 import logging
+import kiss
+from ax_listener import AXListener, AXFrame
+from conf import Configuration
 
 
-def printFrame(frame: AXFrame):
+def print_frame(frame: AXFrame):
+    """Debug function that just prints the AXFrame object emitted by the AXListener."""
     print(frame)
 
 
 def main():
-    confPath = os.path.join(os.path.dirname(__file__), "../configuration.ini")
+    """Main loop function."""
 
-    conf = Configuration(confPath)
+    conf_path = os.path.join(os.path.dirname(__file__), "../configuration.ini")
+
+    conf = Configuration(conf_path)
 
     logging.basicConfig()
     _logger = logging.getLogger(__name__)
 
-    ax = AXListener()
+    ax_listener = AXListener()
 
-    ax.addCallback(printFrame)
+    ax_listener.add_callback(print_frame)
 
-    k = kiss.TCPKISS(conf.getConf("TNC interface", "tnc-ip"), conf.getConf("TNC interface", "tnc-port"), strip_df_start=True)
+    k = kiss.TCPKISS(
+        conf.get_conf("TNC interface", "tnc-ip"),
+        conf.get_conf("TNC interface", "tnc-port"), strip_df_start=True
+        )
 
     try:
         k.start()
     except ConnectionRefusedError:
-        _logger.error("Could not initialize a TCP connection to %s:%s",
-                conf.getConf("TNC interface", "tnc-ip"),
-                conf.getConf("TNC interface", "tnc-port")
-        )
-        exit(-1)
+        _logger.error(
+            "Could not initialize a TCP connection to %s:%s",
+            conf.get_conf("TNC interface", "tnc-ip"),
+            conf.get_conf("TNC interface", "tnc-port")
+            )
+        sys.exit(-1)
 
     try:
-        k.read(callback=ax.receive)
+        k.read(callback=ax_listener.receive)
     except KeyboardInterrupt:
         pass
     k.stop()

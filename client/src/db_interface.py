@@ -19,7 +19,7 @@ def dataIntoDBtest(data):
     c.execute("INSERT INTO decoded_data_test VALUES (" + currenttime + ", " + data + ")")
     conn.commit()
     conn.close()
-    
+
 def querylastentry():
     conn = sqlite3.connect('../../db/decoded_data.db')
     c = conn.cursor()
@@ -31,4 +31,3 @@ def querylastentry():
 
 ## dataIntoDBtest("10100101011011111")
 ## print(querylastentry())
-
