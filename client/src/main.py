@@ -20,7 +20,7 @@ def main():
 
     conf = Configuration(conf_path)
 
-    logging.basicConfig()
+    logging.basicConfig(level=logging.DEBUG)
     _logger = logging.getLogger(__name__)
 
     ax_listener = AXListener()

@@ -36,7 +36,7 @@ class AXListener(object):
 
     _logger = logging.getLogger(__name__)
 
-    def __init__(self, clean_frames = False):
+    def __init__(self, clean_frames=False):
         # self.interface = kiss.TCPKISS(IP, PORT, strip_df_start=True)
         # self.interface.start()
         self.callbacks = []
@@ -58,14 +58,16 @@ class AXListener(object):
             clean_frame = self.clean_frame(frame)
         else:
             # Supposedly the TNC outputs clean frames.
-            clean_frame = frame
+            clean_frame = frame[1:-1]
 
         # Destination and source address parsing.
         (dest, _, is_last) = self.extract_address(clean_frame[:7])
+        self._logger.debug("Destination: %s\tIs last: %s", dest, is_last)
         if is_last:
             self._logger.warning("Destination address had the 'last address' bit set.")
             return
         (source, _, is_last) = self.extract_address(clean_frame[7:14])
+        self._logger.debug("Source: %s\tIs last: %s", source, is_last)
 
         # TODO: Check the source is ESTCube-2.
 
@@ -78,16 +80,19 @@ class AXListener(object):
                     "Read 8 repeater addresses without the 'last address' bit set.")
                 return
             (addr, ssid, is_last) = self.extract_address(clean_frame[7 * (i+2) : 7 * (i+3)])
+            self._logger.debug("Repeater addr: %s\tssid: %s\tIs last: %s", addr, ssid, is_last)
             repeaters.append((addr, ssid))
             i += 1
 
         # Pointer to the current byte
         byte_pointer = 7 * (i+2)
+        self._logger.debug("Byte pointer: %i", byte_pointer)
 
         # Control byte
         control = clean_frame[byte_pointer]
+        self._logger.debug("Control frame: %d", control)
         if control & 0x3 != 0x3:
-            self._logger.debug("Read an AX.25 frame that is not an UI Frame. Discarding..")
+            self._logger.info("Read an AX.25 frame that is not an UI Frame. Discarding..")
             return
         byte_pointer += 1
 
