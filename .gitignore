@@ -1,4 +1,6 @@
-.vscode/
+**/.vscode/
 **/__pycache__
 
 client/configuration.ini
+**/.idea
+**/*.db
