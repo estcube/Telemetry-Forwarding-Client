@@ -36,6 +36,9 @@ const styles = ((theme: Theme) =>
 
 type MyProps = {classes: any};
 
+/**
+ * Component for showing data tables
+ */
 class SatelliteDataTables extends React.Component<MyProps>{
 
   static createData(id: number, name: string, value: number) {

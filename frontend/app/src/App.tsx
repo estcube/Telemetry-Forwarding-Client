@@ -11,6 +11,9 @@ import { MainPage } from 'Components/MainPage';
 import { ConfigurationPage } from 'Components/ConfigurationPage';
 
 
+/**
+ * Main App component
+ */
 export class App extends React.Component {
 
   customHistory = createBrowserHistory();

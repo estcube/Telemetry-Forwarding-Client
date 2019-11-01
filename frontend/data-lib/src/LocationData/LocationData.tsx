@@ -35,6 +35,9 @@ const styles = ((theme: Theme) =>
 
 type MyProps = { classes: any };
 
+/**
+ * Component for displaying satellite location parameters
+ */
 class LocationData extends React.Component<MyProps>{
   render () {
 

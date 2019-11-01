@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Component for configuring TNC
+ */
 class ConfigurationFormTNC extends React.Component {
   render(){
 

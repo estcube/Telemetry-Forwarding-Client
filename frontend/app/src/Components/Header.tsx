@@ -33,6 +33,9 @@ const styles = (() =>
 
 type MyProps = { classes: any }
 
+/**
+ * Blue navigation bar on every page
+ */
 class Header extends React.Component<MyProps> {
   render() {
     const { classes } = this.props;

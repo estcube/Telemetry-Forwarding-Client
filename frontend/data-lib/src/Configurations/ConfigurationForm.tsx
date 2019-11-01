@@ -17,6 +17,9 @@ const styles = ((theme: Theme) =>
 
 type MyProps = { classes: any }
 
+/**
+ * Component for configurations
+ */
 class ConfigurationForm extends React.Component<MyProps> {
   render(){
     const { classes } = this.props;

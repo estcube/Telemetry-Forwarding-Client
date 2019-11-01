@@ -28,6 +28,9 @@ const styles = ((theme: Theme) =>
   })
 );
 
+/**
+ * Component for showing data charts
+ */
 class SatelliteDataCharts extends React.Component<MyProps> {
 
   render() {

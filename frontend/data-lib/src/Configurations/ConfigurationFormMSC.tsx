@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * Component for configuring MSC
+ */
 class ConfigurationFormMSC extends React.Component{
   render(){
     return (

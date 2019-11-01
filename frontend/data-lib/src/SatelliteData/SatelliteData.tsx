@@ -31,6 +31,9 @@ const styles = ((theme: Theme) =>
 
 type MyProps = {classes: any};
 
+/**
+ * Component for displaying tables and charts
+ */
 class SatelliteData extends React.Component<MyProps> {
 
   render() {

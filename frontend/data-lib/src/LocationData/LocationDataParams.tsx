@@ -15,6 +15,9 @@ const styles = (() =>
 
 type MyProps = { classes: any }
 
+/**
+ * Component for displaying satellite position data
+ */
 class LocationDataParams extends React.Component<MyProps> {
   render(){
 

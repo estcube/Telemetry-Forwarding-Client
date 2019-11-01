@@ -27,6 +27,9 @@ type MapState = {
 }
 type MyProps = {classes: any}
 
+/**
+ * Component for displaying satellite location on map
+ */
 class LocationDataMap extends React.Component<MyProps, MapState> {
   private readonly mapRef: React.RefObject<any>;
   constructor(props: any) {
