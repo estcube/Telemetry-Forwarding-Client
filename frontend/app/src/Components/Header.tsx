@@ -4,13 +4,13 @@ import {
   Box,
   Button,
   createStyles,
-  makeStyles,
+  withStyles,
   Toolbar,
 } from '@material-ui/core';
 // @ts-ignore
 import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles(() =>
+const styles = (() =>
   createStyles({
     root: {
       flexGrow: 1,
@@ -28,33 +28,37 @@ const useStyles = makeStyles(() =>
       color: 'white',
       fontSize: '18px'
     }
-  }),
+  })
 );
 
-const Header = () => {
-  const classes = useStyles();
+type MyProps = { classes: any }
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Box width={1/3}>
-            <Link to="/">
-              <Button className={classes.linkButton} color="default" >EstCube 2 Telemetry</Button>
-            </Link>
-          </Box>
-          <Box width={1/3}>
-            <Button className={classes.button} color="inherit">Upload Data</Button>
-          </Box>
-          <Box width={1/3}>
-            <Link to="/configure">
-              <Button className={classes.linkButton} color="default" >Configure</Button>
-            </Link>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
-};
+class Header extends React.Component<MyProps> {
+  render() {
+    const { classes } = this.props;
+    return (
 
-export default Header;
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Box width={1 / 3}>
+              <Link to="/">
+                <Button className={classes.linkButton} color="default">EstCube 2 Telemetry</Button>
+              </Link>
+            </Box>
+            <Box width={1 / 3}>
+              <Button className={classes.button} color="inherit">Upload Data</Button>
+            </Box>
+            <Box width={1 / 3}>
+              <Link to="/configure">
+                <Button className={classes.linkButton} color="default">Configure</Button>
+              </Link>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
+}
+
+export default withStyles(styles)(Header);

@@ -3,14 +3,33 @@ import React from 'react';
 import {Map, Marker, TileLayer} from 'react-leaflet';
 // @ts-ignore
 import {Button} from '@material-ui/core';
+// @ts-ignore
+// eslint-disable-next-line no-unused-vars
+import { createStyles, withStyles } from '@material-ui/core/styles';
+
+const styles = (() =>
+  createStyles({
+    root: {
+      width: '100%',
+      alignContent: 'center',
+      display: 'inline-block'
+    },
+    mapStyle: {
+      width: '100%',
+      height: '512px'
+    },
+  })
+);
+
 
 type MapState = {
   mapOpened: Boolean
 }
+type MyProps = {classes: any}
 
-export class LocationDataMap extends React.Component<{}, MapState> {
+class LocationDataMap extends React.Component<MyProps, MapState> {
   private readonly mapRef: React.RefObject<any>;
-  constructor(props: Readonly<{}>) {
+  constructor(props: any) {
     super(props);
     this.mapRef = React.createRef();
     this.state = {mapOpened: false};
@@ -24,25 +43,17 @@ export class LocationDataMap extends React.Component<{}, MapState> {
   };
 
   render() {
-    let rootStyle = {
-      width: '100%',
-      alignContent: 'center',
-      display: 'inline-block'
-    };
     let mapShowingStyle = {display: this.state.mapOpened ? 'block' : 'none'};
-    let mapStyle = {
-      width: '100%',
-      height: '512px'
-    };
 
+    const { classes } = this.props;
     return (
-      <div style={rootStyle}>
+      <div className={classes.root}>
         <Button variant="contained" color="primary" onClick={() => this.changeMapShowingStatus()}>
           {this.state.mapOpened ? 'Close map' : 'Show map'}
         </Button>
         <div style={mapShowingStyle}>
           <Map
-            style={mapStyle}
+            className={classes.mapStyle}
             center={[58.378025, 26.728493]}
             zoom={14}
             ref={this.mapRef}
@@ -59,3 +70,4 @@ export class LocationDataMap extends React.Component<{}, MapState> {
   }
 }
 
+export default withStyles(styles)(LocationDataMap);
