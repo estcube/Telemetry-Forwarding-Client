@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 
 from src.dbInterface import querylastentry, dataIntoDBtest
 from src.conf import Configuration
+
 app = Flask(__name__)
 
 
