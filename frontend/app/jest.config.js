@@ -22,5 +22,5 @@ module.exports = {
         'ts-jest': {
             tsConfig: '<rootDir>/tsconfig.json'
         }
-    }
+    },
 }

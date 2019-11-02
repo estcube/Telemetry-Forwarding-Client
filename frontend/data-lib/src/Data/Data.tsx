@@ -1,6 +1,6 @@
 import * as React from 'react';
-import LocationData from './LocationData/LocationData';
-import SatelliteData from './SatelliteData/SatelliteData';
+import LocationData from './LocationData';
+import SatelliteData from './SatelliteData';
 
 /**
  * Component for displaying satellite data

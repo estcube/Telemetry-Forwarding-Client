@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ConfigurationForm from './Configurations/ConfigurationForm';
+import ConfigurationForm from './ConfigurationForm';
 
 
 /**
