@@ -9,6 +9,8 @@ from ax_listener import AXFrame
 class TelemetryDB():
     """
     Class for interfacing with the database.
+
+    Currently creates a new connection on every function call.
     """
     _logger = logging.getLogger(__name__)
 

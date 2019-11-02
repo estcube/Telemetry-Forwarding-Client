@@ -12,7 +12,7 @@ from flask import Flask, jsonify
 # from db_interface import TelemetryDB
 from conf import Configuration
 
-def create_app(config: Configuration):
+def create_app(config: Configuration) -> Flask:
     """ Creates a flask app for the api. """
     app = Flask(__name__)
 
