@@ -17,6 +17,14 @@ tnc-ip = localhost
 tnc-port = 3030
 # Device name of the serial port if RS232 is used. Currently unsupported.
 tnc-device =
+# If the TNC connection fails initially, the amount of times to retry connecting.
+max-connection-attempts=20
+# The amount of seconds to wait before retrying the TNC connection.
+connection-retry-time=5
+
+[Client]
+# Path to the client database file (will be created if doesn't exist). Relative to the executable.
+database=../telemetry.db
 
 # DO NOT TOUCH THIS SECTION. These will be removed in further iterations.
 [Constraints]

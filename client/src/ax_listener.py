@@ -3,6 +3,7 @@ Module containing the logic for decoding AX.25 packets.
 """
 
 import logging
+from datetime import datetime
 from typing import Callable
 from bitarray import bitarray
 
@@ -11,7 +12,7 @@ class AXFrame(object):
     Simple data class for holding the decoded data of an AX.25 frame.
     """
     def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int,
-                 info: bytearray, fcs: bytearray, frame: bytearray):
+                 info: bytearray, fcs: bytearray, frame: bytearray, recv_time: datetime):
         self.dest = dest
         self.source = source
         self.repeaters = repeaters
@@ -20,6 +21,7 @@ class AXFrame(object):
         self.info = info
         self.fcs = fcs
         self.frame = frame
+        self.recv_time = recv_time
 
     def __repr__(self):
         return (("Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {}; "
@@ -52,7 +54,8 @@ class AXListener(object):
     def receive(self, frame: bytearray):
         """Handles the receiving of an AX.25 frame and transmitting it in a
         decoded form to all the callbacks."""
-        # TODO: Should we log and send a clean or unclean frame?
+
+        recv_time = datetime.now()
 
         if self.clean_frames:
             clean_frame = self.clean_frame(frame)
@@ -102,19 +105,14 @@ class AXListener(object):
 
         # Info
         info_bytes = clean_frame[byte_pointer:-2]
-        try:
-            self._logger.debug("Information bytes (%s) decoded: %s",
-                               info_bytes.hex(), info_bytes.decode('utf-8'))
-        except:
-            # self._logger.debug("Failed to decode bytes: {}".format(info_bytes.hex()))
-            self._logger.debug("Failed to decode bytes: %s", info_bytes.hex())
 
         # FCS Control
         fcs = clean_frame[-2:]
         # TODO Implement fcs control
 
         # Send Frame obj to callbacks.
-        ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, fcs, clean_frame)
+        ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, fcs, clean_frame,
+                           recv_time)
         self._logger.debug(ax_frame)
 
         for callback in self.callbacks:
@@ -127,8 +125,8 @@ class AXListener(object):
         Returns a tuple in the form of: (decoded address, SSID byte, is_last)
         """
         if len(frame_part) != 7:
-            self._logger.warn("Called extractAddress with invalid length (%d) framePart"
-                              , len(frame_part))
+            self._logger.warning("Called extractAddress with invalid length (%d) framePart",
+                                 len(frame_part))
             raise ValueError
 
         # If the last bit of the last byte is 1, the given address is the last one.
