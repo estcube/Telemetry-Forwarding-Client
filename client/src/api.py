@@ -16,16 +16,22 @@ def create_app(config: Configuration) -> Flask:
     """ Creates a flask app for the api. """
     app = Flask(__name__)
 
-    @app.route("/getdata", methods=["GET"])
+    @app.route("/data", methods=["GET"])
     def getdata():
         """ Test function. """
         return jsonify({"timestamp": datetime.now(), "data": {"some dats": "dat"*3}})
 
-    @app.route("/getconf", methods=["GET"])
+    @app.route("/conf", methods=["GET"])
     def getconf():
         """ Returns the whole current configuration object. """
         res = config.get_all_conf()
         return jsonify(res)
+
+    @app.route("/conf/constraints", methods=["GET"])
+    def get_constraints():
+        """ Returns all of the constraints for the configuration. """
+        constrs = config.get_constraints()
+        return jsonify(constrs)
 
     return app
 

@@ -2,20 +2,39 @@
 
 import configparser
 
-TNC_PROTOCOL_TYPE_TYPES = ["KISS", "AGW"]
-TNC_CONNECTION_TYPE_TYPES = ["TCP/IP", "RS232"]
+CONSTRAINTS = {
+    "Mission Control": {
+        "relay-enabled": "bool",
+        "mcs-relay-url": "str",
+        "receiver-callsign": "str",
+        "norad-id": "int"
+    },
+
+    "TNC interface": {
+        "tnc-protocol-type": ["KISS", "AGW"],
+        "tnc-connection-type": ["TCP/IP", "RS232"],
+        "tnc-ip": "str",
+        "tnc-device": "str",
+        "max-connection-attempts": "int",
+        "connection-retry-time": "int"
+    },
+
+    "Client": {
+        "database": "str"
+    }
+}
 
 class Configuration(object):
+    """
+    Class for parsing and modifying the configuration.
+    """
 
     def __init__(self, path: str):
         self.config = configparser.RawConfigParser()
-        self.configPath = path
+        self.config_path = path
         self.config.read(path)
         self.constraints = {}
         self.sections = self.config.sections()
-
-        for i in self.config["Constraints"]:
-            self.constraints[i] = self.config["Constraints"][i]
 
     def get_conf(self, section, element):
         """
@@ -25,7 +44,15 @@ class Configuration(object):
         """
         return self.config.get(section, element)
 
+    def get_constraints(self):
+        """ Returns all of the constraints for the configuration. """
+        return CONSTRAINTS
+
     def get_all_conf(self):
+        """
+        Returns the whole configuration as a dictionary, where each section is mapped to its own
+        dictionary or fields.
+        """
         conf = {}
         config = self.config
         for each_section in config.sections():
@@ -37,24 +64,34 @@ class Configuration(object):
         return conf
 
     # example: setConf("Mission Control", "relay-enabled", False)
-    def setConf(self, section, element, value):
+    def set_conf(self, section, element, value):
+        """
+        Sets the configuration value at the given position to the given value.
 
-        if(section not in self.sections):
-            raise ValueError("Section", section, "does not exist")
+        Controls that the value is of a correct type, and for certain values, checks if it is in
+        the permitted value list.
+        After setting the value, also overwrites the configuration file with the current
+        configuration state after the change.
+        """
 
-        if(element not in self.constraints):
-            raise ValueError("Element", element, "is not in config")
+        if section not in CONSTRAINTS:
+            raise ValueError("Section {} does not exist.".format(section))
 
-        if(element == "tnc-protocol-type" and value not in TNC_PROTOCOL_TYPE_TYPES):
-            raise ValueError("TNC-Protocol-Type only supports ", TNC_PROTOCOL_TYPE_TYPES)
+        section_constraints = CONSTRAINTS[section]
+        if element not in section_constraints:
+            raise ValueError("Field {} does not exist.".format(element))
 
-        if(element == "tnc-connection-type" and value not in TNC_CONNECTION_TYPE_TYPES):
-            raise ValueError("TNC-Connection-Type only supports ", TNC_CONNECTION_TYPE_TYPES)
-
-        if(type(value) is not eval(self.constraints.get(element))):
-            raise ValueError("Wrong type for element: ", element)
+        constr = section_constraints[element]
+        if constr is list:
+            if value not in constr:
+                raise ValueError(
+                    "{} - {} only supports values: {}".format(section, element, constr)
+                )
+        else:
+            if not isinstance(value, eval(constr)):
+                raise ValueError("Wrong type for element {} - {}".format(section, element))
 
         self.config.set(section, element, value)
 
-        with open(self.configPath, 'w') as configfile:
+        with open(self.config_path, 'w') as configfile:
             self.config.write(configfile)

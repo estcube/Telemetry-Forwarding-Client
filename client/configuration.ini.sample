@@ -25,16 +25,3 @@ connection-retry-time=5
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
 database=../telemetry.db
-
-# DO NOT TOUCH THIS SECTION. These will be removed in further iterations.
-[Constraints]
-relay-enabled = bool
-mcs-relay-url = str
-mcs-configuration-url = str
-receiver-callsign = str
-norad-id = int
-tnc-protocol-type = str
-tnc-connection-type = str
-tnc-ip = str
-tnc-port = str
-tnc-device = str
