@@ -20,7 +20,8 @@ CONSTRAINTS = {
     },
 
     "Client": {
-        "database": "str"
+        "database": "str",
+        "static-files-path": "str"
     }
 }
 

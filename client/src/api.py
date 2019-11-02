@@ -7,14 +7,14 @@ Does not include any authentication, so should not be open to the external netwo
 
 import os
 from datetime import datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_file
 
 # from db_interface import TelemetryDB
 from conf import Configuration
 
-def create_app(config: Configuration) -> Flask:
+def create_app(config: Configuration, static_folder: str) -> Flask:
     """ Creates a flask app for the api. """
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path="", static_folder=static_folder)
 
     @app.route("/data", methods=["GET"])
     def getdata():
@@ -33,6 +33,10 @@ def create_app(config: Configuration) -> Flask:
         constrs = config.get_constraints()
         return jsonify(constrs)
 
+    @app.route("/", methods=["GET"])
+    def get_index():
+        return send_file(os.path.join(static_folder, "index.html"))
+
     return app
 
 # # @app.route('/post', methods=['POST'])
@@ -43,5 +47,6 @@ def create_app(config: Configuration) -> Flask:
 
 if __name__ == '__main__':
     CONF_PATH = os.path.join(os.path.dirname(__file__), "../configuration.ini")
-    APP = create_app(Configuration(CONF_PATH))
+    STATIC_PATH = os.path.join(os.path.dirname(__file__), "../static")
+    APP = create_app(Configuration(CONF_PATH), STATIC_PATH)
     APP.run(debug=True)

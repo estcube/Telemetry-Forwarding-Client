@@ -34,7 +34,8 @@ def main():
     database = TelemetryDB(db_loc)
     database.init_db()
 
-    app = api.create_app(conf)
+    # Create the flask app and start it in a forked process.
+    app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
     api_proc = Process(target=app.run)
     api_proc.start()
 
@@ -46,7 +47,7 @@ def main():
         k = kiss.TCPKISS(
             conf.get_conf("TNC interface", "tnc-ip"),
             conf.get_conf("TNC interface", "tnc-port"), strip_df_start=True
-            )
+        )
 
         # Open the connection to the TNC.
         conn_tries = 0
@@ -67,8 +68,8 @@ def main():
                     _logger.info("Retrying TNC connection in %d seconds...", retry_time)
                     time.sleep(retry_time)
                 else:
-                    _logger.error("Maximum TNC connection retries reached. Exiting...")
-                    sys.exit(-1)
+                    _logger.error("Maximum TNC connection retries reached.")
+                    api_proc.join()
 
 
         try:
