@@ -149,31 +149,31 @@ class AXListener(object):
         flag_count = 0
 
         for i in range(0, len(bit_arr)):
-            b = bit_arr[i]
+            bit = bit_arr[i]
 
-            if b == 1:
+            if bit == 1:
                 one_count += 1
 
-            if b == 0 and one_count == 5:  # Destuff bits
+            if bit == 0 and one_count == 5:  # Destuff bits
                 one_count = 0
                 continue
-            elif b == 0 and one_count == 6: # Reached a flag
+            elif bit == 0 and one_count == 6: # Reached a flag
                 flag_count += 1
                 if flag_count == 2:
                     if (len(res_arr) - 7) % 8 != 0:
                         self._logger.warning(
-                            "Improper amount of bits (%d) between the first two AX.25 "
-                            + "flags in the msg (%s).",
+                            """Improper amount of bits (%d) between the first two AX.25 \
+                            flags in the msg (%s).""",
                             len(res_arr) - 7, frame)
                         return None
                     return bytearray(res_arr[:-7].tobytes()) # Return without the ending flag bits
                 one_count = 0
                 continue
-            elif b == 0:
+            elif bit == 0:
                 one_count = 0
 
             if flag_count == 1: # Only return the bits between the two flags.
-                res_arr.append(b)
+                res_arr.append(bit)
 
         self._logger.warning("Input (%s) to cleanFrame did not contain a full AX.25 frame.", frame)
         return None
