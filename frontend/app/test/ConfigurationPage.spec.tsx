@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cleanup, render } from '@testing-library/react';
-import { ConfigurationPage } from '../src/Components/ConfigurationPage';
+import ConfigurationPage from '../src/Components/ConfigurationPage';
 
 describe('ConfigurationPage', () => {
   afterEach(cleanup);

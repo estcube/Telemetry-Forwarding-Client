@@ -4,8 +4,7 @@ import React from 'react';
  * Component for configuring TNC
  */
 class ConfigurationFormTNC extends React.Component {
-  render(){
-
+  render() {
     return (
       <div>
       TNC Interface
@@ -13,16 +12,16 @@ class ConfigurationFormTNC extends React.Component {
           <label>
           TNC-Protocol-Type:
             <select>
-              <option value='KISS'>KISS</option>
-              <option value='AGW'>AGW</option>
+              <option value="KISS">KISS</option>
+              <option value="AGW">AGW</option>
             </select>
           </label>
           <br />
           <label>
           TNC-Connection-Type:
             <select>
-              <option value='TCP'>TCP</option>
-              <option value='RS232'>RS232</option>
+              <option value="TCP">TCP</option>
+              <option value="RS232">RS232</option>
             </select>
           </label>
           <br />

@@ -5,7 +5,7 @@ import '../styles.scss';
 /**
 * View for configuring client
  */
-export class ConfigurationPage extends React.Component {
+class ConfigurationPage extends React.Component {
   render() {
     return (
       <div className="common">
@@ -14,3 +14,5 @@ export class ConfigurationPage extends React.Component {
     );
   }
 }
+
+export default ConfigurationPage;

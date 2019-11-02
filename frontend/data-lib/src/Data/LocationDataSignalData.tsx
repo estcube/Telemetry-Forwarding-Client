@@ -4,25 +4,23 @@ import { createStyles, withStyles } from '@material-ui/core/styles';
 // @ts-ignore
 import { Typography } from '@material-ui/core';
 
-const styles = (() =>
-  createStyles({
-    root: {
-      width: '100%',
-      textAlign: 'center'
-    }
-  })
+const styles = (() => createStyles({
+  root: {
+    width: '100%',
+    textAlign: 'center',
+  },
+})
 );
 
-type MyProps = { classes: any }
+type MyProps = { classes: any };
 
 /**
  * Component for displaying satellite signal data
  */
 class LocationDataSignalData extends React.Component<MyProps> {
-  render(){
-
+  render() {
     const { classes } = this.props;
-    return(
+    return (
       <div className={classes.root}>
         <Typography variant="h6">
           Loss of signal at 12:34

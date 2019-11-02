@@ -4,8 +4,7 @@
         "es6": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended"
+        "airbnb-typescript"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -26,6 +25,19 @@
     "rules": {
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
+        "react/prefer-stateless-function": "off",
+        "import/no-unresolved": "off",
+        "no-undef": "off",
+        "jsx-a11y/label-has-associated-control": [
+            "error",
+            {
+                "labelComponents": [],
+                "labelAttributes": [],
+                "controlComponents": [],
+                "assert": "either",
+                "depth": 25
+            }
+        ],
         "indent": [
             "error",
             2

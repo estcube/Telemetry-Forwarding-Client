@@ -4,7 +4,7 @@ import { Data } from '@estcube/data-components';
 /**
  * Front-page view
  */
-export class MainPage extends React.Component {
+class MainPage extends React.Component {
   render() {
     return (
       <div>
@@ -13,3 +13,5 @@ export class MainPage extends React.Component {
     );
   }
 }
+
+export default MainPage;
