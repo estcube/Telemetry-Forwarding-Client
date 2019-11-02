@@ -25,9 +25,7 @@ CONSTRAINTS = {
 }
 
 class Configuration(object):
-    """
-    Class for parsing and modifying the configuration.
-    """
+    """ Class for parsing and modifying the configuration. """
 
     def __init__(self, path: str):
         self.config = configparser.RawConfigParser()

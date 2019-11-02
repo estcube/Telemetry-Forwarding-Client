@@ -8,9 +8,7 @@ from typing import Callable
 from bitarray import bitarray
 
 class AXFrame(object):
-    """
-    Simple data class for holding the decoded data of an AX.25 frame.
-    """
+    """ Simple data class for holding the decoded data of an AX.25 frame. """
     def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int,
                  info: bytearray, fcs: bytearray, frame: bytearray, recv_time: datetime):
         self.dest = dest

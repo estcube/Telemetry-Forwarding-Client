@@ -13,12 +13,12 @@ import api
 
 
 def print_frame(frame: AXFrame):
-    """Debug function that just prints the AXFrame object emitted by the AXListener."""
+    """ Debug function that just prints the AXFrame object emitted by the AXListener. """
     print(frame)
 
 
 def main():
-    """Main loop function."""
+    """ Main loop function. """
 
     # Read in the client configuration.
     conf_path = os.path.join(os.path.dirname(__file__), "../configuration.ini")
