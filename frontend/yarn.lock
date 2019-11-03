@@ -104,7 +104,7 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/runtime@^7.4.5", "@babel/runtime@^7.6.3":
+"@babel/runtime@^7.4.5":
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.3.tgz#935122c74c73d2240cafd32ddb5fc2a6cd35cf1f"
   integrity sha512-kq6anf9JGjW8Nt5rYfEuGRaEAaH1mkv3Bbu6rYvLOpPh/RusSJXuKPEAoZ7L7gybZkchE8+NV5g9vKF4AGAtsA==
@@ -326,25 +326,6 @@
     prop-types "^15.7.2"
     react-transition-group "^4.3.0"
 
-"@material-ui/core@^4.5.2":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.5.2.tgz#90a27655db527326876f4390a9d28d69de2ed639"
-  integrity sha512-yARw/hwavOXqljP+biDXHcmfbC63n8EkA8C10/tZt7KkBp7fs+7+z3BNR+ffotd8/uhirIC1jQWWKdLoUc34yA==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@material-ui/styles" "^4.5.2"
-    "@material-ui/system" "^4.5.2"
-    "@material-ui/types" "^4.1.1"
-    "@material-ui/utils" "^4.5.2"
-    "@types/react-transition-group" "^4.2.0"
-    clsx "^1.0.2"
-    convert-css-length "^2.0.1"
-    hoist-non-react-statics "^3.2.1"
-    normalize-scroll-left "^0.2.0"
-    popper.js "^1.14.1"
-    prop-types "^15.7.2"
-    react-transition-group "^4.3.0"
-
 "@material-ui/icons@^4.4.3":
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.4.3.tgz#5d4346ddbb2673a1b57ebc78fd6d50bcd88711db"
@@ -375,28 +356,6 @@
     jss-plugin-vendor-prefixer "^10.0.0"
     prop-types "^15.7.2"
 
-"@material-ui/styles@^4.5.2":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.5.2.tgz#95ac4641a3daed5ee9cc91af1e224d39efafbecb"
-  integrity sha512-QUqPk4tdPiDLs/1flB6qdAqUrYSxHv4YLCgvFeZw9A9OK/lf8LFjciF/SsSIDOCwoV2kf3BiGTzWUGjb/TTgzA==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@emotion/hash" "^0.7.1"
-    "@material-ui/types" "^4.1.1"
-    "@material-ui/utils" "^4.5.2"
-    clsx "^1.0.2"
-    csstype "^2.5.2"
-    hoist-non-react-statics "^3.2.1"
-    jss "^10.0.0"
-    jss-plugin-camel-case "^10.0.0"
-    jss-plugin-default-unit "^10.0.0"
-    jss-plugin-global "^10.0.0"
-    jss-plugin-nested "^10.0.0"
-    jss-plugin-props-sort "^10.0.0"
-    jss-plugin-rule-value-function "^10.0.0"
-    jss-plugin-vendor-prefixer "^10.0.0"
-    prop-types "^15.7.2"
-
 "@material-ui/system@^4.5.0":
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.5.0.tgz#3235f5d7da8b8af4df425e4f065990c16dee8097"
@@ -404,15 +363,6 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
     deepmerge "^4.0.0"
-    prop-types "^15.7.2"
-
-"@material-ui/system@^4.5.2":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.5.2.tgz#7143bd8422a3f33f435c23f378136254004bbd60"
-  integrity sha512-h9RWvdM9XKlHHqwiuhyvWdobptQkHli+m2jJFs7i1AI/hmGsIc4reDmS7fInhETgt/Txx7uiAIznfRNIIVHmQw==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    "@material-ui/utils" "^4.5.2"
     prop-types "^15.7.2"
 
 "@material-ui/types@^4.1.1":
@@ -426,15 +376,6 @@
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.4.0.tgz#9275421e2798a067850d201212d46f12725828ad"
   integrity sha512-UXoQVwArQEQWXxf2FPs0iJGT+MePQpKr0Qh0CPoLc1OdF0GSMTmQczcqCzwZkeHxHAOq/NkIKM1Pb/ih1Avicg==
-  dependencies:
-    "@babel/runtime" "^7.4.4"
-    prop-types "^15.7.2"
-    react-is "^16.8.6"
-
-"@material-ui/utils@^4.5.2":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.5.2.tgz#4c2fb531d357cf0da8cece53b588dff9b0bde934"
-  integrity sha512-zhbNfHd1gLa8At6RPDG7uMZubHxbY+LtM6IkSfeWi6Lo4Ax80l62YaN1QmUpO1IvGCkn/j62tQX3yObiQZrJsQ==
   dependencies:
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
@@ -6388,16 +6329,6 @@ react-leaflet@^2.4.0:
   integrity sha512-ex9MAz2cUAmdUucsjv180OYszdqxHIyEwzWAuMOOuxE7yUmRscxZKR5h0f+vG4shR+SekZYUBk0+gCv8apRADQ==
   dependencies:
     "@babel/runtime" "^7.4.5"
-    fast-deep-equal "^2.0.1"
-    hoist-non-react-statics "^3.3.0"
-    warning "^4.0.3"
-
-react-leaflet@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-2.5.0.tgz#834cc9fdf9385e2b30e90e6d71533e2f961d93f7"
-  integrity sha512-G7GPnXtiJIyTQg77RKzrPq2vnv4lsDz1/XHu5P8+eAAZILngVHzcYCG81G39Hcc0UL8Pqspk8b86OauDGqy0OA==
-  dependencies:
-    "@babel/runtime" "^7.6.3"
     fast-deep-equal "^2.0.1"
     hoist-non-react-statics "^3.3.0"
     warning "^4.0.3"
