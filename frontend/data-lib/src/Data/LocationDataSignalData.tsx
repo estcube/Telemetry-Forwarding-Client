@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 
 const styles = (() => createStyles({
@@ -10,12 +10,10 @@ const styles = (() => createStyles({
 })
 );
 
-type MyProps = { classes: any };
-
 /**
  * Component for displaying satellite signal data
  */
-class LocationDataSignalData extends React.Component<MyProps> {
+class LocationDataSignalData extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
     return (

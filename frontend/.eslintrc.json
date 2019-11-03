@@ -4,6 +4,8 @@
         "es6": true
     },
     "extends": [
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
         "airbnb-typescript"
     ],
     "globals": {
@@ -50,7 +52,9 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+
+        "@typescript-eslint/explicit-function-return-type": "off"
     },
     "settings": {
         "react": {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import { Button } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/styles';
 
 const styles = (() => createStyles({
   root: {
@@ -18,33 +19,25 @@ const styles = (() => createStyles({
 
 
 type MapState = {
-  mapOpened: Boolean
+  mapOpened: boolean;
 };
-type MyProps = {classes: any};
 
 /**
  * Component for displaying satellite location on map
  */
-class LocationDataMap extends React.Component<MyProps, MapState> {
-  private readonly mapRef: React.RefObject<any>;
-
-  constructor(props: any) {
+class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapState> {
+  constructor(props: WithStyles<typeof styles>) {
     super(props);
-    this.mapRef = React.createRef();
     this.state = { mapOpened: false };
   }
 
   changeMapShowingStatus = () => {
     const { mapOpened } = this.state;
     this.setState({ mapOpened: !mapOpened });
-    setTimeout(() => {
-      this.mapRef.current.leafletElement.invalidateSize();
-    }, 1);
   };
 
   render() {
     const { mapOpened } = this.state;
-    const mapShowingStyle = { display: mapOpened ? 'block' : 'none' };
 
     const { classes } = this.props;
     return (
@@ -52,12 +45,11 @@ class LocationDataMap extends React.Component<MyProps, MapState> {
         <Button variant="contained" color="primary" onClick={() => this.changeMapShowingStatus()}>
           {mapOpened ? 'Close map' : 'Show map'}
         </Button>
-        <div style={mapShowingStyle}>
+        { mapOpened && (
           <Map
             className={classes.mapStyle}
             center={[58.378025, 26.728493]}
             zoom={14}
-            ref={this.mapRef}
           >
             <TileLayer
               url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
@@ -65,7 +57,7 @@ class LocationDataMap extends React.Component<MyProps, MapState> {
             />
             <Marker position={[58.378025, 26.728493]} />
           </Map>
-        </div>
+        )}
       </div>
     );
   }

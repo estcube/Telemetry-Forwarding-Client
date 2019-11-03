@@ -1,8 +1,7 @@
 import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { Typography, Paper } from '@material-ui/core';
-
-type MyProps = {classes: any};
+import { WithStyles } from '@material-ui/styles';
 
 const styles = ((theme: Theme) => createStyles({
   root: {
@@ -27,7 +26,7 @@ const styles = ((theme: Theme) => createStyles({
 /**
  * Component for showing data charts
  */
-class SatelliteDataCharts extends React.Component<MyProps> {
+class SatelliteDataCharts extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
 

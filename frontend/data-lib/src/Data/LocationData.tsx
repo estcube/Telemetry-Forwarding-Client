@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper } from '@material-ui/core';
+import { Paper, WithStyles } from '@material-ui/core';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import LocationDataSignalData from './LocationDataSignalData';
 import LocationDataParams from './LocationDataParams';
@@ -32,12 +32,10 @@ const styles = ((theme: Theme) => createStyles({
 })
 );
 
-type MyProps = { classes: any };
-
 /**
  * Component for displaying satellite location parameters
  */
-class LocationData extends React.Component<MyProps> {
+class LocationData extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
     return (

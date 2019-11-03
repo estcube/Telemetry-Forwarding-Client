@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import { WithStyles } from '@material-ui/styles';
 
 const styles = (() => createStyles({
   root: {
@@ -10,12 +11,10 @@ const styles = (() => createStyles({
 })
 );
 
-type MyProps = { classes: any };
-
 /**
  * Component for displaying satellite position data
  */
-class LocationDataParams extends React.Component<MyProps> {
+class LocationDataParams extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
     return (

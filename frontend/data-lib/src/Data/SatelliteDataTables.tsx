@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import { WithStyles } from '@material-ui/styles';
 
 const styles = ((theme: Theme) => createStyles({
   root: {
@@ -30,12 +31,10 @@ const styles = ((theme: Theme) => createStyles({
 })
 );
 
-type MyProps = {classes: any};
-
 /**
  * Component for showing data tables
  */
-class SatelliteDataTables extends React.Component<MyProps> {
+class SatelliteDataTables extends React.Component<WithStyles<typeof styles>> {
   static createData(id: number, name: string, value: number) {
     return { id, name, value };
   }

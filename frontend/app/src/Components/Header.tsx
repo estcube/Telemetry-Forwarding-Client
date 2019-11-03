@@ -6,6 +6,7 @@ import {
   createStyles,
   withStyles,
   Toolbar,
+  WithStyles,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
@@ -29,12 +30,10 @@ const styles = (() => createStyles({
 })
 );
 
-type MyProps = { classes: any };
-
 /**
  * Blue navigation bar on every page
  */
-class Header extends React.Component<MyProps> {
+class Header extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
     return (

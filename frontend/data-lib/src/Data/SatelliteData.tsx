@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Paper } from '@material-ui/core';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import { WithStyles } from '@material-ui/styles';
 import SatelliteDataCharts from './SatelliteDataCharts';
 import SatelliteDataTables from './SatelliteDataTables';
 
@@ -23,12 +24,10 @@ const styles = ((theme: Theme) => createStyles({
 })
 );
 
-type MyProps = {classes: any};
-
 /**
  * Component for displaying tables and charts
  */
-class SatelliteData extends React.Component<MyProps> {
+class SatelliteData extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
 
