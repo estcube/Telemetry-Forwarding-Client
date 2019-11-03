@@ -3,7 +3,7 @@ import { Configuration } from '@estcube/data-components';
 import '../styles.scss';
 
 /**
-* View for configuring client
+ * View for configuring client
  */
 class ConfigurationPage extends React.Component {
   render() {

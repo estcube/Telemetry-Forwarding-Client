@@ -7,10 +7,10 @@ class ConfigurationFormTNC extends React.Component {
   render() {
     return (
       <div>
-      TNC Interface
+        TNC Interface
         <form>
           <label>
-          TNC-Protocol-Type:
+            TNC-Protocol-Type:
             <select>
               <option value="KISS">KISS</option>
               <option value="AGW">AGW</option>
@@ -18,7 +18,7 @@ class ConfigurationFormTNC extends React.Component {
           </label>
           <br />
           <label>
-          TNC-Connection-Type:
+            TNC-Connection-Type:
             <select>
               <option value="TCP">TCP</option>
               <option value="RS232">RS232</option>
@@ -26,17 +26,17 @@ class ConfigurationFormTNC extends React.Component {
           </label>
           <br />
           <label>
-          TNC-IP
+            TNC-IP
             <input type="text" />
           </label>
           <br />
           <label>
-          TNC-Port:
+            TNC-Port:
             <input type="number" />
           </label>
           <br />
           <label>
-          TNC-Device:
+            TNC-Device:
             <input type="text" />
           </label>
         </form>

@@ -1,35 +1,27 @@
 import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
-} from '@material-ui/core';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Typography } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
 
-const styles = ((theme: Theme) => createStyles({
-  root: {
-    width: '100%',
-  },
-  paper: {
-    width: 'auto',
-    overflowX: 'auto',
-    margin: theme.spacing(3, 1, 2, 1),
-    border: 'solid',
-    borderWidth: 0.5,
-  },
-  tableHeader: {
-    margin: theme.spacing(1, 0, 0, 2),
-  },
-  table: {
-    width: '100%',
-  },
-})
-);
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      width: '100%'
+    },
+    paper: {
+      width: 'auto',
+      overflowX: 'auto',
+      margin: theme.spacing(3, 1, 2, 1),
+      border: 'solid',
+      borderWidth: 0.5
+    },
+    tableHeader: {
+      margin: theme.spacing(1, 0, 0, 2)
+    },
+    table: {
+      width: '100%'
+    }
+  });
 
 /**
  * Component for showing data tables
@@ -44,7 +36,7 @@ class SatelliteDataTables extends React.Component<WithStyles<typeof styles>> {
     SatelliteDataTables.createData(2, 'Param 2', 12),
     SatelliteDataTables.createData(3, 'Param 3', 123),
     SatelliteDataTables.createData(4, 'Param 4', 1234),
-    SatelliteDataTables.createData(5, 'Param 5', 12345),
+    SatelliteDataTables.createData(5, 'Param 5', 12345)
   ];
 
   render() {
@@ -55,7 +47,7 @@ class SatelliteDataTables extends React.Component<WithStyles<typeof styles>> {
         <Typography variant="body1">Some plotted sample data</Typography>
         <Paper className={classes.paper}>
           <Typography variant="h6" className={classes.tableHeader}>
-          A table
+            A table
           </Typography>
           <Table className={classes.table} size="small">
             <TableHead>
@@ -65,7 +57,7 @@ class SatelliteDataTables extends React.Component<WithStyles<typeof styles>> {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.rows.map((row) => (
+              {this.rows.map(row => (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
                     {row.name}

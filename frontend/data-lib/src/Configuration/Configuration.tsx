@@ -1,7 +1,6 @@
 import * as React from 'react';
 import ConfigurationForm from './ConfigurationForm';
 
-
 /**
  * Component for configuring the backend client
  */

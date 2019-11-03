@@ -10,7 +10,7 @@ describe('Header', () => {
     const { baseElement } = render(
       <BrowserRouter>
         <Header />
-      </BrowserRouter>,
+      </BrowserRouter>
     );
 
     expect(baseElement).toBeTruthy();

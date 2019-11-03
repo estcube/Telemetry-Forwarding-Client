@@ -6,7 +6,9 @@
     "extends": [
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "airbnb-typescript"
+        "airbnb-typescript",
+        "plugin:prettier/recommended",
+        "prettier/@typescript-eslint"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -22,7 +24,8 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "prettier"
     ],
     "rules": {
         "react/jsx-uses-react": "error",

@@ -5,24 +5,24 @@ import { WithStyles } from '@material-ui/styles';
 import SatelliteDataCharts from './SatelliteDataCharts';
 import SatelliteDataTables from './SatelliteDataTables';
 
-const styles = ((theme: Theme) => createStyles({
-  paperLeft: {
-    padding: 1,
-    // Top, right, bottom, left
-    margin: theme.spacing(0, 1, 0, 2),
-    width: '50%',
-  },
-  paperRight: {
-    padding: 1,
-    // Top, right, bottom, left
-    margin: theme.spacing(0, 2, 0, 1),
-    width: '50%',
-  },
-  box: {
-    position: 'absolute',
-  },
-})
-);
+const styles = (theme: Theme) =>
+  createStyles({
+    paperLeft: {
+      padding: 1,
+      // Top, right, bottom, left
+      margin: theme.spacing(0, 1, 0, 2),
+      width: '50%'
+    },
+    paperRight: {
+      padding: 1,
+      // Top, right, bottom, left
+      margin: theme.spacing(0, 2, 0, 1),
+      width: '50%'
+    },
+    box: {
+      position: 'absolute'
+    }
+  });
 
 /**
  * Component for displaying tables and charts

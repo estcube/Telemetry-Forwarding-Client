@@ -4,12 +4,12 @@ import { Paper, WithStyles } from '@material-ui/core';
 import ConfigurationFormMSC from './ConfigurationFormMSC';
 import ConfigurationFormTNC from './ConfigurationFormTNC';
 
-const styles = ((theme: Theme) => createStyles({
-  root: {
-    margin: theme.spacing(2),
-  },
-})
-);
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      margin: theme.spacing(2)
+    }
+  });
 
 /**
  * Component for configurations

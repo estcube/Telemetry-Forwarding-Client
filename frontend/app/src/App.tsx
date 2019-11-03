@@ -7,7 +7,6 @@ import Header from './Components/Header';
 import MainPage from './Components/MainPage';
 import ConfigurationPage from './Components/ConfigurationPage';
 
-
 /**
  * Main App component
  */

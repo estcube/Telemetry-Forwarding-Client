@@ -4,19 +4,18 @@ import { Button } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 
-const styles = (() => createStyles({
-  root: {
-    width: '100%',
-    alignContent: 'center',
-    display: 'inline-block',
-  },
-  mapStyle: {
-    width: '100%',
-    height: '512px',
-  },
-})
-);
-
+const styles = () =>
+  createStyles({
+    root: {
+      width: '100%',
+      alignContent: 'center',
+      display: 'inline-block'
+    },
+    mapStyle: {
+      width: '100%',
+      height: '512px'
+    }
+  });
 
 type MapState = {
   mapOpened: boolean;
@@ -45,12 +44,8 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
         <Button variant="contained" color="primary" onClick={() => this.changeMapShowingStatus()}>
           {mapOpened ? 'Close map' : 'Show map'}
         </Button>
-        { mapOpened && (
-          <Map
-            className={classes.mapStyle}
-            center={[58.378025, 26.728493]}
-            zoom={14}
-          >
+        {mapOpened && (
+          <Map className={classes.mapStyle} center={[58.378025, 26.728493]} zoom={14}>
             <TileLayer
               url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
