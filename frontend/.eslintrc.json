@@ -35,6 +35,7 @@
         "import/no-extraneous-dependencies": "off",
         "no-undef": "off",
         "linebreak-style": "off",
+        "react/jsx-wrap-multilines": "off",
         "jsx-a11y/label-has-associated-control": [
             "error",
             {
