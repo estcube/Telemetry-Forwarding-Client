@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: ['./src/index.tsx'],
@@ -60,6 +61,9 @@ module.exports = {
       inject: true,
       template: path.resolve('public/index.html')
     }),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new CopyPlugin([
+      { from: 'public', to: '', ignore: ["index.html"] }
+    ])
   ]
 };
