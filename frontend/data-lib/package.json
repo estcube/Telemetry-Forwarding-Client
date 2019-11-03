@@ -12,6 +12,7 @@
     },
     "devDependencies": {
         "@types/react": "^16.9.3",
+        "@types/react-leaflet": "^2.5.0",
         "@typescript-eslint/eslint-plugin": "^2.3.1",
         "@typescript-eslint/parser": "^2.3.1",
         "copy-webpack-plugin": "^5.0.4",
@@ -28,7 +29,7 @@
         "webpack": "^4.41.0",
         "webpack-cli": "^3.3.9"
     },
-    "dependencies": {
+    "peerDependencies": {
         "@material-ui/core": "^4.5.2",
         "leaflet": "^1.5.1",
         "react": "^16.9.0",

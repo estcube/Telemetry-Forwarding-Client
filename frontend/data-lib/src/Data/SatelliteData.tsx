@@ -1,7 +1,5 @@
 import React from 'react';
-// @ts-ignore
 import { Box, Paper } from '@material-ui/core';
-// @ts-ignore
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import SatelliteDataCharts from './SatelliteDataCharts';
 import SatelliteDataTables from './SatelliteDataTables';

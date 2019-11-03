@@ -1,7 +1,5 @@
 import React from 'react';
-// @ts-ignore
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-// @ts-ignore
 import { Typography, Paper } from '@material-ui/core';
 
 type MyProps = {classes: any};

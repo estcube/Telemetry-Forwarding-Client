@@ -5,8 +5,7 @@ import SatelliteData from './SatelliteData';
 /**
  * Component for displaying satellite data
  */
-// eslint-disable-next-line import/prefer-default-export
-export class Data extends React.Component {
+export default class Data extends React.Component {
   render() {
     return (
       <div>

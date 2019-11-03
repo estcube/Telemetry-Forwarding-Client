@@ -7,7 +7,6 @@ import {
   withStyles,
   Toolbar,
 } from '@material-ui/core';
-// @ts-ignore
 import { Link } from 'react-router-dom';
 
 const styles = (() => createStyles({

@@ -1,7 +1,5 @@
 import React from 'react';
-// @ts-ignore
 import { createStyles, withStyles } from '@material-ui/core/styles';
-// @ts-ignore
 import { Typography } from '@material-ui/core';
 
 const styles = (() => createStyles({

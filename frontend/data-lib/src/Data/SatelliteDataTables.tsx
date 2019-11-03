@@ -1,5 +1,4 @@
 import React from 'react';
-// @ts-ignore
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import {
   Table,
@@ -9,7 +8,6 @@ import {
   TableRow,
   Paper,
   Typography,
-  // @ts-ignore
 } from '@material-ui/core';
 
 const styles = ((theme: Theme) => createStyles({

@@ -1,7 +1,5 @@
 import React from 'react';
-// @ts-ignore
 import { Paper } from '@material-ui/core';
-// @ts-ignore
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import LocationDataSignalData from './LocationDataSignalData';
 import LocationDataParams from './LocationDataParams';

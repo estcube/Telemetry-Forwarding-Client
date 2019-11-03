@@ -1,9 +1,6 @@
 import React from 'react';
-// @ts-ignore
 import { Map, Marker, TileLayer } from 'react-leaflet';
-// @ts-ignore
 import { Button } from '@material-ui/core';
-// @ts-ignore
 import { createStyles, withStyles } from '@material-ui/core/styles';
 
 const styles = (() => createStyles({

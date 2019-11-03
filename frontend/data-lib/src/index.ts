@@ -1,2 +1,2 @@
-export { Configuration } from './Configuration/Configuration';
-export { Data } from './Data/Data';
+export { default as Data } from './Data/Data';
+export { default as Configuration } from './Configuration/Configuration';

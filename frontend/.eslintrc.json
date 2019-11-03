@@ -27,6 +27,7 @@
         "react/jsx-uses-vars": "error",
         "react/prefer-stateless-function": "off",
         "import/no-unresolved": "off",
+        "import/no-extraneous-dependencies": "off",
         "no-undef": "off",
         "jsx-a11y/label-has-associated-control": [
             "error",
