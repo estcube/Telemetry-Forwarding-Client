@@ -2,7 +2,6 @@
 [Mission Control]
 relay-enabled = False
 mcs-relay-url = String
-mcs-configuration-url = String
 receiver-callsign = String
 norad-id = 2
 
@@ -25,3 +24,5 @@ connection-retry-time=5
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
 database=../telemetry.db
+# Path to the folder containing the static frontend files. Relative to the executable.
+static-files-path=../static
