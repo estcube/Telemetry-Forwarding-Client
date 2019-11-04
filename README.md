@@ -11,10 +11,12 @@ The client is currently able to receive KISS packets over TCP/IP and decode AX.2
 #### Requirements
 
 * Python 3
-* kiss ([Github](https://github.com/ampledata/kiss))
+* flask
+* kaitaistruct
 * bitarray ([Github](https://github.com/ilanschnell/bitarray))
+* kiss ([Github](https://github.com/ampledata/kiss))
 
-The libraries can be installed with pip (`pip install kiss bitarray`)
+The libraries can be installed with pip (`pip install flask kaitaistruct bitarray kiss`)
 
 ##### Installation on Windows
 
@@ -63,7 +65,7 @@ The frontend currently serves only static pages with sample data displayed.
 
 ##### Installation of yarn
 
-To install yarn, head to [yarn download page](https://yarnpkg.com/lang/en/docs/install/) and follow the instructions there.   
+To install yarn, head to [yarn download page](https://yarnpkg.com/lang/en/docs/install/) and follow the instructions there.
 
 ##### Installation of Node.js
 
