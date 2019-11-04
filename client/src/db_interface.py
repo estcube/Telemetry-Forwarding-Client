@@ -30,7 +30,7 @@ class TelemetryDB():
         self._logger.info("Initializing database at %s", self.conn_str)
         conn = sqlite3.connect(self.conn_str)
         cur = conn.cursor()
-        cur.execute("create table if not exists ax_frame (time integer, data blob);")
+        cur.execute("create table if not exists ax_frame (time text, data blob);")
         conn.commit()
         conn.close()
 
