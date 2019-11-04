@@ -32,7 +32,10 @@ This should properly install the aprs package and the kiss package which it depe
 
 The configuration file should be located at `client/configuration.ini`. A sample configuration file that can be used as a baseline is located at `client/configuration.ini.sample`.
 
-Currently only relevant configuration parameters to change, are `tnc-ip` and `tnc-port`, which specify the connection parameters used to connect to the tnc.
+<!-- Currently only relevant configuration parameters to change, are `tnc-ip` and `tnc-port`, which specify the connection parameters used to connect to the tnc. -->
+The sample file contains comments explaining what the parameters do. Parameters without comments currently have no effect.
+
+In a development environment you might want to set Client.static-files-path parameter to point to the dist folder of the frontend app.
 
 #### Running the client
 
@@ -75,9 +78,9 @@ To install Node.js, head to [Node.js download page](https://nodejs.org/en/) and 
 
 1.  Open up your preferred terminal window.
 2.  Clone the project into suitable directory by typing `git clone https://gitlab.com/martmaemees/estcube2-telemetry.git`.
-2.  Change directory into `frontend/`.
-3.  Install dependencies in `frontend/` by typing `yarn install`.
-4.  Wait until installation finishes.
-5.  Serve the application by typing `yarn serve`.
-6.  Wait until project is served.
-7.  To open the frontend, open up your preferred Web browser and go to `localhost:3000`.
+3.  Change directory into `frontend/`.
+4.  Install dependencies in `frontend/` by typing `yarn install`.
+5.  Wait until installation finishes.
+6.  Serve the application by typing `yarn serve`.
+7.  Wait until project is served.
+8.  To open the frontend, open up your preferred Web browser and go to `localhost:3000`.
