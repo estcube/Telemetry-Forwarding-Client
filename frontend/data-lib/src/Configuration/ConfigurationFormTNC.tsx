@@ -5,12 +5,10 @@ import { TextField, MenuItem, Typography } from '@material-ui/core';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      textAlign: 'center',
-      padding: theme.spacing(0, 10)
+      textAlign: 'center'
     },
     container: {
-      padding: theme.spacing(4, 0, 8, 0),
-      borderStyle: 'solid'
+      padding: theme.spacing(4, 0, 8, 0)
     },
     textField: {
       marginLeft: theme.spacing(1),

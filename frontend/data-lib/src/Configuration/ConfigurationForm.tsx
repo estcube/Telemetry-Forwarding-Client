@@ -15,6 +15,16 @@ const styles = (theme: Theme) =>
     },
     papers: {
       padding: theme.spacing(4, 0)
+    },
+    forms: {
+      maxWidth: '600px',
+      textAlign: 'center',
+      display: 'inline-block',
+      borderStyle: 'solid',
+      borderColor: 'grey',
+      borderRadius: '5px',
+      padding: theme.spacing(0, 2),
+      margin: theme.spacing(0, 2)
     }
   });
 
@@ -30,8 +40,10 @@ class ConfigurationForm extends React.Component<WithStyles<typeof styles>> {
           <Typography variant="h4" className={classes.text}>
             Configuration
           </Typography>
-          <ConfigurationFormMSC />
-          <ConfigurationFormTNC />
+          <div className={classes.forms}>
+            <ConfigurationFormMSC />
+            <ConfigurationFormTNC />
+          </div>
         </Paper>
       </div>
     );

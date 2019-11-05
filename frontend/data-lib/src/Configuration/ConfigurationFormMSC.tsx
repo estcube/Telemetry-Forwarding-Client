@@ -5,17 +5,21 @@ import { TextField, Checkbox, FormControlLabel, Typography } from '@material-ui/
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      textAlign: 'center',
-      padding: theme.spacing(0, 10)
+      textAlign: 'center'
     },
     container: {
-      padding: theme.spacing(4, 0, 8, 0),
-      borderStyle: 'solid'
+      padding: theme.spacing(4, 0, 8, 0)
     },
     textField: {
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       width: '90%'
+    },
+    checkboxField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: '90%',
+      display: 'inline-block'
     }
   })
 );
@@ -52,6 +56,7 @@ const ConfigurationFormTNC = () => {
       <form className={classes.container} noValidate autoComplete="off">
         <Typography variant="h5">Mission Control</Typography>
         <FormControlLabel
+          className={classes.checkboxField}
           control={
             <Checkbox
               checked={values.relayEnabled}
