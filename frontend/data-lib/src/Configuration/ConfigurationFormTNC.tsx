@@ -58,7 +58,7 @@ const ConfigurationFormTNC = () => {
   const classes = useStyles();
   const [values, setValues] = React.useState<State>({
     tncProtocolType: 'KISS',
-    tncConnectionType: 'RS232',
+    tncConnectionType: 'TCP/IP',
     tncIp: 0,
     tncPort: '',
     tncDevice: ''
@@ -69,7 +69,7 @@ const ConfigurationFormTNC = () => {
 
   return (
     <div className={classes.root}>
-      <form className={classes.container} noValidate autoComplete="off">
+      <form className={classes.container} noValidate autoComplete="off" data-testid="tncConfForm">
         <Typography variant="h5">TNC Interface</Typography>
         <TextField
           id="tnc-protocol-type"

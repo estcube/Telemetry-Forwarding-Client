@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { cleanup, render } from '@testing-library/react';
-import MainPage from '../src/Components/MainPage';
+import MainPage from '../Components/MainPage';
 
 describe('MainPage', () => {
   afterEach(cleanup);
 
-  it('should render successfully', () => {
+  it('should render a main page', () => {
     const { baseElement } = render(<MainPage />);
 
     expect(baseElement).toBeTruthy();

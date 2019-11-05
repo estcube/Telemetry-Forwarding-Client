@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import { Paper, WithStyles, Typography } from '@material-ui/core';
-import ConfigurationFormMSC from './ConfigurationFormMSC';
+import ConfigurationFormMCS from './ConfigurationFormMCS';
 import ConfigurationFormTNC from './ConfigurationFormTNC';
 
 const styles = (theme: Theme) =>
@@ -41,7 +41,7 @@ class ConfigurationForm extends React.Component<WithStyles<typeof styles>> {
             Configuration
           </Typography>
           <div className={classes.forms}>
-            <ConfigurationFormMSC />
+            <ConfigurationFormMCS />
             <ConfigurationFormTNC />
           </div>
         </Paper>

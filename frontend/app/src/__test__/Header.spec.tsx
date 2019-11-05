@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { cleanup, render } from '@testing-library/react';
-import Header from '../src/Components/Header';
+import Header from '../Components/Header';
 
 describe('Header', () => {
   afterEach(cleanup);
 
-  it('should render successfully', () => {
+  it('should render a header', () => {
     const { baseElement } = render(
       <BrowserRouter>
         <Header />

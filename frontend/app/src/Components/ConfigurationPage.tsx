@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Configuration } from '@estcube/data-components';
-import '../styles.scss';
 
 /**
  * View for configuring client

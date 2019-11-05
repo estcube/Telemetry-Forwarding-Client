@@ -35,14 +35,14 @@ interface State {
 /**
  * Component for configuring MSC
  */
-const ConfigurationFormTNC = () => {
+const ConfigurationFormMCS = () => {
   const classes = useStyles();
   const [values, setValues] = React.useState<State>({
     relayEnabled: false,
     mcsRelayUrl: '',
     mcsConfUrl: '',
     receiverCallsign: '',
-    noradId: 2
+    noradId: 0
   });
   const handleChange = (name: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [name]: event.target.value });
@@ -53,12 +53,13 @@ const ConfigurationFormTNC = () => {
 
   return (
     <div className={classes.root}>
-      <form className={classes.container} noValidate autoComplete="off">
+      <form className={classes.container} noValidate autoComplete="off" data-testid="mcsConfForm">
         <Typography variant="h5">Mission Control</Typography>
         <FormControlLabel
           className={classes.checkboxField}
           control={
             <Checkbox
+              data-testid="relayEnabled"
               checked={values.relayEnabled}
               id="relay-enabled"
               onChange={handleChecking('relayEnabled')}
@@ -73,6 +74,7 @@ const ConfigurationFormTNC = () => {
         />
         <TextField
           id="mcs-relay-url"
+          data-testid="mcsRelayUrl"
           label="MCS Relay URL"
           className={classes.textField}
           onChange={handleChange('mcsRelayUrl')}
@@ -82,6 +84,7 @@ const ConfigurationFormTNC = () => {
         />
         <TextField
           id="mcs-conf-url"
+          data-testid="mcsConfUrl"
           label="MCS Conf URL"
           className={classes.textField}
           value={values.mcsConfUrl}
@@ -91,6 +94,7 @@ const ConfigurationFormTNC = () => {
         />
         <TextField
           id="receiver-callsign"
+          data-testid="receiverCallsign"
           label="Receiver Callsign"
           className={classes.textField}
           value={values.receiverCallsign}
@@ -100,6 +104,7 @@ const ConfigurationFormTNC = () => {
         />
         <TextField
           id="norad-id"
+          data-testid="noradId"
           label="Norad ID"
           className={classes.textField}
           margin="normal"
@@ -112,4 +117,4 @@ const ConfigurationFormTNC = () => {
   );
 };
 
-export default ConfigurationFormTNC;
+export default ConfigurationFormMCS;
