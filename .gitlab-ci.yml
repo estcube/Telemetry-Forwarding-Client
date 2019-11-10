@@ -17,6 +17,13 @@ test-frontend:
     - yarn install
     - yarn test
 
+test-client:
+  stage: test
+  script:
+    - cd client
+    - pip install --user bitarray
+    - python src/_unit_tests.py
+
 build-frontend:
   stage: build-frontend
   script:
