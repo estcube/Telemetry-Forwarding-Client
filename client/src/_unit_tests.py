@@ -113,4 +113,5 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
 
 
 if __name__ == '__main__':
+    os.mkdir(os.path.join(os.path.dirname(__file__), "__test__"))
     unittest.main()
