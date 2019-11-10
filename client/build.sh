@@ -1,13 +1,14 @@
 #!/bin/bash
 
 BASEDIR=$(dirname "$BASH_SOURCE")
+DISTDIR="$BASEDIR/../dist"
 
-rm -rf "$BASEDIR/dist"
-mkdir "$BASEDIR/dist"
+rm -rf "$DISTDIR"
+mkdir "$DISTDIR"
 
-cp -r "$BASEDIR/src" "$BASEDIR/dist/src"
-cp "$BASEDIR/configuration.ini.sample" "$BASEDIR/dist/configuration.ini"
-cp "$BASEDIR/README.md" "$BASEDIR/dist/"
+cp -r "$BASEDIR/src" "$DISTDIR/src"
+cp "$BASEDIR/configuration.ini.sample" "$DISTDIR/configuration.ini"
+cp "$BASEDIR/README.md" "$DISTDIR/"
 
 # mkdir "$BASEDIR/dist/static"
-cp -r "$BASEDIR/../frontend/app/dist/" "$BASEDIR/dist/static"
+cp -r "$BASEDIR/../frontend/app/dist/" "$DISTDIR/static"

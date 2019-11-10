@@ -36,7 +36,7 @@ build-client:
     - bash build.sh
   artifacts:
     paths:
-      - client/dist
+      - dist
     name: "telemetry-decoder-client-$CI_COMMIT_REF_SLUG"
     expire_in: 3 weeks
 
