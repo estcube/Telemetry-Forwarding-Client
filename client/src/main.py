@@ -1,7 +1,6 @@
 """Main entrypoint file for the Telemetry decoder."""
 
 import os
-import sys
 import logging
 import time
 from multiprocessing import Process
@@ -22,7 +21,7 @@ def main():
     """ Main loop function. """
 
     # Read in the client configuration.
-    conf_path = os.path.join(os.path.dirname(__file__), "../configuration.ini")
+    conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
     conf = Configuration(conf_path)
 
     logging.basicConfig(level=logging.DEBUG)

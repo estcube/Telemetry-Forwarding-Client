@@ -6,8 +6,11 @@ CONSTRAINTS = {
     "Mission Control": {
         "relay-enabled": "bool",
         "mcs-relay-url": "str",
+
         "receiver-callsign": "str",
-        "norad-id": "int"
+        "norad-id": "int",
+        "longitude": "int",
+        "latitude": "int"
     },
 
     "TNC interface": {
@@ -21,7 +24,8 @@ CONSTRAINTS = {
 
     "Client": {
         "database": "str",
-        "static-files-path": "str"
+        "static-files-path": "str",
+        "frontend-port": "int"
     }
 }
 

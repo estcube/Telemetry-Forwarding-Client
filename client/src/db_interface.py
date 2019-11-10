@@ -41,7 +41,7 @@ class TelemetryDB():
         """
         conn = sqlite3.connect(self.conn_str)
         cur = conn.cursor()
-        cur.execute("insert into ax_frame values (?, ?)", (frame.recv_time, frame.frame))
+        cur.execute("insert into ax_frame values (?, ?)", (frame.recv_time.isoformat(), frame.frame))
         conn.commit()
         conn.close()
 
