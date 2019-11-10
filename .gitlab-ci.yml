@@ -24,7 +24,7 @@ test-client:
     - apt-get -yq update
     - apt-get -yq install python3-pip
     - pip3 install --user bitarray
-    - python src/_unit_tests.py
+    - python3 src/_unit_tests.py
 
 build-frontend:
   stage: build-frontend
