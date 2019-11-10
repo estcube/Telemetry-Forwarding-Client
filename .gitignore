@@ -5,3 +5,4 @@ client/configuration.ini
 **/.idea
 **/*.db
 client/static/
+client/dist/

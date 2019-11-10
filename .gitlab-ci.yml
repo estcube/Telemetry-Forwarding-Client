@@ -1,5 +1,11 @@
 image: node:latest
 
+stages:
+  - test
+  - build-frontend
+  - build-client
+  - deploy
+
 cache:
   paths:
     - frontend/node_modules
@@ -12,7 +18,7 @@ test-frontend:
     - yarn test
 
 build-frontend:
-  stage: build
+  stage: build-frontend
   script:
     - cd frontend
     - yarn install
@@ -22,6 +28,17 @@ build-frontend:
       - frontend/app/dist
     name: "telemetry-frontend-$CI_COMMIT_REF_SLUG"
     expire_in: 5 days
+
+build-client:
+  stage: build-client
+  script:
+    - cd client
+    - bash build.sh
+  artifacts:
+    paths:
+      - client/dist
+    name: "telemetry-decoder-client-$CI_COMMIT_REF_SLUG"
+    expire_in: 3 weeks
 
 deploy-frontend:
   stage: deploy
