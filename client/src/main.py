@@ -38,7 +38,12 @@ def main():
 
     # Create the flask app and start it in a forked process.
     app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
-    api_proc = Process(target=app.run)
+    port = None
+    try:
+        port = int(conf.get_conf("Client", "frontend-port"))
+    except ValueError:
+        port = 5000 # Default port.
+    api_proc = Process(target=app.run, kwargs={"port": port})
     api_proc.start()
 
     try:
