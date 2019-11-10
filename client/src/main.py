@@ -9,6 +9,7 @@ import kiss
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
 from db_interface import TelemetryDB
+from sids_relay import SIDSRelay
 import api
 
 
@@ -29,6 +30,7 @@ def main():
 
     # Build the components.
     ax_listener = AXListener()
+    sids_relay = SIDSRelay(conf)
 
     db_loc = os.path.join(os.path.dirname(__file__), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
@@ -41,8 +43,9 @@ def main():
 
     try:
         # Hook the callbacks to the ax_listener.
-        ax_listener.add_callback(print_frame)
+        # ax_listener.add_callback(print_frame)
         ax_listener.add_callback(database.insert_ax_frame)
+        ax_listener.add_callback(sids_relay.relay)
 
         k = kiss.TCPKISS(
             conf.get_conf("TNC interface", "tnc-ip"),
