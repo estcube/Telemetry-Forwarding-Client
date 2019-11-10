@@ -21,6 +21,8 @@ test-client:
   stage: test
   script:
     - cd client
+    - apt-get -yq update
+    - apt-get -yq install python3-pip
     - pip install --user bitarray
     - python src/_unit_tests.py
 
