@@ -4,9 +4,10 @@
         "build": "cd app && yarn build",
         "build:prod": "cd app && yarn build:prod",
         "serve": "cd app && yarn serve",
-        "test": "cd app && yarn test",
+        "test": "yarn test-app && yarn test-data-lib",
+        "test-app": "cd app && yarn test",
+        "test-data-lib": "cd data-lib && yarn test",
         "build:lib": "cd data-lib && yarn build",
-
         "lint": "yarn workspaces run lint",
         "lint:fix": "yarn workspaces run lint:fix"
     },

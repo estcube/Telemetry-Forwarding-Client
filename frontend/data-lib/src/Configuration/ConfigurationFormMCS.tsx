@@ -5,7 +5,11 @@ import { TextField, Checkbox, FormControlLabel, Typography } from '@material-ui/
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      textAlign: 'center'
+      textAlign: 'center',
+      '@media (min-width:1120px)': {
+        float: 'left'
+      },
+      maxWidth: '500px'
     },
     container: {
       padding: theme.spacing(4, 0, 8, 0)
@@ -31,11 +35,13 @@ interface State {
   receiverCallsign: string;
   noradId: number;
 }
-
+type ConfigurationFormMCSProps = {
+  confFormName: string;
+};
 /**
  * Component for configuring MSC
  */
-const ConfigurationFormMCS = () => {
+const ConfigurationFormMCS = ({ confFormName }: ConfigurationFormMCSProps) => {
   const classes = useStyles();
   const [values, setValues] = React.useState<State>({
     relayEnabled: false,
@@ -54,7 +60,7 @@ const ConfigurationFormMCS = () => {
   return (
     <div className={classes.root}>
       <form className={classes.container} noValidate autoComplete="off" data-testid="mcsConfForm">
-        <Typography variant="h5">Mission Control</Typography>
+        <Typography variant="h5">{confFormName}</Typography>
         <FormControlLabel
           className={classes.checkboxField}
           control={

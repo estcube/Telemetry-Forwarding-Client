@@ -5,7 +5,11 @@ import { TextField, MenuItem, Typography } from '@material-ui/core';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      textAlign: 'center'
+      textAlign: 'center',
+      '@media (min-width:1120px)': {
+        float: 'left'
+      },
+      maxWidth: '500px'
     },
     container: {
       padding: theme.spacing(4, 0, 8, 0)
@@ -50,11 +54,13 @@ interface State {
   tncPort: string;
   tncDevice: string;
 }
-
+type ConfigurationFormMCSProps = {
+  confFormName: string;
+};
 /**
  * Component for configuring TNC
  */
-const ConfigurationFormTNC = () => {
+const ConfigurationFormTNC = ({ confFormName }: ConfigurationFormMCSProps) => {
   const classes = useStyles();
   const [values, setValues] = React.useState<State>({
     tncProtocolType: 'KISS',
@@ -70,7 +76,7 @@ const ConfigurationFormTNC = () => {
   return (
     <div className={classes.root}>
       <form className={classes.container} noValidate autoComplete="off" data-testid="tncConfForm">
-        <Typography variant="h5">TNC Interface</Typography>
+        <Typography variant="h5">{confFormName}</Typography>
         <TextField
           id="tnc-protocol-type"
           select

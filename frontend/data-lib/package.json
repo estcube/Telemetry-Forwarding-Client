@@ -7,10 +7,14 @@
     "scripts": {
         "build": "webpack --mode production",
         "serve": "webpack --mode production --watch",
+        "test": "jest",
         "lint": "eslint \"src/**\" --ignore-path=../.eslintignore",
         "lint:fix": "eslint \"src/**\" --ignore-path=../.eslintignore --fix"
     },
     "devDependencies": {
+        "@testing-library/jest-dom": "^4.2.3",
+        "@testing-library/react": "^9.3.2",
+        "@types/jest": "^24.0.22",
         "@types/react": "^16.9.3",
         "@types/react-leaflet": "^2.5.0",
         "@typescript-eslint/eslint-plugin": "^2.3.1",
@@ -26,10 +30,12 @@
         "eslint-plugin-prettier": "^3.1.1",
         "eslint-plugin-react": "^7.14.3",
         "eslint-plugin-react-hooks": "1.7.0",
+        "jest": "^24.9.0",
         "node-sass": "^4.12.0",
         "prettier": "^1.18.2",
         "sass-loader": "^8.0.0",
         "style-loader": "^1.0.0",
+        "ts-jest": "^24.1.0",
         "ts-loader": "^6.1.2",
         "tsconfig-paths-webpack-plugin": "^3.2.0",
         "typescript": "^3.6.3",

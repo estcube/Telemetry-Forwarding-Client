@@ -9,10 +9,10 @@ export default class Data extends React.Component {
   render() {
     return (
       <div>
-        <div className="time-location-map">
+        <div className="time-location-map" data-testid="time-location-map">
           <LocationData />
         </div>
-        <div className="satellite-data">
+        <div className="satellite-data" data-testid="satellite-data">
           <SatelliteData />
         </div>
       </div>

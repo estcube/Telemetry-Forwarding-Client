@@ -17,7 +17,6 @@ const styles = (theme: Theme) =>
       padding: theme.spacing(4, 0)
     },
     forms: {
-      maxWidth: '600px',
       textAlign: 'center',
       display: 'inline-block',
       borderStyle: 'solid',
@@ -27,22 +26,26 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(0, 2)
     }
   });
-
+interface ConfigurationFormProps extends WithStyles<typeof styles> {
+  mcsFormName: string;
+  tncFormName: string;
+  formsHeader: string;
+}
 /**
  * Component for configurations
  */
-class ConfigurationForm extends React.Component<WithStyles<typeof styles>> {
+class ConfigurationForm extends React.Component<ConfigurationFormProps> {
   render() {
-    const { classes } = this.props;
+    const { classes, mcsFormName, tncFormName, formsHeader } = this.props;
     return (
       <div className={classes.root}>
         <Paper className={classes.papers}>
           <Typography variant="h4" className={classes.text}>
-            Configuration
+            {formsHeader}
           </Typography>
           <div className={classes.forms}>
-            <ConfigurationFormMCS />
-            <ConfigurationFormTNC />
+            <ConfigurationFormMCS confFormName={mcsFormName} />
+            <ConfigurationFormTNC confFormName={tncFormName} />
           </div>
         </Paper>
       </div>

@@ -7,7 +7,7 @@ import { Configuration } from '@estcube/data-components';
 class ConfigurationPage extends React.Component {
   render() {
     return (
-      <div className="common">
+      <div data-testid="confDiv">
         <Configuration />
       </div>
     );

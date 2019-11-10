@@ -40,14 +40,14 @@ class LocationData extends React.Component<WithStyles<typeof styles>> {
     return (
       <div className={classes.root}>
         <Paper className={classes.papers}>
-          <div className={classes.div1}>
+          <div className={classes.div1} data-testid="locationSignalData">
             <LocationDataSignalData />
           </div>
-          <div className={classes.div2}>
+          <div className={classes.div2} data-testid="locationDataParams">
             <LocationDataParams />
           </div>
           <div className={classes.break} />
-          <div className={classes.div3}>
+          <div className={classes.div3} data-testid="locationDataMap">
             <LocationDataMap />
           </div>
         </Paper>

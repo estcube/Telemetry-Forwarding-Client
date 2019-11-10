@@ -41,17 +41,24 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
     const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <Button variant="contained" color="primary" onClick={() => this.changeMapShowingStatus()}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.changeMapShowingStatus()}
+          data-testid="mapButton"
+        >
           {mapOpened ? 'Close map' : 'Show map'}
         </Button>
         {mapOpened && (
-          <Map className={classes.mapStyle} center={[58.378025, 26.728493]} zoom={14}>
-            <TileLayer
-              url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={[58.378025, 26.728493]} />
-          </Map>
+          <div data-testid="leafletMap">
+            <Map className={classes.mapStyle} center={[58.378025, 26.728493]} zoom={14}>
+              <TileLayer
+                url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={[58.378025, 26.728493]} />
+            </Map>
+          </div>
         )}
       </div>
     );
