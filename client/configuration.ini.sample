@@ -1,11 +1,17 @@
 # These currently are not used.
 [Mission Control]
+# Whether the relay is enabled or not.
 relay-enabled = False
+# If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
 mcs-relay-url = http://staging.estcube.eu:8029/ax25
 
+# Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
 receiver-callsign = String
+# Norad ID of the spacecraft. Will be transmitted alongside the AX.25 packet.
 norad-id = 2
+# Longitude of the receiver. Will be transmitted alongside the AX.25 packet.
 longitude = 58.377974
+# Latitude of the receiver. Will be transmitted alongside the AX.25 packet.
 latitude = 26.729019
 
 [TNC interface]
