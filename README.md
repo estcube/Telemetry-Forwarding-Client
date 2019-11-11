@@ -1,6 +1,8 @@
 # ESTCube2 Telemetry
 
-TODO: Description
+The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs from around the world, to downlink telemetry data sent by the satellite and  
+see the received results locally. It should also be able to relay the received packets to Mission Control of ESTCube.  
+This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible from Estonia. This is important, because the fly-over times of the satellite are relatively brief. The system will be a cross-platform console application that interfaces with a TNC, which will also serve a web frontend, which handles the displaying of data.
 
 ## Requirements
 
@@ -24,7 +26,8 @@ This should properly install the aprs package and the kiss package which it depe
 
 ## Running
 
-The packaged version of the client can be downloaded from the downloads section of the repository, the artifact named "build-client". This contains the client python source files, the configuration and the build static frontend files ready for use.
+The packaged version of the client can be downloaded from the downloads section of the repository, the artifact is named `build-client`. This contains the client python source files, the configuration file and the built static frontend files ready for use.  
+**This does not mock the TNC! See more at "Notable Known Bugs" section in Wiki**.
 
 ### Configuration file
 
@@ -36,11 +39,13 @@ The sample file contains comments explaining what the parameters do.
 
 ### Running the client
 
-The file to execute is `src/main.py`. This can be done from the command line, if the Python 3 executable is mapped to python:
+The file to execute is `src/main.py` inside the downloaded `build-client` folder, not in the repository folder. This can be done from the command line, if the Python 3 executable is mapped to python:
 
 ```
 python src/main.py
 ```
+
+When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000` (if port 5000 was not changed in `configuration.ini`) to view the web frontend.
 
 ## Developing
 
