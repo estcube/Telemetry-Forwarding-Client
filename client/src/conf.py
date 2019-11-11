@@ -4,28 +4,74 @@ import configparser
 
 CONSTRAINTS = {
     "Mission Control": {
-        "relay-enabled": "bool",
-        "mcs-relay-url": "str",
+        "relay-enabled": {
+            "type": "bool"
+        },
+        "mcs-relay-url": {
+            "type": "str"
+        },
 
-        "receiver-callsign": "str",
-        "norad-id": "int",
-        "longitude": "int",
-        "latitude": "int"
+        "receiver-callsign": {
+            "type": "str"
+        },
+        "norad-id": {
+            "type": "int"
+        },
+        "longitude": {
+            "type": "int"
+        },
+        "latitude": {
+            "type": "int"
+        }
     },
 
     "TNC interface": {
-        "tnc-protocol-type": ["KISS", "AGW"],
-        "tnc-connection-type": ["TCP/IP", "RS232"],
-        "tnc-ip": "str",
-        "tnc-device": "str",
-        "max-connection-attempts": "int",
-        "connection-retry-time": "int"
+        "tnc-protocol-type": {
+            "type": "select",
+            "requiresRestart": True,
+            "options": ["KISS"],
+            "disabledOptions": ["AGW"]
+        },
+        "tnc-connection-type": {
+            "type": "select",
+            "requiresRestart": True,
+            "options": ["TCP/IP", "RS232"]
+        },
+        "tnc-ip": {
+            "type": "str",
+            "requiresRestart": True
+        },
+        "tnc-device": {
+            "type": "str",
+            "requiresRestart": True
+        },
+        "max-connection-attempts": {
+            "type": "str",
+            "requiresRestart": True
+        },
+        "connection-retry-time": {
+            "type": "str",
+            "requiresRestart": True
+        }
     },
 
     "Client": {
-        "database": "str",
-        "static-files-path": "str",
-        "frontend-port": "int"
+        "database": {
+            "type": "str",
+            "description": "Path to the database file. Relative to executable file.",
+            "requiresRestart": True
+        },
+        "static-files-path": {
+            "type": "str",
+            "description": "Path to the root directory of static frontend files",
+            "debug": True,
+            "requiresRestart": True
+        },
+        "frontend-port": {
+            "type": "int",
+            "description": "Port that the frontend and api are served on.",
+            "requiresRestart": True
+        }
     }
 }
 
@@ -82,17 +128,27 @@ class Configuration(object):
 
         section_constraints = CONSTRAINTS[section]
         if element not in section_constraints:
-            raise ValueError("Field {} does not exist.".format(element))
+            raise ValueError("Field {} - {} does not exist.".format(section, element))
 
         constr = section_constraints[element]
-        if constr is list:
-            if value not in constr:
+        if constr["type"] == "str":
+            pass
+        elif constr["type"] == "int":
+            if not isinstance(value, int):
+                value = int(value)
+        elif constr["type"] == "bool":
+            if not isinstance(value, bool):
+                if value.lower() == "true":
+                    value = True
+                elif value.lower() == "false":
+                    value = false
+                else:
+                    raise ValueError("Expected a boolean value or string 'True' or 'False'.")
+        elif constr["type"] == "select":
+            if value not in constr["options"]:
                 raise ValueError(
-                    "{} - {} only supports values: {}".format(section, element, constr)
+                    "{} - {} only supports values: {}".format(section, element, constr["options"])
                 )
-        else:
-            if not isinstance(value, eval(constr)):
-                raise ValueError("Wrong type for element {} - {}".format(section, element))
 
         self.config.set(section, element, value)
 
