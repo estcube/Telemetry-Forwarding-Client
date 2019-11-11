@@ -35,7 +35,7 @@ systest-client:
     - pip3 install --upgrade --user idna
     - git clone https://github.com/martmaemees/aprs.git
     - cd aprs
-    - python3 setup.py --user install
+    - python3 setup.py install
     - cd ../client
     - bash sys_test.sh
 
