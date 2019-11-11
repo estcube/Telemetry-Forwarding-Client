@@ -3,6 +3,8 @@
 import os
 import logging
 import time
+import sys
+from getopt import getopt
 from multiprocessing import Process
 import kiss
 from ax_listener import AXListener, AXFrame
@@ -17,15 +19,25 @@ def print_frame(frame: AXFrame):
     print(frame)
 
 
-def main():
+def main(argv):
     """ Main loop function. """
-
-    # Read in the client configuration.
-    conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
-    conf = Configuration(conf_path)
 
     logging.basicConfig(level=logging.DEBUG)
     _logger = logging.getLogger(__name__)
+
+    opts, args = getopt(argv, "c:")
+
+    # Read in the client configuration.
+    conf_path = None
+    for opt, arg in opts:
+        if opt == "-c":
+            conf_path = arg
+
+    if conf_path == None:
+        conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
+    _logger.info("Configuration path: %s", conf_path)
+
+    conf = Configuration(conf_path)
 
     # Build the components.
     ax_listener = AXListener()
@@ -89,4 +101,4 @@ def main():
         api_proc.join()
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
