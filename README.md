@@ -34,14 +34,12 @@ A custom path for the configuration file can also be given, when the program is 
 
 The sample file contains comments explaining what the parameters do.
 
-In a development environment you might want to set Client.static-files-path parameter to point to the dist folder of the frontend app.
-
 ### Running the client
 
 The file to execute is `src/main.py`. This can be done from the command line, if the Python 3 executable is mapped to python:
 
 ```
-python client/src/main.py
+python src/main.py
 ```
 
 ## Developing
