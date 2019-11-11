@@ -38,12 +38,12 @@ EOL
 
 trap catch_exit SIGINT SIGHUP SIGTERM
 
-python test/kissWriter.py &
+python3 test/kissWriter.py &
 SRV=$!
-python src/main.py -v -c "$TESTDIR/conf.ini" &
+python3 src/main.py -v -c "$TESTDIR/conf.ini" &
 MAIN=$!
 
 sleep 7s
 cleanup
 
-python "$BASEDIR/src/_system_tests.py"
+python3 "$BASEDIR/src/_system_tests.py"
