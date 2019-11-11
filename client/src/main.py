@@ -25,13 +25,17 @@ def main(argv):
     logging.basicConfig(level=logging.DEBUG)
     _logger = logging.getLogger(__name__)
 
-    opts, args = getopt(argv, "c:")
+    opts, args = getopt(argv, "vc:")
 
     # Read in the client configuration.
     conf_path = None
+    verbose = False
     for opt, arg in opts:
         if opt == "-c":
             conf_path = arg
+        if opt == "-v":
+            verbose = True
+
 
     if conf_path == None:
         conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
@@ -54,8 +58,13 @@ def main(argv):
         port = int(conf.get_conf("Client", "frontend-port"))
     except ValueError:
         port = 5000 # Default port.
-    api_proc = Process(target=app.run, kwargs={"port": port})
+    api_proc = Process(name="Telemetry client API", target=app.run, kwargs={"port": port})
     api_proc.start()
+    if verbose:
+        _logger.debug("API Process is: %s", api_proc.pid)
+        f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w', encoding="utf-8")
+        f.write(str(api_proc.pid))
+        f.close()
 
     try:
         # Hook the callbacks to the ax_listener.

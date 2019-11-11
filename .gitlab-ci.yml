@@ -26,6 +26,15 @@ test-client:
     - pip3 install --user bitarray
     - python3 src/_unit_tests.py
 
+systest-client:
+  stage: test
+  script:
+    - cd client
+    - apt-get -yq update
+    - apt-get -yq install python3-pip
+    - pip3 install --user bitarray kiss flask
+    - bash sys_test.sh
+
 build-frontend:
   stage: build-frontend
   script:
