@@ -29,10 +29,13 @@ test-client:
 systest-client:
   stage: test
   script:
-    - cd client
     - apt-get -yq update
     - apt-get -yq install python3-pip
-    - pip3 install --user bitarray kiss flask
+    - pip3 install --user bitarray flask
+    - git clone git@github.com:martmaemees/aprs.git
+    - cd aprs
+    - python3 setup.py
+    - cd ../client
     - bash sys_test.sh
 
 build-frontend:
