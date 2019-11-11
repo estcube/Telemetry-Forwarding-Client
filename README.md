@@ -2,13 +2,7 @@
 
 TODO: Description
 
-## Running
-
-### Client
-
-The client is currently able to receive KISS packets over TCP/IP and decode AX.25 frames in the payload.
-
-#### Requirements
+## Requirements
 
 * Python 3
 * flask
@@ -18,7 +12,7 @@ The client is currently able to receive KISS packets over TCP/IP and decode AX.2
 
 The libraries can be installed with pip (`pip install flask kaitaistruct bitarray kiss`)
 
-##### Installation on Windows
+### Installation on Windows
 
 Installation of the `kiss` package might fail on Windows. If it does clone the fork [https://github.com/martmaemees/aprs](https://github.com/martmaemees/aprs) and run the `setup.py` file
 
@@ -28,24 +22,33 @@ python setup.py install
 
 This should properly install the aprs package and the kiss package which it depends on.
 
-#### Configuration file
+## Running
 
-The configuration file should be located at `client/configuration.ini`. A sample configuration file that can be used as a baseline is located at `client/configuration.ini.sample`.
+The packaged version of the client can be downloaded from the downloads section of the repository, the artifact named "build-client". This contains the client python source files, the configuration and the build static frontend files ready for use.
 
-<!-- Currently only relevant configuration parameters to change, are `tnc-ip` and `tnc-port`, which specify the connection parameters used to connect to the tnc. -->
-The sample file contains comments explaining what the parameters do. Parameters without comments currently have no effect.
+### Configuration file
+
+The configuration file is `configuration.ini`.
+
+A custom path for the configuration file can also be given, when the program is run with the argument `-c <file-path>`. In this case, the file path is relative to the users working directory.
+
+The sample file contains comments explaining what the parameters do.
 
 In a development environment you might want to set Client.static-files-path parameter to point to the dist folder of the frontend app.
 
-#### Running the client
+### Running the client
 
-The file to execute is `client/src/main.py`. This can be done from the command line with the repository root as the working directory, if the Python 3 executable is mapped to python:
+The file to execute is `src/main.py`. This can be done from the command line, if the Python 3 executable is mapped to python:
 
 ```
 python client/src/main.py
 ```
 
-The tnc to connect to should already be running and accepting connections.
+## Developing
+
+### Client
+
+The repository contains a sample configuration file `client/configuration.ini.sample`, this should be copied to `client/configuration.ini` and values should be changed to suit your needs.
 
 #### Mocking the TNC
 
