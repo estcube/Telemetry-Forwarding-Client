@@ -32,7 +32,7 @@ systest-client:
     - apt-get -yq update
     - apt-get -yq install python3-pip
     - pip3 install --user bitarray flask
-    - git clone git@github.com:martmaemees/aprs.git
+    - git clone https://github.com/martmaemees/aprs.git
     - cd aprs
     - python3 setup.py
     - cd ../client
