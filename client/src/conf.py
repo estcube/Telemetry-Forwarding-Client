@@ -165,9 +165,9 @@ class Configuration(object):
 
         for i in constraints:
             for j in constraints[i]:
-                val = (config[i][j])
-                if val == "":
-                    val = "null"
+                val = None
+                if i in config and j in config[i] and config[i][j].strip() != "":
+                    val = (config[i][j])
                 constraints[i][j].update({"value": val})
 
         return constraints
