@@ -39,6 +39,11 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     def get_index():
         return send_file(os.path.join(static_folder, "index.html"))
 
+    @app.route("/conf/full", methods=["GET"])
+    def get_full_conf():
+        res = config.get_conf_with_constraints()
+        return res
+
     return app
 
 # # @app.route('/post', methods=['POST'])

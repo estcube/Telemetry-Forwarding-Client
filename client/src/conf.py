@@ -75,6 +75,7 @@ CONSTRAINTS = {
     }
 }
 
+
 class Configuration(object):
     """ Class for parsing and modifying the configuration. """
 
@@ -141,7 +142,7 @@ class Configuration(object):
                 if value.lower() == "true":
                     value = True
                 elif value.lower() == "false":
-                    value = false
+                    value = False
                 else:
                     raise ValueError("Expected a boolean value or string 'True' or 'False'.")
         elif constr["type"] == "select":
@@ -154,3 +155,19 @@ class Configuration(object):
 
         with open(self.config_path, 'w') as configfile:
             self.config.write(configfile)
+
+    def get_conf_with_constraints(self):
+        """
+        Goes through the constraints and the values and returns a dictionary with constraints that have the value appended.
+        """
+        constraints = self.get_constraints()
+        config = self.get_all_conf()
+
+        for i in constraints:
+            for j in constraints[i]:
+                val = (config[i][j])
+                if val == "":
+                    val = "null"
+                constraints[i][j].update({"value": val})
+
+        return constraints
