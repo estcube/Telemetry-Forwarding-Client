@@ -31,7 +31,7 @@ systest-client:
   script:
     - apt-get -yq update
     - apt-get -yq install python3-pip
-    - pip3 install --user bitarray flask
+    - pip3 install --user bitarray flask flask-cors
     - pip3 install --upgrade --user idna
     - git clone https://github.com/martmaemees/aprs.git
     - cd aprs

@@ -8,6 +8,7 @@ Does not include any authentication, so should not be open to the external netwo
 import os
 from datetime import datetime
 from flask import Flask, jsonify, send_file
+from flask_cors import CORS
 
 # from db_interface import TelemetryDB
 from conf import Configuration
@@ -15,7 +16,8 @@ from conf import Configuration
 def create_app(config: Configuration, static_folder: str) -> Flask:
     """ Creates a flask app for the api. """
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
-
+    CORS(app)
+	
     @app.route("/data", methods=["GET"])
     def getdata():
         """ Test function. """
