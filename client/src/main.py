@@ -18,9 +18,15 @@ def print_frame(frame: AXFrame):
     """ Debug function that just prints the AXFrame object emitted by the AXListener. """
     print(frame)
 
+app = None
+
+def runApi(conf, static_path, port):
+    app = api.create_app(conf, static_path)
+    app.run(port=port)
 
 def main(argv):
     """ Main loop function. """
+    global app
 
     logging.basicConfig(level=logging.DEBUG)
     _logger = logging.getLogger(__name__)
@@ -52,14 +58,17 @@ def main(argv):
     database.init_db()
 
     # Create the flask app and start it in a forked process.
-    app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
+    # app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
     port = None
     try:
         port = int(conf.get_conf("Client", "frontend-port"))
     except ValueError:
         port = 5000 # Default port.
-    api_proc = Process(name="Telemetry client API", target=app.run, kwargs={"port": port})
+
+    api_proc = Process(target=runApi, args=(conf, conf.get_conf("Client", "static-files-path"), port))
     api_proc.start()
+    # api_proc = Process(name="Telemetry client API", target=app.run, kwargs={"port": port})
+    # api_proc.start()
     if verbose:
         _logger.debug("API Process is: %s", api_proc.pid)
         f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w', encoding="utf-8")
