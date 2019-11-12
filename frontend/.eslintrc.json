@@ -36,6 +36,7 @@
         "no-undef": "off",
         "linebreak-style": "off",
         "react/jsx-wrap-multilines": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "jsx-a11y/label-has-associated-control": [
             "error",
             {

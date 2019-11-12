@@ -3,7 +3,8 @@ import { cleanup, render } from '@testing-library/react';
 import Configuration from '../../Configuration/Configuration';
 
 function renderConfPage() {
-  return render(<Configuration />);
+  const props = { A: { B: 'C' } };
+  return render(<Configuration confValues={props} />);
 }
 
 describe('Find conf form class', () => {
