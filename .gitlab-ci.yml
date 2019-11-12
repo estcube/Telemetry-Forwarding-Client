@@ -75,7 +75,8 @@ deploy-client:
   script:
     - cd dist
     - ssh -l deploy "$TEST_ENV_IP" "sudo /bin/systemctl stop estcube-client"
-    - scp -r * deploy@"$TEST_ENV_IP":/srv/client/
+    - ssh -l deploy "$TEST_ENV_IP" "rm -rf /srv/client/*"
+    - scp -r * deploy@"$TEST_ENV_IP":/srv/client
     - ssh -l deploy "$TEST_ENV_IP" "sudo /bin/systemctl start estcube-client"
   only:
     - master
