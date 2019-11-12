@@ -46,11 +46,11 @@ CONSTRAINTS = {
             "requiresRestart": True
         },
         "max-connection-attempts": {
-            "type": "str",
+            "type": "int",
             "requiresRestart": True
         },
         "connection-retry-time": {
-            "type": "str",
+            "type": "int",
             "requiresRestart": True
         }
     },
