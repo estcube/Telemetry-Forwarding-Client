@@ -6,3 +6,4 @@ client/configuration.ini
 **/*.db
 client/static/
 client/dist/
+**/dist/

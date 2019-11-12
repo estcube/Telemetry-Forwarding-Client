@@ -62,7 +62,7 @@ build-client:
     name: "telemetry-decoder-client-$CI_COMMIT_REF_SLUG"
     expire_in: 3 weeks
 
-deploy-frontend:
+deploy-client:
   stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -73,8 +73,9 @@ deploy-frontend:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - cd frontend/app/dist
-    - (ssh -l deploy "$TEST_ENV_IP" "./clean.sh") || true
-    - scp -r * deploy@"$TEST_ENV_IP":/srv/ec2/
+    - cd dist
+    - ssh -l deploy "$TEST_ENV_IP" "/bin/systemctl stop estcube-client"
+    - scp -r * deploy@"$TEST_ENV_IP":/srv/client/
+    - ssh -l deploy "$TEST_ENV_IP" "/bin/systemctl start estcube-client"
   only:
     - master
