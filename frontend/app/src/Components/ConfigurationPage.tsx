@@ -24,7 +24,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationFormState> {
   }
 
   fetchConfValuesFull = () => {
-    fetch('http://localhost:5000/conf/full')
+    fetch('/conf/full')
       .then(response => response.json())
       .then(responseJson => {
         this.setState({ confValues: responseJson });
