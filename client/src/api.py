@@ -17,7 +17,7 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     """ Creates a flask app for the api. """
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
     CORS(app)
-	
+
     @app.route("/data", methods=["GET"])
     def getdata():
         """ Test function. """
@@ -35,14 +35,19 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
         constrs = config.get_constraints()
         return jsonify(constrs)
 
-    @app.route("/", methods=["GET"])
-    def get_index():
-        return send_file(os.path.join(static_folder, "index.html"))
-
     @app.route("/conf/full", methods=["GET"])
     def get_full_conf():
         res = config.get_conf_with_constraints()
         return res
+
+
+    @app.route("/", methods=["GET"])
+    def get_index():
+        return send_file(os.path.join(static_folder, "index.html"))
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return send_file(os.path.join(static_folder, "index.html"))
 
     return app
 
