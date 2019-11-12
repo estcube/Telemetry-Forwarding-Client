@@ -74,8 +74,8 @@ deploy-client:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - cd dist
-    - ssh -l deploy "$TEST_ENV_IP" "/bin/systemctl stop estcube-client"
+    - ssh -l deploy "$TEST_ENV_IP" "sudo /bin/systemctl stop estcube-client"
     - scp -r * deploy@"$TEST_ENV_IP":/srv/client/
-    - ssh -l deploy "$TEST_ENV_IP" "/bin/systemctl start estcube-client"
+    - ssh -l deploy "$TEST_ENV_IP" "sudo /bin/systemctl start estcube-client"
   only:
     - master
