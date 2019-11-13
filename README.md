@@ -8,11 +8,13 @@ This allows the ESTCube team to receive telemetry data, even when the satellite 
 
 * Python 3
 * flask
+* flask-cors
+* flas-swagger-ui
 * kaitaistruct
 * bitarray ([Github](https://github.com/ilanschnell/bitarray))
 * kiss ([Github](https://github.com/ampledata/kiss))
 
-The libraries can be installed with pip (`pip install flask kaitaistruct bitarray kiss`)
+The libraries can be installed with pip (`pip install flask kaitaistruct bitarray kiss flask-cors flask-swagger-ui`)
 
 ### Installation on Windows
 
