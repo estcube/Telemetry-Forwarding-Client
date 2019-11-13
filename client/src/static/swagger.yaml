@@ -1,0 +1,536 @@
+swagger: "2.0"
+info:
+  description: "This is API description for Estcube 2 Telemetry client API. API is built using Flask and is not RESTful."
+  version: "1.0.0"
+  title: "Estcube 2 Telemetry API"
+  contact:
+    email: "a@b.com"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+paths:
+  /conf:
+    post:
+      tags:
+      - "conf"
+      summary: "Updates configuration. Not yet available, format will change!"
+      description: "Updates configuration in client."
+      operationId: "updateConf"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Configuration object which will update clients configuration"
+        required: true
+        schema:
+          $ref: "#/definitions/ConfFull"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "error"
+      deprecated:
+        true
+    get:
+      tags:
+      - "conf"
+      summary: "Gets some configuration!"
+      description: "Gets configuration."
+      operationId: "getConf"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Conf"  
+  /conf/full:
+    get:
+      tags:
+      - "conf"
+      summary: "Gets some all decked out configuration!"
+      description: "Gets full configuration."
+      operationId: "getConfFull"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConfFull" 
+  /conf/constraints:
+    get:
+      tags:
+      - "conf"
+      summary: "Gets some configuration with constraints!"
+      description: "Gets configuration with constraints."
+      operationId: "getConfConstraints"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ConfConstraints"
+  /data:
+    get:
+      tags:
+      - "data"
+      summary: "Get some data from local DB."
+      description: "Gets some data."
+      operationId: "getData"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Data"         
+
+definitions:
+  ClientConfObject:
+      type: "object"
+      properties:
+        database:
+          type: "string"
+        frontend-port:
+          type: "string"  
+        static-files-path:
+          type: "string" 
+        
+  ClientConfObjectFull:
+    type: "object"
+    properties:
+      database:
+        type: "object"
+        properties:
+          description:
+            type: "string"
+          label:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          type:
+            type: "string"
+          value:
+            type: "string"
+      frontend-port:
+        type: "object"
+        properties:
+          description:
+            type: "string"
+          label:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          type:
+            type: "string"
+          value:
+            type: "string"   
+      static-files-path:
+        type: "object"
+        properties:
+          description:
+            type: "string"
+          label:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          type:
+            type: "string"
+          value:
+            type: "string" 
+    
+  ClientConfObjectConstraints:
+    type: "object"
+    properties:
+      database:
+        type: "object"
+        properties:
+          description:
+            type: "string"
+          label:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          type:
+            type: "string"
+      frontend-port:
+        type: "object"
+        properties:
+          description:
+            type: "string"
+          label:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          type:
+            type: "string"
+      static-files-path:
+        type: "object"
+        properties:
+          description:
+            type: "string"
+          label:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          type:
+            type: "string"
+ 
+  
+  
+  MCSConfObject:
+    type: "object"
+    properties:
+      latitude:
+        type: "string"
+      longitude:
+        type: "string" 
+      mcs-relay-url:
+        type: "string"
+      noradID:
+        type: "string"
+      receiver-callsign:
+        type: "string"   
+      relay-enabled:
+        type: "boolean" 
+  
+  MCSConfObjectFull:
+    type: "object"
+    properties:
+      latitude:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "integer"
+      longitude:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "integer"  
+      mcs-relay-url:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "string" 
+      norad-id:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "integer"
+      receiver-callsign:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "string"   
+      relay-enabled:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "boolean"
+   
+  MCSConfObjectConstraints:
+    type: "object"
+    properties:
+      latitude:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+      longitude:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+      mcs-relay-url:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+      norad-id:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+      receiver-callsign:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+      relay-enabled:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+   
+  
+  TNCConfObject:
+    type: "object"
+    properties:
+      connection-retry-time:
+        type: "string"
+      max-connection-attempts:
+        type: "string"
+      tnc-connection-type:
+        type: "string"
+      tnc-device:
+        type: "string"
+      tnc-ip:
+        type: "string"
+      tnc-port:
+        type: "string"
+      tnc-protocol-type:
+        type: "string"
+  
+  TNCConfObjectFull:
+    type: "object"
+    properties:
+      connection-retry-time:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "integer"
+          requiresRestart:
+            type: "boolean"
+      max-connection-attempts:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "integer"
+          requiresRestart:
+            type: "boolean" 
+      tnc-connection-type:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          options:
+            type: "array"
+            items:
+              type: "string"
+            example: ["RS232", "TCP/IP"]  
+      tnc-device:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "string"
+          requiresRestart:
+            type: "boolean"  
+      tnc-ip:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "string"
+          requiresRestart:
+            type: "boolean" 
+      tnc-protocol-type:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          value:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          options:
+            type: "array"
+            items:
+              type: "string"
+            example: ["KISS"] 
+          disabledOptions:
+            type: "array"
+            items:
+              type: "string"
+            example: ["AGW"]  
+  
+  TNCConfObjectConstraints:
+    type: "object"
+    properties:
+      connection-retry-time:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+      max-connection-attempts:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          requiresRestart:
+            type: "boolean" 
+      tnc-connection-type:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          options:
+            type: "array"
+            items:
+              type: "string"
+            example: ["RS232", "TCP/IP"]  
+      tnc-device:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          requiresRestart:
+            type: "boolean"  
+      tnc-ip:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          requiresRestart:
+            type: "boolean" 
+      tnc-protocol-type:
+        type: "object"
+        properties:
+          label:
+            type: "string"
+          type:
+            type: "string"
+          requiresRestart:
+            type: "boolean"
+          options:
+            type: "array"
+            items:
+              type: "string"
+            example: ["KISS"] 
+          disabledOptions:
+            type: "array"
+            items:
+              type: "string"
+            example: ["AGW"]            
+      
+  ConfConstraints:
+    type: "object"
+    properties:
+      Client:
+        $ref: "#/definitions/ClientConfObjectConstraints"
+      MissionControl:
+        $ref: "#/definitions/MCSConfObjectConstraints"
+      TNCInterface:
+        $ref: "#/definitions/TNCConfObjectConstraints"  
+    xml:
+      name: "ConfFull"    
+  ConfFull:
+    type: "object"
+    properties:
+      Client:
+        $ref: "#/definitions/ClientConfObjectFull"
+      MissionControl:
+        $ref: "#/definitions/MCSConfObjectFull"
+      TNCInterface:
+        $ref: "#/definitions/TNCConfObjectFull"  
+    xml:
+      name: "ConfFull"
+  Conf:
+    type: "object"
+    properties:
+      Client:
+        $ref: "#/definitions/ClientConfObject"
+      MissionControl:
+        $ref: "#/definitions/MCSConfObject"
+      TNCInterface:
+        $ref: "#/definitions/TNCConfObject"  
+    xml:
+      name: "Conf" 
+  Data:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          some-dats:
+            type: "string"
+            example: "datdatdat"
+      timestamp:
+        type: "string"
+    xml:
+      name: "Data"     

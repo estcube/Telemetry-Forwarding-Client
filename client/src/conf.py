@@ -5,23 +5,29 @@ import configparser
 CONSTRAINTS = {
     "Mission Control": {
         "relay-enabled": {
-            "type": "bool"
+            "type": "bool",
+            "label": "Relay enabled"
         },
         "mcs-relay-url": {
-            "type": "str"
+            "type": "str",
+            "label": "MCS relay URL"
         },
 
         "receiver-callsign": {
-            "type": "str"
+            "type": "str",
+            "label": "Receiver callsign"
         },
         "norad-id": {
-            "type": "int"
+            "type": "int",
+            "label": "Norad ID"
         },
         "longitude": {
-            "type": "int"
+            "type": "int",
+            "label": "Longitude"
         },
         "latitude": {
-            "type": "int"
+            "type": "int",
+            "label": "Latitude"
         }
     },
 
@@ -30,28 +36,34 @@ CONSTRAINTS = {
             "type": "select",
             "requiresRestart": True,
             "options": ["KISS"],
-            "disabledOptions": ["AGW"]
+            "disabledOptions": ["AGW"],
+            "label": "TNC protocol type"
         },
         "tnc-connection-type": {
             "type": "select",
             "requiresRestart": True,
-            "options": ["TCP/IP", "RS232"]
+            "options": ["TCP/IP", "RS232"],
+            "label": "TNC connection type"
         },
         "tnc-ip": {
             "type": "str",
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "TNC IP"
         },
         "tnc-device": {
             "type": "str",
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "TNC device"
         },
         "max-connection-attempts": {
             "type": "int",
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "Max connection attempts"
         },
         "connection-retry-time": {
             "type": "int",
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "Connection retry time"
         }
     },
 
@@ -59,18 +71,21 @@ CONSTRAINTS = {
         "database": {
             "type": "str",
             "description": "Path to the database file. Relative to executable file.",
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "Database path"
         },
         "static-files-path": {
             "type": "str",
             "description": "Path to the root directory of static frontend files",
             "debug": True,
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "Static files path"
         },
         "frontend-port": {
             "type": "int",
             "description": "Port that the frontend and api are served on.",
-            "requiresRestart": True
+            "requiresRestart": True,
+            "label": "Frontend port"
         }
     }
 }

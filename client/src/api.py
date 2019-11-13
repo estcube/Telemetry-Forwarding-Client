@@ -7,16 +7,31 @@ Does not include any authentication, so should not be open to the external netwo
 
 import os
 from datetime import datetime
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, send_from_directory
 from flask_cors import CORS
+from flask_swagger_ui import get_swaggerui_blueprint
 
 # from db_interface import TelemetryDB
 from conf import Configuration
+
 
 def create_app(config: Configuration, static_folder: str) -> Flask:
     """ Creates a flask app for the api. """
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
     CORS(app)
+
+    # swagger specific
+    swagger_url = "/apidocs"
+    api_url = "/static/swagger.yaml"
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        swagger_url,
+        api_url,
+        config={
+            "app_name": "Estcube 2 Telemetry API"
+        }
+    )
+    app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
+    # end swagger specific
 
     @app.route("/data", methods=["GET"])
     def getdata():
@@ -40,7 +55,6 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
         res = config.get_conf_with_constraints()
         return res
 
-
     @app.route("/", methods=["GET"])
     def get_index():
         return send_file(os.path.join(static_folder, "index.html"))
@@ -49,6 +63,10 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     def not_found(e):
         return send_file(os.path.join(static_folder, "index.html"))
 
+    @app.route('/static/<path:path>')
+    def send_static(path):
+        return send_from_directory('static', path)
+
     return app
 
 # # @app.route('/post', methods=['POST'])
@@ -56,6 +74,7 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
 # #     some_json = request.get_json("Data")
 # #     print(some_json)
 # #     return jsonify(some_json), 201
+
 
 if __name__ == '__main__':
     CONF_PATH = os.path.join(os.path.dirname(__file__), "../configuration.ini")
