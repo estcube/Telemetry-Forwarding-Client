@@ -1,6 +1,7 @@
 """Provides a class for configuration parsing and modifying"""
 
 import configparser
+from copy import deepcopy
 
 CONSTRAINTS = {
     "Mission Control": {
@@ -175,7 +176,7 @@ class Configuration(object):
         """
         Goes through the constraints and the values and returns a dictionary with constraints that have the value appended.
         """
-        constraints = self.get_constraints()
+        constraints = deepcopy(CONSTRAINTS)
         config = self.get_all_conf()
 
         for i in constraints:
