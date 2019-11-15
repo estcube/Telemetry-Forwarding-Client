@@ -3,11 +3,7 @@ info:
   description: "This is API description for Estcube 2 Telemetry client API. API is built using Flask and is not RESTful."
   version: "1.0.0"
   title: "Estcube 2 Telemetry API"
-  contact:
-    email: "a@b.com"
-  license:
-    name: "MIT"
-    url: "https://opensource.org/licenses/MIT"
+basePath: "/api"
 paths:
   /conf:
     post:

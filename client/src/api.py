@@ -21,8 +21,8 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     CORS(app)
 
     # swagger specific
-    swagger_url = "/apidocs"
-    api_url = "/static/swagger.yaml"
+    swagger_url = "/api/apidocs"
+    api_url = "/api/static/swagger.yaml"
     swaggerui_blueprint = get_swaggerui_blueprint(
         swagger_url,
         api_url,
@@ -33,24 +33,24 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
     # end swagger specific
 
-    @app.route("/data", methods=["GET"])
+    @app.route("/api/data", methods=["GET"])
     def getdata():
         """ Test function. """
         return jsonify({"timestamp": datetime.now(), "data": {"some dats": "dat"*3}})
 
-    @app.route("/conf", methods=["GET"])
+    @app.route("/api/conf", methods=["GET"])
     def getconf():
         """ Returns the whole current configuration object. """
         res = config.get_all_conf()
         return jsonify(res)
 
-    @app.route("/conf/constraints", methods=["GET"])
+    @app.route("/api/conf/constraints", methods=["GET"])
     def get_constraints():
         """ Returns all of the constraints for the configuration. """
         constrs = config.get_constraints()
         return jsonify(constrs)
 
-    @app.route("/conf/full", methods=["GET"])
+    @app.route("/api/conf/full", methods=["GET"])
     def get_full_conf():
         res = config.get_conf_with_constraints()
         return res
@@ -63,7 +63,7 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     def not_found(e):
         return send_file(os.path.join(static_folder, "index.html"))
 
-    @app.route('/static/<path:path>')
+    @app.route('/api/static/<path:path>')
     def send_static(path):
         return send_from_directory('static', path)
 
