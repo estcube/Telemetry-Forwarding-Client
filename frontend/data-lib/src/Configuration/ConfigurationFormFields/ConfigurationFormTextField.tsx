@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { TextField } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import ConfigurationFormPopover from './ConfigurationFormPopover';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -9,9 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '@media (min-width:1000px)': {
         float: 'left'
       }
-    },
-    container: {
-      padding: theme.spacing(4, 0, 8, 0)
     },
     textField: {
       marginLeft: theme.spacing(1),
@@ -38,19 +36,37 @@ const ConfigurationFormTextField = ({
   confElemType
 }: ConfigurationFormTextFieldProps) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
   return (
-    <TextField
-      type={confElemType === 'int' ? 'number' : 'text'}
-      id={confElemName}
-      required={confElemRequiresRestart}
-      data-testid="mcsRelayUrl"
-      label={confElemName}
-      className={classes.textField}
-      onChange={textChangeHandler}
-      helperText={`Enter ${confElemName}`}
-      margin="normal"
-      value={confElemValue}
-    />
+    <>
+      <TextField
+        type={confElemType === 'int' ? 'number' : 'text'}
+        id={confElemName}
+        required={confElemRequiresRestart}
+        label={confElemName}
+        className={classes.textField}
+        onChange={textChangeHandler}
+        margin="normal"
+        value={confElemValue}
+        onClick={handlePopoverClose}
+        onMouseEnter={handlePopoverOpen}
+        onMouseLeave={handlePopoverClose}
+        aria-haspopup="true"
+        aria-owns={open ? 'mouse-over-popover' : undefined}
+      />
+      <ConfigurationFormPopover requiresRestart={confElemRequiresRestart} anchorEl={anchorEl} />
+    </>
   );
 };
 
