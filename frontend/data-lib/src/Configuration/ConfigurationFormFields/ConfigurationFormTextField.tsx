@@ -5,17 +5,11 @@ import ConfigurationFormPopover from './ConfigurationFormPopover';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      textAlign: 'center',
-      '@media (min-width:1000px)': {
-        float: 'left'
-      }
-    },
     textField: {
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       width: '90%',
-      maxWidth: '400px'
+      maxWidth: '350px'
     }
   })
 );

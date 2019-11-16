@@ -47,6 +47,7 @@
         "leaflet": "^1.5.1",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
-        "react-leaflet": "^2.5.0"
+        "react-leaflet": "^2.5.0",
+        "@material-ui/icons": "^4.4.3"
     }
 }

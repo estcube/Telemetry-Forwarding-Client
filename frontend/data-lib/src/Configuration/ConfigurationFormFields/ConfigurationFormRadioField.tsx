@@ -5,18 +5,11 @@ import ConfigurationFormPopover from './ConfigurationFormPopover';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      textAlign: 'center',
-      '@media (min-width:1000px)': {
-        float: 'left'
-      }
-    },
     checkboxField: {
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       width: '90%',
-      maxWidth: '400px',
-      display: 'inline-block'
+      maxWidth: '350px'
     }
   })
 );
@@ -57,7 +50,7 @@ const ConfigurationFormRadioField = ({
             checked={!!confElemValue}
             id="relay-enabled"
             onChange={radioChangeHandler}
-            value={confElemValue}
+            value={!!confElemValue}
             color="primary"
             inputProps={{
               'aria-label': 'primary checkbox'
