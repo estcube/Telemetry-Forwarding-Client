@@ -93,13 +93,14 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
       const confElemType = confElemParams.type;
       const confElemValue = confElemParams.value ? confElemParams.value : '';
       const confElemRequiresRestart = !!confElemParams.requiresRestart;
+      const confElemLabel = confElemParams.label;
       if (confElemType === 'str' || confElemType === 'int') {
         return (
           <ConfigurationFormTextField
             confElemType={confElemType}
             textChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
             key={confElemName}
-            confElemName={confElemName}
+            confElemName={confElemLabel}
             confElemRequiresRestart={confElemRequiresRestart}
             confElemValue={confElemValue}
           />
@@ -110,7 +111,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
           <ConfigurationFormRadioField
             radioChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'radio')}
             key={confElemName}
-            confElemName={confElemName}
+            confElemName={confElemLabel}
             confElemRequiresRestart={confElemRequiresRestart}
             confElemValue={confElemValue}
           />
@@ -129,7 +130,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
             key={confElemName}
             confElemRequiresRestart={confElemRequiresRestart}
             confElemValue={confElemValue}
-            confElemName={confElemName}
+            confElemName={confElemLabel}
             confElemOptions={confElemOptionsObject}
             confElemDisabledOptions={confElemDisabledOptions}
           />
