@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import ConfigurationFormPopover from './ConfigurationFormPopover';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,38 +29,31 @@ const ConfigurationFormTextField = ({
   confElemType
 }: ConfigurationFormTextFieldProps) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setAnchorEl(event.currentTarget);
+  const renderField = (isRecursive: boolean) => {
+    const popoverMessage = 'Client needs to be restarted if this parameter is changed';
+    if (!confElemRequiresRestart || isRecursive) {
+      return (
+        <TextField
+          type={confElemType === 'int' ? 'number' : 'text'}
+          id={confElemName}
+          required={confElemRequiresRestart}
+          label={confElemName}
+          className={classes.textField}
+          onChange={textChangeHandler}
+          margin="normal"
+          value={confElemValue}
+        />
+      );
+    }
+    return (
+      <Tooltip placement="top-start" title={popoverMessage}>
+        {renderField(true)}
+      </Tooltip>
+    );
   };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-
-  return (
-    <>
-      <TextField
-        type={confElemType === 'int' ? 'number' : 'text'}
-        id={confElemName}
-        required={confElemRequiresRestart}
-        label={confElemName}
-        className={classes.textField}
-        onChange={textChangeHandler}
-        margin="normal"
-        value={confElemValue}
-        onClick={handlePopoverClose}
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-        aria-haspopup="true"
-        aria-owns={open ? 'mouse-over-popover' : undefined}
-      />
-      <ConfigurationFormPopover requiresRestart={confElemRequiresRestart} anchorEl={anchorEl} />
-    </>
-  );
+  return <>{renderField(false)}</>;
 };
 
 export default ConfigurationFormTextField;

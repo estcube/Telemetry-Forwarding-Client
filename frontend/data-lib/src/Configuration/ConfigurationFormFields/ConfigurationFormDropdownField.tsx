@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { MenuItem, TextField } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { MenuItem, TextField, Tooltip } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import ConfigurationFormPopover from './ConfigurationFormPopover';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,49 +32,51 @@ const ConfigurationFormDropdownField = ({
   confElemName,
   confElemOptions,
   dropdownChangeHandler,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confElemDisabledOptions
 }: ConfigurationFormDropdownFieldProps) => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-
-  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-
   const classes = useStyles();
-  return (
-    <>
-      <TextField
-        required={confElemRequiresRestart}
-        id={confElemName}
-        select
-        label={confElemName}
-        className={classes.textField}
-        SelectProps={{ MenuProps: { className: classes.menu } }}
-        onChange={dropdownChangeHandler}
-        margin="normal"
-        value={confElemValue}
-        onClick={handlePopoverClose}
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-        aria-haspopup="true"
-        aria-owns={open ? 'mouse-over-popover' : undefined}
-      >
-        {confElemOptions.map((option: any) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
-      <ConfigurationFormPopover requiresRestart={confElemRequiresRestart} anchorEl={anchorEl} />
-    </>
-  );
+
+  const renderField = (isRecursive: boolean) => {
+    const popoverMessage = 'Client needs to be restarted if this parameter is changed';
+    if (!confElemRequiresRestart || isRecursive) {
+      return (
+        <TextField
+          required={confElemRequiresRestart}
+          id={confElemName}
+          select
+          label={confElemName}
+          className={classes.textField}
+          SelectProps={{ MenuProps: { className: classes.menu } }}
+          onChange={dropdownChangeHandler}
+          margin="normal"
+          value={confElemValue}
+        >
+          {confElemOptions.map((option: any) => (
+            <MenuItem key={option.value} value={option.value} disabled={confElemDisabledOptions.includes(option.value)}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      );
+    }
+    return (
+      <Tooltip placement="top-start" title={popoverMessage}>
+        {renderField(true)}
+      </Tooltip>
+    );
+  };
+
+  return <>{renderField(false)}</>;
+};
+
+ConfigurationFormDropdownField.propTypes = {
+  confElemDisabledOptions: PropTypes.arrayOf(PropTypes.string),
+  confElemOptions: PropTypes.arrayOf(PropTypes.object)
+};
+
+ConfigurationFormDropdownField.defaultProps = {
+  confElemDisabledOptions: [],
+  confElemOptions: []
 };
 
 export default ConfigurationFormDropdownField;
