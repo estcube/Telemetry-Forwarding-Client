@@ -7,7 +7,7 @@ Does not include any authentication, so should not be open to the external netwo
 
 import os
 from datetime import datetime
-from flask import Flask, jsonify, send_file, send_from_directory
+from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -67,7 +67,18 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     def send_static(path):
         return send_from_directory('static', path)
 
+    @app.route('/api/conf', methods=["POST"])
+    def set_conf():
+        some_json = request.get_json()
+        for i in some_json:
+            for j in some_json[i]:
+                config.set_conf(section=i, element=j, value=some_json[i][j])
+
+        return jsonify(some_json), 200
+
     return app
+
+
 
 # # @app.route('/post', methods=['POST'])
 # # def addConf():
