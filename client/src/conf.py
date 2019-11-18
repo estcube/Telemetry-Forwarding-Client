@@ -23,11 +23,11 @@ CONSTRAINTS = {
             "label": "Norad ID"
         },
         "longitude": {
-            "type": "int",
+            "type": "float",
             "label": "Longitude"
         },
         "latitude": {
-            "type": "int",
+            "type": "float",
             "label": "Latitude"
         }
     },
@@ -153,6 +153,9 @@ class Configuration(object):
         elif constr["type"] == "int":
             if not isinstance(value, int):
                 value = int(value)
+        elif constr["type"] == "float":
+            if not isinstance(value, float):
+                value = float(value)
         elif constr["type"] == "bool":
             if not isinstance(value, bool):
                 if value.lower() == "true":
