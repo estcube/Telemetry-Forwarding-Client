@@ -185,7 +185,7 @@ class Configuration(object):
         for i in constraints:
             for j in constraints[i]:
                 val = None
-                if i in config and j in config[i] and config[i][j].strip() != "":
+                if i in config and j in config[i]:
                     val = (config[i][j])
                 constraints[i][j].update({"value": val})
 
