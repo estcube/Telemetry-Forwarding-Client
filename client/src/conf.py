@@ -59,12 +59,14 @@ CONSTRAINTS = {
         "max-connection-attempts": {
             "type": "int",
             "requiresRestart": True,
-            "label": "Max connection attempts"
+            "label": "Max connection attempts",
+            "hidden": True
         },
         "connection-retry-time": {
             "type": "int",
             "requiresRestart": True,
-            "label": "Connection retry time"
+            "label": "Connection retry time",
+            "hidden": True
         }
     },
 
@@ -73,14 +75,16 @@ CONSTRAINTS = {
             "type": "str",
             "description": "Path to the database file. Relative to executable file.",
             "requiresRestart": True,
-            "label": "Database path"
+            "label": "Database path",
+            "hidden": True
         },
         "static-files-path": {
             "type": "str",
             "description": "Path to the root directory of static frontend files",
             "debug": True,
             "requiresRestart": True,
-            "label": "Static files path"
+            "label": "Static files path",
+            "hidden": True
         },
         "frontend-port": {
             "type": "int",
