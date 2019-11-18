@@ -64,11 +64,11 @@ class FrameBuilder(object):
 
 def main():
     b = FrameBuilder()
-    # b.setDest("TELEM")
-    # b.setSource("ESTCUB")
-    # b.setInfo("Telemetry Data 509")
+    b.setDest("TELEM")
+    b.setSource("ESTCUB")
+    b.setInfo("Telemetry Data 509")
     a = b.build()
-    print(a.hex())
+    print(a)
 
 if __name__ == "__main__":
     main()
