@@ -26,6 +26,16 @@ type ConfigurationFormDropdownFieldProps = {
   dropdownChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+/**
+ * Dropdown field for configuration form
+ * @param confElemRequiresRestart boolean
+ * @param confElemValue string
+ * @param confElemName  string
+ * @param confElemOptions array of objects
+ * @param dropdownChangeHandler callback function
+ * @param confElemDisabledOptions array
+ * @constructor
+ */
 const ConfigurationFormDropdownField = ({
   confElemRequiresRestart,
   confElemValue,

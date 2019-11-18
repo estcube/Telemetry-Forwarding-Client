@@ -20,7 +20,15 @@ type ConfigurationFormTextFieldProps = {
   confElemType: string;
   textChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
-
+/**
+ * Text field for configuration form
+ * @param confElemRequiresRestart boolean
+ * @param confElemValue string
+ * @param confElemName string
+ * @param textChangeHandler callback function
+ * @param confElemType  string
+ * @constructor
+ */
 const ConfigurationFormTextField = ({
   confElemRequiresRestart,
   confElemValue,
@@ -35,7 +43,7 @@ const ConfigurationFormTextField = ({
     if (!confElemRequiresRestart || isRecursive) {
       return (
         <TextField
-          type={confElemType === 'int' ? 'number' : 'text'}
+          type={confElemType === 'int' || confElemType === 'float' ? 'number' : 'text'}
           id={confElemName}
           required={confElemRequiresRestart}
           label={confElemName}

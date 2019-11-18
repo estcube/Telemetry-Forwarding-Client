@@ -1,18 +1,20 @@
 import * as React from 'react';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
   Paper,
   WithStyles,
   Typography,
   ExpansionPanel,
   ExpansionPanelDetails,
-  ExpansionPanelSummary
+  ExpansionPanelSummary,
+  Button,
+  CircularProgress
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import ConfigurationFormTextField from './ConfigurationFormFields/ConfigurationFormTextField';
 import ConfigurationFormRadioField from './ConfigurationFormFields/ConfigurationFormRadioField';
 import ConfigurationFormDropdownField from './ConfigurationFormFields/ConfigurationFormDropdownField';
+import ConfigurationSnackbar from './ConfigurationSnackbarComponents/ConfigurationSnackbar';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -32,11 +34,17 @@ const styles = (theme: Theme) =>
     paperSlave: {
       margin: theme.spacing(0, 2),
       display: 'inherit'
+    },
+    button: {
+      margin: theme.spacing(1)
     }
   });
 
 interface ConfigurationProps extends WithStyles<typeof styles> {
   confValues: { [key: string]: { [key: string]: any } };
+  handleConfPost: (event: React.MouseEvent<HTMLButtonElement>, data: { [key: string]: { [key: string]: any } }) => void;
+  dataPosted: true | false | null;
+  confPostLoading: true | false;
 }
 
 type ConfigurationState = {
@@ -54,12 +62,14 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
 
   componentDidMount(): void {
     const { confValues } = this.props;
-    this.setState({ confValues });
+    this.setState({
+      confValues
+    });
   }
 
   handleFormChange(event: any, confElemName: string, sectionName: string, inputType: string) {
     const { confValues } = this.state;
-    const copyOfConfValues = confValues;
+    const copyOfConfValues = JSON.parse(JSON.stringify(confValues));
     if (inputType === 'text') {
       copyOfConfValues[sectionName][confElemName].value = event.target.value;
     } else if (inputType === 'radio') {
@@ -94,54 +104,90 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
       const confElemValue = confElemParams.value ? confElemParams.value : '';
       const confElemRequiresRestart = !!confElemParams.requiresRestart;
       const confElemLabel = confElemParams.label;
-      if (confElemType === 'str' || confElemType === 'int') {
-        return (
-          <ConfigurationFormTextField
-            confElemType={confElemType}
-            textChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
-            key={confElemName}
-            confElemName={confElemLabel}
-            confElemRequiresRestart={confElemRequiresRestart}
-            confElemValue={confElemValue}
-          />
-        );
-      }
-      if (confElemType === 'bool') {
-        return (
-          <ConfigurationFormRadioField
-            radioChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'radio')}
-            key={confElemName}
-            confElemName={confElemLabel}
-            confElemRequiresRestart={confElemRequiresRestart}
-            confElemValue={confElemValue}
-          />
-        );
-      }
-      if (confElemType === 'select') {
-        const confElemOptions = confElemParams.options;
-        const confElemDisabledOptions = confElemParams.disabledOptions ? confElemParams.disabledOptions : [];
-        const allConfElemOptions = confElemOptions.concat(confElemDisabledOptions);
-        const confElemOptionsObject = allConfElemOptions.map((elem: string) => {
-          return { label: elem, value: elem };
-        });
-        return (
-          <ConfigurationFormDropdownField
-            dropdownChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
-            key={confElemName}
-            confElemRequiresRestart={confElemRequiresRestart}
-            confElemValue={confElemValue}
-            confElemName={confElemLabel}
-            confElemOptions={confElemOptionsObject}
-            confElemDisabledOptions={confElemDisabledOptions}
-          />
-        );
+      const confElemIsHidden = confElemParams.hidden;
+      if (!confElemIsHidden) {
+        if (confElemType === 'str' || confElemType === 'int' || confElemType === 'float') {
+          return (
+            <ConfigurationFormTextField
+              confElemType={confElemType}
+              textChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
+              key={confElemName}
+              confElemName={confElemLabel}
+              confElemRequiresRestart={confElemRequiresRestart}
+              confElemValue={confElemValue}
+            />
+          );
+        }
+        if (confElemType === 'bool') {
+          return (
+            <ConfigurationFormRadioField
+              radioChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'radio')}
+              key={confElemName}
+              confElemName={confElemLabel}
+              confElemRequiresRestart={confElemRequiresRestart}
+              confElemValue={confElemValue}
+            />
+          );
+        }
+        if (confElemType === 'select') {
+          const confElemOptions = confElemParams.options;
+          const confElemDisabledOptions = confElemParams.disabledOptions ? confElemParams.disabledOptions : [];
+          const allConfElemOptions = confElemOptions.concat(confElemDisabledOptions);
+          const confElemOptionsObject = allConfElemOptions.map((elem: string) => {
+            return { label: elem, value: elem };
+          });
+          return (
+            <ConfigurationFormDropdownField
+              dropdownChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
+              key={confElemName}
+              confElemRequiresRestart={confElemRequiresRestart}
+              confElemValue={confElemValue}
+              confElemName={confElemLabel}
+              confElemOptions={confElemOptionsObject}
+              confElemDisabledOptions={confElemDisabledOptions}
+            />
+          );
+        }
       }
       return <div key={confElemName} />;
     });
   }
 
+  renderSnackbar = () => {
+    const { confPostLoading } = this.props;
+    const { dataPosted } = this.props;
+    if (dataPosted !== null && !confPostLoading) {
+      if (dataPosted) {
+        return <ConfigurationSnackbar type="success" />;
+      }
+      return <ConfigurationSnackbar type="error" />;
+    }
+    return <></>;
+  };
+
+  renderUpdateButton = () => {
+    const { confPostLoading, classes, handleConfPost } = this.props;
+    const { confValues } = this.state;
+    if (!confPostLoading) {
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          onClick={event => {
+            handleConfPost(event, confValues);
+          }}
+        >
+          Update configuration
+        </Button>
+      );
+    }
+    return <CircularProgress data-testid="confDiv" />;
+  };
+
   render() {
     const { classes } = this.props;
+
     return (
       <div className="conf-form" data-testid="conf-form">
         <div className={classes.root}>
@@ -149,7 +195,9 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
             <Typography variant="h4" className={classes.text}>
               Configuration
             </Typography>
-            <div className={classes.paperSlave}>{this.renderFormSections()}</div>
+            <form className={classes.paperSlave}>{this.renderFormSections()}</form>
+            {this.renderUpdateButton()}
+            {this.renderSnackbar()}
           </Paper>
         </div>
       </div>

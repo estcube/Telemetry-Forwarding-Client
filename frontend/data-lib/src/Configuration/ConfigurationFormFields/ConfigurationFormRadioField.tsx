@@ -20,6 +20,14 @@ type ConfigurationFormRadioField = {
   radioChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+/**
+ * Radio button for configuration form
+ * @param confElemRequiresRestart boolean
+ * @param confElemValue boolean
+ * @param confElemName  string
+ * @param radioChangeHandler  callback function
+ * @constructor
+ */
 const ConfigurationFormRadioField = ({
   confElemRequiresRestart,
   confElemValue,
