@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type ConfigurationFormRadioField = {
   confElemRequiresRestart: boolean;
-  confElemValue: string;
+  confElemValue: boolean;
   confElemName: string;
   radioChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
@@ -35,7 +35,6 @@ const ConfigurationFormRadioField = ({
   radioChangeHandler
 }: ConfigurationFormRadioField) => {
   const classes = useStyles();
-
   const renderField = (isRecursive: boolean) => {
     const popoverMessage = 'Client needs to be restarted if this parameter is changed';
     if (!confElemRequiresRestart || isRecursive) {
@@ -45,10 +44,10 @@ const ConfigurationFormRadioField = ({
           control={
             <Checkbox
               required={confElemRequiresRestart}
-              checked={!!confElemValue}
+              checked={confElemValue}
               id="relay-enabled"
               onChange={radioChangeHandler}
-              value={!!confElemValue}
+              value={confElemValue}
               color="primary"
               inputProps={{
                 'aria-label': 'primary checkbox'

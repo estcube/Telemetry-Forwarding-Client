@@ -73,7 +73,11 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
     if (inputType === 'text') {
       copyOfConfValues[sectionName][confElemName].value = event.target.value;
     } else if (inputType === 'radio') {
-      copyOfConfValues[sectionName][confElemName].value = event.target.checked;
+      if (event.target.checked) {
+        copyOfConfValues[sectionName][confElemName].value = 'True';
+      } else {
+        copyOfConfValues[sectionName][confElemName].value = 'False';
+      }
     }
     this.setState({ confValues: copyOfConfValues });
   }
@@ -119,13 +123,17 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
           );
         }
         if (confElemType === 'bool') {
+          let value = false;
+          if (confElemValue === 'True' || confElemValue === true) {
+            value = true;
+          }
           return (
             <ConfigurationFormRadioField
               radioChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'radio')}
               key={confElemName}
               confElemName={confElemLabel}
               confElemRequiresRestart={confElemRequiresRestart}
-              confElemValue={confElemValue}
+              confElemValue={value}
             />
           );
         }

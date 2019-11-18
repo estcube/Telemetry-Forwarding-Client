@@ -33,6 +33,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationFormState> {
         return response.json();
       })
       .then(responseJson => {
+        console.log(responseJson['Mission Control']['relay-enabled']);
         this.setState({ confValues: responseJson });
       })
       .catch(() => this.setState({ dataFetchErrored: true }))
