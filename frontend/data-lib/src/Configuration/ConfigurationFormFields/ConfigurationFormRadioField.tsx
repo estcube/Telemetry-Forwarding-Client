@@ -1,15 +1,10 @@
 import * as React from 'react';
 import { Checkbox, FormControlLabel, Tooltip } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
-    checkboxField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: '90%',
-      maxWidth: '350px'
-    }
+    checkboxField: {}
   })
 );
 

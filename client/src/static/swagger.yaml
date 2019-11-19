@@ -9,7 +9,7 @@ paths:
     post:
       tags:
       - "conf"
-      summary: "Updates configuration. Not yet available, format will change!"
+      summary: "Updates configuration."
       description: "Updates configuration in client."
       operationId: "updateConf"
       consumes:
