@@ -22,14 +22,12 @@ paths:
         description: "Configuration object which will update clients configuration"
         required: true
         schema:
-          $ref: "#/definitions/ConfFull"
+          $ref: "#/definitions/ConfPost"
       responses:
         200:
           description: "successful operation"
         400:
           description: "error"
-      deprecated:
-        true
     get:
       tags:
       - "conf"
@@ -482,16 +480,22 @@ definitions:
             type: "array"
             items:
               type: "string"
-            example: ["AGW"]            
-      
+            example: ["AGW"]
+  PostBody:
+    type: "object"
+    properties:
+      "param name1":
+        example: "param value 1"
+      "param name2":
+        example: "param value 2"
   ConfConstraints:
     type: "object"
     properties:
       Client:
         $ref: "#/definitions/ClientConfObjectConstraints"
-      MissionControl:
+      "Mission Control":
         $ref: "#/definitions/MCSConfObjectConstraints"
-      TNCInterface:
+      "TNC Interface":
         $ref: "#/definitions/TNCConfObjectConstraints"  
     xml:
       name: "ConfFull"    
@@ -500,9 +504,9 @@ definitions:
     properties:
       Client:
         $ref: "#/definitions/ClientConfObjectFull"
-      MissionControl:
+      "Mission Control":
         $ref: "#/definitions/MCSConfObjectFull"
-      TNCInterface:
+      "TNC Interface":
         $ref: "#/definitions/TNCConfObjectFull"  
     xml:
       name: "ConfFull"
@@ -511,12 +515,21 @@ definitions:
     properties:
       Client:
         $ref: "#/definitions/ClientConfObject"
-      MissionControl:
+      "Mission Control":
         $ref: "#/definitions/MCSConfObject"
-      TNCInterface:
+      "TNC Interface":
         $ref: "#/definitions/TNCConfObject"  
     xml:
-      name: "Conf" 
+      name: "Conf"
+  ConfPost:
+    type: "object"
+    properties:
+      Client:
+        $ref: "#/definitions/PostBody"
+      "Mission Control":
+        $ref: "#/definitions/PostBody"
+      "TNC Interface":
+        $ref: "#/definitions/PostBody"
   Data:
     type: "object"
     properties:
