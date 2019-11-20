@@ -5,7 +5,7 @@
 The AX.25 frame payload structure is to be described in a [Kaitai](https://kaitai.io/) structure file.
 This configuration will specify, how the payload blob is broken down into different pieces.
 
-Example: [# TODO]()
+Example: [/client/spec/icp.ksy](../client/spec/icp.ksy)
 
 ## Telemetry fields
 
@@ -35,7 +35,7 @@ The configuration structure will be as follows:
 ```
 
 The IDs, represent paths delimited by dots (`.`) that are used for traversing the object graph defined
-by the [AX.25 Payload Configuration # TODO](). The `prefix` id represents the point in the object graph
+by the [AX.25 Payload Configuration](#ax25-payload-structure). The `prefix` id represents the point in the object graph
 which holds the telemetry data. Every member field of the object at the prefix path (nested fields
 are supported) is persisted into the database.
 
@@ -46,7 +46,7 @@ timestamp field which describes the time the packet was sent out from the source
 Other fields will define their type, unit and label, which will be used for displaying them to the
 user.
 
-Example: [# TODO]()
+Example: [/client/spec/telemetry.json](../client/spec/telemetry.json)
 
 ### Configuring frontend graphs
 
