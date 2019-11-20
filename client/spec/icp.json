@@ -1,0 +1,82 @@
+{
+  "prefix": "data.payload",
+  "fields": [
+    {
+      "id": "timestamp",
+      "type": "unix_timestamp",
+      "isMsgTimestamp": true
+    },
+    {
+      "id": "main_bus_volt",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Main bus voltage"
+    },
+    {
+      "id": "avg_power_balance",
+      "type": "int",
+      "unit": "Watts",
+      "label": "Average power balance"
+    },
+    {
+      "id": "bat_a_volt",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery A voltage"
+    },
+    {
+      "id": "bat_b_volt",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery B voltage"
+    },
+    {
+      "id": "bat_c_volt",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery C voltage"
+    },
+    {
+      "id": "bat_d_volt",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery D voltage"
+    },
+    {
+      "id": "bat_a_temp",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery A Temperature"
+    },
+    {
+      "id": "bat_b_temp",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery B Temperature"
+    },
+    {
+      "id": "bat_c_temp",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery C Temperature"
+    },
+    {
+      "id": "bat_d_temp",
+      "type": "int",
+      "unit": "Volts",
+      "label": "Battery D Temperature"
+    }
+  ],
+  "graphs": [
+    {
+      "xAxis": "timestamp",
+      "yAxis": ["bat_a_volt", "bat_b_volt", "bat_c_volt", "bat_d_volt"],
+      "title": "Battery voltages"
+    },
+    {
+      "xAxis": "timestamp",
+      "yAxis": ["bat_a_temp", "bat_b_temp", "bat_c_temp", "bat_d_temp"],
+      "title": "Battery temperatures"
+    }
+  ]
+}
