@@ -61,7 +61,13 @@ class TelemetryListener():
         After processing, calls the database repository function to add the data to the database.
         """
 
-        icp = Icp.from_bytes(ax_frame.info)
+        icp = None
+        try:
+            icp = Icp.from_bytes(ax_frame.info)
+        except ValueError as error:
+            self._logger.debug(error)
+            self._logger.info("Failed to parse payload.")
+            return
 
         self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.data.mode)
         self._logger.debug("Payload: %s", icp.data.payload)
