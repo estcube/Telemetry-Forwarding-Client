@@ -65,8 +65,9 @@ class FrameBuilder(object):
 def main():
     b = FrameBuilder()
     b.setDest("TELEM")
-    b.setSource("ESTCUB")
-    b.setInfo("Telemetry Data 509")
+    b.setSource("ES5EC")
+    # b.setInfo("Telemetry Data 509")
+    b.setInfo(b'\x04\x01\x1a\xf7\xab\xca\xbc\x00N]\xce\xe4\xf7\xbb\xcc\xdd\xee\xff\xbb\xaa\xbb\xaa\xbb\xaa\xbb\xac\xab\xac\xab\xac\xab\xaa\xbb\xaa\x8d\xc1')
     a = b.build()
     print(a)
 

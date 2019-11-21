@@ -8,20 +8,31 @@ from db_interface import TelemetryDB
 from icp import Icp
 
 class TelemetryFrame():
+    """ Data structure for the output of the telemetry listener that is sent to the repository. """
+
     def __init__(self, packet_timestamp: datetime, recv_timestamp: datetime, fields):
         self.timestamp = packet_timestamp
         self.recv_timestamp = recv_timestamp
         self.fields = fields
 
 class TimestampType(Enum):
+    """ Enum of the supported timestamp types. """
     unix = 'unix_timestamp'
 
 class TelemetryListener():
+    """
+    The listener class for telemetry.
+
+    Uses a json configuration file and the compiled kaitai structure to parse the telemetry data
+    from an arbitrary input byte array.
+
+    For more information read the specification at: /doc/data_conf_spec.md
+    """
 
     _logger = logging.getLogger(__name__)
 
     def __init__(self, conf: str, db: TelemetryDB):
-        self.db = db
+        self.database = db
         self.conf = json.loads(conf)
         if "prefix" not in self.conf:
             raise ValueError("The configuration does not include the 'prefix' field")
@@ -43,8 +54,14 @@ class TelemetryListener():
         if self.msg_ts_id is None or self.msg_ts_type is None:
             raise ValueError("The id of the message timestamp field is not defined.")
 
-    def receive(self, ax: AXFrame):
-        icp = Icp.from_bytes(ax.info)
+    def receive(self, ax_frame: AXFrame):
+        """
+        Main function that receives an AXFrame and processes its payload.
+
+        After processing, calls the database repository function to add the data to the database.
+        """
+
+        icp = Icp.from_bytes(ax_frame.info)
 
         self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.data.mode)
         self._logger.debug("Payload: %s", icp.data.payload)
@@ -58,8 +75,8 @@ class TelemetryListener():
             obj = getattr(obj, prefix_part)
 
         fields = []
-        timestamp = self.extractFields(obj, [], fields, self.msg_ts_id)
-        if timestamp == None:
+        timestamp = self.extract_fields(obj, [], fields, self.msg_ts_id)
+        if timestamp is None:
             self._logger.debug("Didn't find the configured msg timestamp from the fields")
 
         ts_datetime = None
@@ -67,11 +84,18 @@ class TelemetryListener():
         if self.msg_ts_type == TimestampType.unix:
             ts_datetime = datetime.fromtimestamp(timestamp)
 
-        self.db.add_telemetry_frame(TelemetryFrame(ts_datetime, ax.recv_time, fields))
-
         # TODO: CRC control
 
-    def extractFields(self, obj, name_stack, fields, msg_ts_id):
+        self.database.add_telemetry_frame(TelemetryFrame(ts_datetime, ax_frame.recv_time, fields))
+
+
+    def extract_fields(self, obj, name_stack, fields, msg_ts_id):
+        """
+        Extracts all the fields from an arbitrary (possibly nested) struct object into an array.
+
+        Uses dot as a delimeter when joining the field names.
+        """
+
         timestamp = None
         for name in dir(obj):
             if name[:1] == "_":
@@ -82,5 +106,6 @@ class TelemetryListener():
                     timestamp = value
                 fields.append((".".join(name_stack + [name]), value))
             else:
-                timestamp = timestamp or self.extractFields(value, name_stack + [name], fields, msg_ts_id)
+                timestamp = timestamp or self.extract_fields(
+                    value, name_stack + [name], fields, msg_ts_id)
         return timestamp

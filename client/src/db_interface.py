@@ -63,10 +63,13 @@ class TelemetryDB():
         conn.close()
 
     def add_telemetry_frame(self, frame: TelemetryFrame):
+        """
+        Adds the telemetry data into the database.
+        """
         conn = apsw.Connection(self.conn_str)
         cur = conn.cursor()
 
-        cur.setexectrace(self.mytrace)
+        cur.setexectrace(self.my_trace)
 
         try:
             cur.execute("""begin;
@@ -83,7 +86,7 @@ class TelemetryDB():
         finally:
             conn.close()
 
-    def mytrace(self, cursor, statement, bindings):
+    def my_trace(self, cursor, statement, bindings):
         """ Debug trace function for the cursors. Called just before executing each statement """
         print ("SQL:",statement)
         if bindings:

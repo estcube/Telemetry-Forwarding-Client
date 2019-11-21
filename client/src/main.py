@@ -10,6 +10,7 @@ import kiss
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
 from db_interface import TelemetryDB
+from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
 import api
 
@@ -49,13 +50,19 @@ def main(argv):
 
     conf = Configuration(conf_path)
 
-    # Build the components.
-    ax_listener = AXListener()
-    sids_relay = SIDSRelay(conf)
-
     db_loc = os.path.join(os.path.dirname(__file__), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
     database.init_db()
+
+    f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
+            encoding="utf-8")
+    telemetry_conf = f.read()
+    f.close()
+
+    # Build the components.
+    ax_listener = AXListener()
+    sids_relay = SIDSRelay(conf)
+    telemetry_listener = TelemetryListener(telemetry_conf, database)
 
     # Create the flask app and start it in a forked process.
     # app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
@@ -80,6 +87,7 @@ def main(argv):
         # ax_listener.add_callback(print_frame)
         ax_listener.add_callback(database.insert_ax_frame)
         ax_listener.add_callback(sids_relay.relay)
+        ax_listener.add_callback(telemetry_listener.receive)
 
         k = kiss.TCPKISS(
             conf.get_conf("TNC interface", "tnc-ip"),
