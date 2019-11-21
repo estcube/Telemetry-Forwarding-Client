@@ -5,6 +5,8 @@ from __future__ import annotations
 
 # import sqlite3
 import logging
+from datetime import datetime
+from collections import defaultdict
 import apsw
 from typing import TYPE_CHECKING
 from ax_listener import AXFrame
@@ -69,7 +71,7 @@ class TelemetryDB():
         conn = apsw.Connection(self.conn_str)
         cur = conn.cursor()
 
-        cur.setexectrace(self.my_trace)
+        # cur.setexectrace(self.my_trace)
 
         try:
             cur.execute("""begin;
@@ -85,6 +87,37 @@ class TelemetryDB():
             raise exception
         finally:
             conn.close()
+
+    def get_telemetry_data(self, from_ts: datetime = None, to_ts: datetime = None,
+                           from_id: int = None):
+        query = """select id, packet_timestamp, receive_timestamp, field_name, value
+            from telemetry_packet inner join telemetry_field on packet_id = id
+            where 1=1 """
+        params = {}
+        if from_ts is not None:
+            query += "and packet_timestamp >= :from_ts "
+            params["from_ts"] = from_ts.isoformat()
+        if to_ts is not None:
+            query += "and packet_timestamp >= :to_ts "
+            params["to_ts"] = to_ts.isoformat()
+        if from_id is not None:
+            query += "and id > :from_id "
+            params["from_id"] = from_id
+        query += ";"
+
+        results = {}
+
+        conn = apsw.Connection(self.conn_str)
+        cur = conn.cursor()
+
+        for ident, packet_ts, recv_ts, f_name, f_val in cur.execute(query, params):
+            if ident not in results:
+                results[ident] = {"id": ident, "packet_timestamp": packet_ts,
+                        "receive_timestamp": recv_ts, "fields": {}}
+            field = results[ident]["fields"]
+            field[f_name] = f_val
+
+        return list(results.values())
 
     def my_trace(self, cursor, statement, bindings):
         """ Debug trace function for the cursors. Called just before executing each statement """

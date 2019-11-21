@@ -44,9 +44,9 @@ def main(argv):
             verbose = True
 
 
-    if conf_path == None:
+    if conf_path == None: # Default conf path
         conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
-    _logger.info("Configuration path: %s", conf_path)
+    _logger.info("Using configuration from: %s", conf_path)
 
     conf = Configuration(conf_path)
 

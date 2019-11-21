@@ -35,6 +35,8 @@ connection-retry-time=5
 database=../telemetry.db
 # Path to the folder containing the static frontend files. Relative to the executable.
 static-files-path=../static
+# Path to the file that specified the telemetry data fields.
+telemetry-configuration=../spec/telemetry.json
 # Localhost port to serve the frontend on.
 # Defaults to port 5000
 frontend-port=5000

@@ -6,10 +6,12 @@ Does not include any authentication, so should not be open to the external netwo
 """
 
 import os
+import json
 from datetime import datetime
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
+from db_interface import TelemetryDB
 
 # from db_interface import TelemetryDB
 from conf import Configuration
@@ -17,6 +19,10 @@ from conf import Configuration
 
 def create_app(config: Configuration, static_folder: str) -> Flask:
     """ Creates a flask app for the api. """
+
+    db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
+    database = TelemetryDB(db_loc)
+
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
     CORS(app)
 
@@ -32,6 +38,19 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     )
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
     # end swagger specific
+
+    @app.route("/api/telemetry/packets", methods=["GET"])
+    def get_packets():
+        return {"packets": database.get_telemetry_data()}
+
+    @app.route("/api/telemetry/configuration")
+    def get_telemetry_configuration():
+        path = os.path.join(os.path.dirname(__file__),
+                config.get_conf("Client", "telemetry-configuration"))
+        file = open(path, "r", encoding="utf-8")
+        tel_conf = file.read()
+        file.close()
+        return json.loads(tel_conf)
 
     @app.route("/api/data", methods=["GET"])
     def getdata():
