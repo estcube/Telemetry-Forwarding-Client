@@ -592,9 +592,6 @@ definitions:
             items:
               type: "string"
             example: ["AGW"]
-<<<<<<< HEAD
-
-=======
   PostBody:
     type: "object"
     properties:
@@ -602,7 +599,6 @@ definitions:
         example: "param value 1"
       "param name2":
         example: "param value 2"
->>>>>>> master
   ConfConstraints:
     type: "object"
     properties:
@@ -610,13 +606,8 @@ definitions:
         $ref: "#/definitions/ClientConfObjectConstraints"
       "Mission Control":
         $ref: "#/definitions/MCSConfObjectConstraints"
-<<<<<<< HEAD
-      TNCInterface:
-        $ref: "#/definitions/TNCConfObjectConstraints"
-=======
       "TNC Interface":
-        $ref: "#/definitions/TNCConfObjectConstraints"  
->>>>>>> master
+        $ref: "#/definitions/TNCConfObjectConstraints"
     xml:
       name: "ConfFull"
   ConfFull:
@@ -626,13 +617,8 @@ definitions:
         $ref: "#/definitions/ClientConfObjectFull"
       "Mission Control":
         $ref: "#/definitions/MCSConfObjectFull"
-<<<<<<< HEAD
-      TNCInterface:
-        $ref: "#/definitions/TNCConfObjectFull"
-=======
       "TNC Interface":
-        $ref: "#/definitions/TNCConfObjectFull"  
->>>>>>> master
+        $ref: "#/definitions/TNCConfObjectFull"
     xml:
       name: "ConfFull"
   Conf:
@@ -642,14 +628,8 @@ definitions:
         $ref: "#/definitions/ClientConfObject"
       "Mission Control":
         $ref: "#/definitions/MCSConfObject"
-<<<<<<< HEAD
-      TNCInterface:
-        $ref: "#/definitions/TNCConfObject"
-    xml:
-      name: "Conf"
-=======
       "TNC Interface":
-        $ref: "#/definitions/TNCConfObject"  
+        $ref: "#/definitions/TNCConfObject"
     xml:
       name: "Conf"
   ConfPost:
@@ -661,7 +641,6 @@ definitions:
         $ref: "#/definitions/PostBody"
       "TNC Interface":
         $ref: "#/definitions/PostBody"
->>>>>>> master
   Data:
     type: "object"
     properties:

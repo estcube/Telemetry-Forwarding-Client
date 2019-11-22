@@ -39,7 +39,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         datetime(2019, 11, 21))
 
     def test_telemetry_decoder(self):
-        f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "icp.json"), "r",
+        f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
             encoding="utf-8")
         conf = f.read()
         f.close()
