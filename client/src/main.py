@@ -6,7 +6,7 @@ import time
 import sys
 import signal
 from getopt import getopt
-from multiprocessing import Process
+from threading import Thread
 import kiss
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
@@ -20,8 +20,6 @@ def print_frame(frame: AXFrame):
     """ Debug function that just prints the AXFrame object emitted by the AXListener. """
     print(frame)
 
-app = None
-
 def runApi(conf, static_path, port):
     app = api.create_app(conf, static_path)
     app.run(port=port)
@@ -31,77 +29,72 @@ def terminate_handler(_signo, _stack_frame):
 
 def main(argv):
     """ Main loop function. """
-    global app
 
+    # Initial logging configuration.
     logging.basicConfig(level=logging.DEBUG)
     _logger = logging.getLogger(__name__)
 
+    # Parse command line options
     opts, args = getopt(argv, "vc:")
-
-    # Read in the client configuration.
     conf_path = None
-    verbose = False
+    # verbose = False
     for opt, arg in opts:
         if opt == "-c":
             conf_path = arg
-        if opt == "-v":
-            verbose = True
+        # if opt == "-v":
+        #     verbose = True
 
-
-    if conf_path == None: # Default conf path
+    if conf_path is None: # Default conf path
         conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
     _logger.info("Using configuration from: %s", conf_path)
 
+    # Create the configuration object
     conf = Configuration(conf_path)
 
+    # Create the database object
     db_loc = os.path.join(os.path.dirname(__file__), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
     database.init_db()
 
+    # Read the json configuration of telemetry fields.
     f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
             encoding="utf-8")
     telemetry_conf = f.read()
     f.close()
 
-    # Build the components.
+    # Build the other components.
     ax_listener = AXListener()
     sids_relay = SIDSRelay(conf)
     telemetry_listener = TelemetryListener(telemetry_conf, database)
 
     # Create the flask app and start it in a forked process.
-    # app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
     port = None
     try:
         port = int(conf.get_conf("Client", "frontend-port"))
     except ValueError:
         port = 5000 # Default port.
 
-    api_proc = Process(target=runApi, args=(conf, conf.get_conf("Client", "static-files-path"),
-            port))
-    api_proc.start()
-    # api_proc = Process(name="Telemetry client API", target=app.run, kwargs={"port": port})
-    # api_proc.start()
-    if verbose:
-        _logger.debug("API Process is: %s", api_proc.pid)
-        f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w',
-                encoding="utf-8")
-        f.write(str(api_proc.pid))
-        f.close()
+    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
+    # We set the daemon option to True, so that the client will quit once the other threads have
+    #  finished because we don't have a good way of stopping the Flask app properly.
+    api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
+    api_thread.start()
 
+    # Set the handler for SIGTERM, so we can exit a bit more gracefully.
     signal.signal(signal.SIGTERM, terminate_handler)
 
+    # Hook the callbacks to the ax_listener.
+    # ax_listener.add_callback(print_frame)
+    ax_listener.add_callback(database.insert_ax_frame)
+    ax_listener.add_callback(sids_relay.relay)
+    ax_listener.add_callback(telemetry_listener.receive)
+
+    k = kiss.TCPKISS(
+        conf.get_conf("TNC interface", "tnc-ip"),
+        conf.get_conf("TNC interface", "tnc-port"), strip_df_start=True
+    )
+
     try:
-        # Hook the callbacks to the ax_listener.
-        # ax_listener.add_callback(print_frame)
-        ax_listener.add_callback(database.insert_ax_frame)
-        ax_listener.add_callback(sids_relay.relay)
-        ax_listener.add_callback(telemetry_listener.receive)
-
-        k = kiss.TCPKISS(
-            conf.get_conf("TNC interface", "tnc-ip"),
-            conf.get_conf("TNC interface", "tnc-port"), strip_df_start=True
-        )
-
         # Open the connection to the TNC.
         conn_tries = 0
         max_conn_tries = int(conf.get_conf("TNC interface", "max-connection-attempts"))
@@ -122,17 +115,11 @@ def main(argv):
                     time.sleep(retry_time)
                 else:
                     _logger.error("Maximum TNC connection retries reached.")
-                    api_proc.join()
+                    api_thread.join()
 
-
-        try:
-            k.read(callback=ax_listener.receive)
-        except (KeyboardInterrupt, SystemExit):
-            pass
-        k.stop()
+        k.read(callback=ax_listener.receive)
     finally:
-        api_proc.terminate()
-        api_proc.join()
+        k.stop()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

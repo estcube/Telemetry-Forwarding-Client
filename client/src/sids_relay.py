@@ -17,8 +17,10 @@ class SIDSRelay(object):
 
     def relay(self, frame: AXFrame):
         """ If relaying is enabled, sends the frame to the configured SIDS server. """
+        self._logger.debug("Received frame.")
 
-        if self.config.get_conf("Mission Control", "relay-enabled") != "True":
+        # FIXME
+        if str(self.config.get_conf("Mission Control", "relay-enabled")) != "True":
             return
 
         params = {
