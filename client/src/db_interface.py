@@ -1,7 +1,7 @@
 """
 Provides a class for interfacing with the database.
 """
-from __future__ import annotations
+# from __future__ import annotations
 
 # import sqlite3
 import logging
@@ -64,7 +64,7 @@ class TelemetryDB():
         cur.execute("insert into ax_frame values (?, ?);", (frame.recv_time.isoformat(), frame.frame))
         conn.close()
 
-    def add_telemetry_frame(self, frame: TelemetryFrame):
+    def add_telemetry_frame(self, frame: "TelemetryFrame"):
         """
         Adds the telemetry data into the database.
         """
