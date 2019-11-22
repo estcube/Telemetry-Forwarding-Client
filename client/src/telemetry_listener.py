@@ -44,9 +44,9 @@ class TelemetryListener():
 
         self.prefix = self.conf["prefix"].split(".")
 
-        self.msg_ts_id: str = self.conf["msgTimestamp"]["id"]
+        self.msg_ts_id = self.conf["msgTimestamp"]["id"]
         try:
-            self.msg_ts_type: TimestampType = TimestampType(self.conf["msgTimestamp"]["type"])
+            self.msg_ts_type = TimestampType(self.conf["msgTimestamp"]["type"])
         except ValueError:
             raise ValueError("The type of the message timestamp is unknown.")
 

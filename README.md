@@ -1,7 +1,7 @@
 # ESTCube2 Telemetry
 
-The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs from around the world, to downlink telemetry data sent by the satellite and  
-see the received results locally. It should also be able to relay the received packets to Mission Control of ESTCube.  
+The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs from around the world, to downlink telemetry data sent by the satellite and
+see the received results locally. It should also be able to relay the received packets to Mission Control of ESTCube.
 This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible from Estonia. This is important, because the fly-over times of the satellite are relatively brief. The system will be a cross-platform console application that interfaces with a TNC, which will also serve a web frontend, which handles the displaying of data.
 
 ## Requirements
@@ -13,8 +13,9 @@ This allows the ESTCube team to receive telemetry data, even when the satellite 
 * kaitaistruct
 * bitarray ([Github](https://github.com/ilanschnell/bitarray))
 * kiss ([Github](https://github.com/ampledata/kiss))
+* apsw ([Github](https://github.com/rogerbinns/apsw)) ([Do not install from PyPI!](https://rogerbinns.github.io/apsw/download.html#easy-install-pip-pypi))
 
-The libraries can be installed with pip (`pip install flask kaitaistruct bitarray kiss flask-cors flask-swagger-ui`)
+The libraries can be installed with pip (except `apsw`, see the link in list for installation instructions.) (`pip install flask kaitaistruct bitarray kiss flask-cors flask-swagger-ui`)
 
 ### Installation on Windows
 
@@ -28,7 +29,7 @@ This should properly install the aprs package and the kiss package which it depe
 
 ## Running
 
-The packaged version of the client can be downloaded from the downloads section of the repository, the artifact is named `build-client`. This contains the client python source files, the configuration file and the built static frontend files ready for use.  
+The packaged version of the client can be downloaded from the downloads section of the repository, the artifact is named `build-client`. This contains the client python source files, the configuration file and the built static frontend files ready for use.
 **This does not mock the TNC! See more at "Notable Known Bugs" section in Wiki**.
 
 ### Configuration file
