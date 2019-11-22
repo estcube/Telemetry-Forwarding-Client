@@ -5,6 +5,7 @@ and setting the configuration parameters through the frontend.
 Does not include any authentication, so should not be open to the external network.
 """
 
+import sys
 import os
 from datetime import datetime
 from flask import Flask, jsonify, send_file, send_from_directory, request
@@ -70,10 +71,13 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     @app.route('/api/conf', methods=["POST"])
     def set_conf():
         some_json = request.get_json()
-        for i in some_json:
-            for j in some_json[i]:
-                config.set_conf(section=i, element=j, value=some_json[i][j])
-
+        try:
+            for i in some_json:
+                for j in some_json[i]:
+                    config.set_conf(section=i, element=j, value=some_json[i][j])
+        except:
+            err_type, error, traceback = sys.exc_info()
+            return jsonify({"Error": '{err}'.format(err=error)}), 500
         return jsonify(some_json), 200
 
     return app

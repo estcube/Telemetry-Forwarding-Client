@@ -155,11 +155,17 @@ class Configuration(object):
         if constr["type"] == "str":
             pass
         elif constr["type"] == "int":
-            if not isinstance(value, int):
-                value = int(value)
+            try:
+                if not isinstance(value, int):
+                    value = int(value)
+            except Exception as e:
+                raise type(e)(section, element, value, "Integer")
         elif constr["type"] == "float":
-            if not isinstance(value, float):
-                value = float(value)
+            try:
+                if not isinstance(value, float):
+                    value = float(value)
+            except Exception as e:
+                raise type(e)(section, element, value, "Float")
         elif constr["type"] == "bool":
             if not isinstance(value, bool):
                 if value.lower() == "true":
@@ -167,7 +173,7 @@ class Configuration(object):
                 elif value.lower() == "false":
                     value = False
                 else:
-                    raise ValueError("Expected a boolean value or string 'True' or 'False'.")
+                    raise ValueError(section, element, value, "Boolean")
         elif constr["type"] == "select":
             if value not in constr["options"]:
                 raise ValueError(
