@@ -70,12 +70,14 @@
     {
       "xAxis": "timestamp",
       "yAxis": ["bat_a_volt", "bat_b_volt", "bat_c_volt", "bat_d_volt"],
-      "title": "Battery voltages"
+      "title": "Battery voltages",
+      "type": "line"
     },
     {
       "xAxis": "timestamp",
       "yAxis": ["bat_a_temp", "bat_b_temp", "bat_c_temp", "bat_d_temp"],
-      "title": "Battery temperatures"
+      "title": "Battery temperatures",
+      "type": "line"
     }
   ]
 }

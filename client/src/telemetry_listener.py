@@ -70,7 +70,7 @@ class TelemetryListener():
 
         obj = icp
         for prefix_part in self.prefix:
-            self._logger.debug("prefix_part: %s, obj: %s", prefix_part, obj)
+            # self._logger.debug("prefix_part: %s, obj: %s", prefix_part, obj)
             if prefix_part not in dir(obj):
                 self._logger.debug("Didn't find the prefix part '%s'.", prefix_part)
                 return

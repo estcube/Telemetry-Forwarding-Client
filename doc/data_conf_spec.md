@@ -15,11 +15,14 @@ The configuration structure will be as follows:
 ```json
 {
   "prefix": "str",
+  "msgTimestamp": {
+    "id": "str",
+    "type": "unix_timestamp"
+  },
   "fields": [
     {
       "id": "str",
       "type": "str",
-      "isMsgTimestamp": "bool (optional)",
       "unit": "str (not needed for timestamp types)",
       "label": "str (not needed for isMsgTimestamp == True field"
     }
@@ -28,20 +31,26 @@ The configuration structure will be as follows:
     {
       "xAxis": "str",
       "yAxis": ["str", ],
-      "title": "str"
+      "title": "str",
+      "type": "str"
     }
   ]
 }
 ```
 
 The IDs, represent paths delimited by dots (`.`) that are used for traversing the object graph defined
-by the [AX.25 Payload Configuration](#ax25-payload-structure). The `prefix` id represents the point in the object graph
+by the [AX.25 Payload Configuration](#ax25-payload-structure).
+
+The `prefix` id represents the point in the object graph
 which holds the telemetry data. Every member field of the object at the prefix path (nested fields
-are supported) is persisted into the database.
+are supported) is persisted into the database. If any of the prefix segments is not found, the whole
+packet is counted as not a telemetry packet and not processed.
 
 The fields array contains all the telemetry fields that will actually be displayed in the frontend.
-Excactly one object in the array **has** to have the `"isMsgTimestamp": true` field. This marks the
-timestamp field which describes the time the packet was sent out from the source.
+
+`msgTimestamp` object marks the timestamp field which describes the time the packet was sent out
+from the source. The type describes how the timestamp is stored in the packet. The timestamps are always
+sent to the server in ISO format.
 
 Other fields will define their type, unit and label, which will be used for displaying them to the
 user.
