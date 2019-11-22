@@ -32,6 +32,14 @@ class SIDSRelay(object):
         }
 
         url = self.config.get_conf("Mission Control", "mcs-relay-url")
-        r = requests.get(url, params=params)
-        self._logger.debug("Sent SIDS relay request to: %s", r.url)
-        self._logger.debug("SIDS response: %s", r.text)
+        self._logger.debug("Sending SIDS request to %s", url)
+        try:
+            response = requests.get(url, params=params)
+            self._logger.debug("Sent SIDS relay request to: %s", response.url)
+            self._logger.debug("SIDS response: %s", response.text)
+        except requests.ConnectionError:
+            self._logger.warning("Connection failed to SIDS endpoint %s", url)
+        except requests.Timeout:
+            self._logger.warning("Connection to SIDS enpoint %s timed out.", url)
+        except requests.RequestException:
+            self._logger.warning("Something went wrong with the SIDS endpoint %s request.", url)

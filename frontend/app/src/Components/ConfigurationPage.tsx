@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Configuration } from '@estcube/data-components';
 import { CircularProgress, Typography } from '@material-ui/core';
 
-type ConfigurationFormState = {
+type ConfigurationPageState = {
   confValues: { [key: string]: { [key: string]: string } };
   dataFetchErrored: boolean;
   loading: boolean;
@@ -13,7 +13,7 @@ type ConfigurationFormState = {
 /**
  * View for configuring client
  */
-class ConfigurationPage extends React.Component<{}, ConfigurationFormState> {
+class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
   constructor(props: {}) {
     super(props);
     this.state = { confValues: {}, dataFetchErrored: false, loading: false, dataPosted: null, confPostLoading: false };
@@ -33,7 +33,6 @@ class ConfigurationPage extends React.Component<{}, ConfigurationFormState> {
         return response.json();
       })
       .then(responseJson => {
-        console.log(responseJson['Mission Control']['relay-enabled']);
         this.setState({ confValues: responseJson });
       })
       .catch(() => this.setState({ dataFetchErrored: true }))
@@ -76,16 +75,16 @@ class ConfigurationPage extends React.Component<{}, ConfigurationFormState> {
     const confFetched = Object.keys(confValues).length > 0;
     let content;
     if (loading) {
-      content = <CircularProgress data-testid="confDiv" />;
+      content = <CircularProgress />;
     } else if (!loading && dataFetchErrored) {
       content = (
-        <Typography variant="h4" data-testid="confDiv">
+        <Typography variant="h4">
           Connection to client has failed. Try re-launching the client to solve this.
         </Typography>
       );
     } else if (confFetched) {
       content = (
-        <div data-testid="confDiv">
+        <div>
           <Configuration
             confValues={confValues}
             handleConfPost={this.postConfValues}

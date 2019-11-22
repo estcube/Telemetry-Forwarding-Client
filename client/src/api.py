@@ -27,7 +27,7 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     CORS(app)
 
     # swagger specific
-    swagger_url = "/api/apidocs"
+    swagger_url = "/api/docs"
     api_url = "/api/static/swagger.yaml"
     swaggerui_blueprint = get_swaggerui_blueprint(
         swagger_url,

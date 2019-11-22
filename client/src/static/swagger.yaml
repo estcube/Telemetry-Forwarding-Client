@@ -36,7 +36,7 @@ paths:
     post:
       tags:
       - "conf"
-      summary: "Updates configuration. Not yet available, format will change!"
+      summary: "Updates configuration."
       description: "Updates configuration in client."
       operationId: "updateConf"
       consumes:
@@ -49,14 +49,12 @@ paths:
         description: "Configuration object which will update clients configuration"
         required: true
         schema:
-          $ref: "#/definitions/ConfFull"
+          $ref: "#/definitions/ConfPost"
       responses:
         200:
           description: "successful operation"
         400:
           description: "error"
-      deprecated:
-        true
     get:
       tags:
       - "conf"
@@ -594,16 +592,31 @@ definitions:
             items:
               type: "string"
             example: ["AGW"]
+<<<<<<< HEAD
 
+=======
+  PostBody:
+    type: "object"
+    properties:
+      "param name1":
+        example: "param value 1"
+      "param name2":
+        example: "param value 2"
+>>>>>>> master
   ConfConstraints:
     type: "object"
     properties:
       Client:
         $ref: "#/definitions/ClientConfObjectConstraints"
-      MissionControl:
+      "Mission Control":
         $ref: "#/definitions/MCSConfObjectConstraints"
+<<<<<<< HEAD
       TNCInterface:
         $ref: "#/definitions/TNCConfObjectConstraints"
+=======
+      "TNC Interface":
+        $ref: "#/definitions/TNCConfObjectConstraints"  
+>>>>>>> master
     xml:
       name: "ConfFull"
   ConfFull:
@@ -611,10 +624,15 @@ definitions:
     properties:
       Client:
         $ref: "#/definitions/ClientConfObjectFull"
-      MissionControl:
+      "Mission Control":
         $ref: "#/definitions/MCSConfObjectFull"
+<<<<<<< HEAD
       TNCInterface:
         $ref: "#/definitions/TNCConfObjectFull"
+=======
+      "TNC Interface":
+        $ref: "#/definitions/TNCConfObjectFull"  
+>>>>>>> master
     xml:
       name: "ConfFull"
   Conf:
@@ -622,12 +640,28 @@ definitions:
     properties:
       Client:
         $ref: "#/definitions/ClientConfObject"
-      MissionControl:
+      "Mission Control":
         $ref: "#/definitions/MCSConfObject"
+<<<<<<< HEAD
       TNCInterface:
         $ref: "#/definitions/TNCConfObject"
     xml:
       name: "Conf"
+=======
+      "TNC Interface":
+        $ref: "#/definitions/TNCConfObject"  
+    xml:
+      name: "Conf"
+  ConfPost:
+    type: "object"
+    properties:
+      Client:
+        $ref: "#/definitions/PostBody"
+      "Mission Control":
+        $ref: "#/definitions/PostBody"
+      "TNC Interface":
+        $ref: "#/definitions/PostBody"
+>>>>>>> master
   Data:
     type: "object"
     properties:

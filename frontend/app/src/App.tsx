@@ -16,8 +16,12 @@ export default class App extends React.Component {
       <BrowserRouter>
         <CssBaseline />
         <Header />
-        <Route path="/" exact component={MainPage} />
-        <Route path="/configure" exact component={ConfigurationPage} />
+        <Route path="/" exact>
+          <MainPage />
+        </Route>
+        <Route path="/configure" exact>
+          <ConfigurationPage />
+        </Route>
       </BrowserRouter>
     );
   }
