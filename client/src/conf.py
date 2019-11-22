@@ -86,6 +86,12 @@ CONSTRAINTS = {
             "label": "Static files path",
             "hidden": True
         },
+        "telemetry-configuration": {
+            "type": "str",
+            "description": "Path to the file that specified the telemetry data fields.",
+            "requiresRestart": True,
+            "label": "Telemetry data configuration"
+        },
         "frontend-port": {
             "type": "int",
             "description": "Port that the frontend and api are served on.",

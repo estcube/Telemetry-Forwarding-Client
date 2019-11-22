@@ -7,3 +7,5 @@ client/configuration.ini
 client/static/
 client/dist/
 **/dist/
+client/src/__test__
+client/test/utListener.py

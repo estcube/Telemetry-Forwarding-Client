@@ -3,10 +3,13 @@
 import unittest
 import os
 import sqlite3
+import logging
+import sys
 from datetime import datetime
 from db_interface import TelemetryDB
 from conf import Configuration
 from ax_listener import AXListener, AXFrame
+from telemetry_listener import TelemetryListener
 
 
 class UnitTest(unittest.TestCase):
@@ -30,6 +33,26 @@ static-files-path=../static
 RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
     infoArr = bytearray.fromhex("""0000000100713f476d4e32647a70594c59776a61665249673\
                 33062593b424a3a4b2f4a794f5575317456716b63685c544e3e""".replace(" ", ""))
+
+    beaconDataICPFrame = b'\x04\x01\x1a\xf7\xab\xca\xbc\x00N]\xce\xe4\xf7\xbb\xcc\xdd\xee\xff\xbb\xaa\xbb\xaa\xbb\xaa\xbb\xac\xab\xac\xab\xac\xab\xaa\xbb\xaa\x8d\xc1'
+    telemetryAXFrame = AXFrame(None, None, None, None, None, beaconDataICPFrame, None, None,
+        datetime(2019, 11, 21))
+
+    def test_telemetry_decoder(self):
+        f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
+            encoding="utf-8")
+        conf = f.read()
+        f.close()
+
+        database = TelemetryDB(self.dbPath)
+        database.init_db()
+
+        listener = TelemetryListener(conf, database)
+        listener.receive(self.telemetryAXFrame)
+
+        # TODO Actually assert something
+
+        # os.remove(self.dbPath)
 
     # Tests if a packet is correctly stored in AXFrame by sending a packet and checking if current date is saved
     def test_AXListener_addresses(self):
@@ -113,5 +136,9 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
 
 
 if __name__ == '__main__':
-    os.mkdir(os.path.join(os.path.dirname(__file__), "__test__"))
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+
+    testDir = os.path.join(os.path.dirname(__file__), "__test__")
+    if not os.path.exists(testDir):
+        os.mkdir(testDir)
     unittest.main()

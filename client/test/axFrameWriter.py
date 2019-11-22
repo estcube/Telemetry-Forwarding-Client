@@ -33,6 +33,7 @@ class FrameBuilder(object):
 
     def build(self):
         f = bytearray()
+        f.append(0x7E)
         for b in self.dest:
             f.append(b << 1)
         # f.append(0x00)
@@ -46,6 +47,7 @@ class FrameBuilder(object):
         f += self.info
         print("FCS: {}".format(self.calc_crc(f)))
         f += self.calc_crc(f)
+        f.append(0x7E)
 
         return f
 
@@ -64,11 +66,13 @@ class FrameBuilder(object):
 
 def main():
     b = FrameBuilder()
-    # b.setDest("TELEM")
-    # b.setSource("ESTCUB")
+    b.setDest("TELEM")
+    b.setSource("ES5EC")
     # b.setInfo("Telemetry Data 509")
+    # b.setInfo(b'\x04\x01\x1a\xf7\xab\xca\xbc\x00N]\xce\xe4\xf7\xbb\xcc\xdd\xee\xff\xbb\xaa\xbb\xaa\xbb\xaa\xbb\xac\xab\xac\xab\xac\xab\xaa\xbb\xaa\x8d\xc1')
+    b.setInfo(bytes.fromhex("04010B0BABCABC0000005802000000000100658DC1"))
     a = b.build()
-    print(a.hex())
+    print(a)
 
 if __name__ == "__main__":
     main()

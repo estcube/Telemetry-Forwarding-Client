@@ -2,6 +2,8 @@
 
 BASEDIR=$(dirname "$BASH_SOURCE")
 TESTDIR="$BASEDIR/src/__test__"
+
+rm -r "$TESTDIR"
 mkdir "$TESTDIR"
 
 cleanup() {

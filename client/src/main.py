@@ -10,6 +10,7 @@ import kiss
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
 from db_interface import TelemetryDB
+from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
 import api
 
@@ -43,19 +44,25 @@ def main(argv):
             verbose = True
 
 
-    if conf_path == None:
+    if conf_path == None: # Default conf path
         conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
-    _logger.info("Configuration path: %s", conf_path)
+    _logger.info("Using configuration from: %s", conf_path)
 
     conf = Configuration(conf_path)
-
-    # Build the components.
-    ax_listener = AXListener()
-    sids_relay = SIDSRelay(conf)
 
     db_loc = os.path.join(os.path.dirname(__file__), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
     database.init_db()
+
+    f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
+            encoding="utf-8")
+    telemetry_conf = f.read()
+    f.close()
+
+    # Build the components.
+    ax_listener = AXListener()
+    sids_relay = SIDSRelay(conf)
+    telemetry_listener = TelemetryListener(telemetry_conf, database)
 
     # Create the flask app and start it in a forked process.
     # app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
@@ -65,13 +72,15 @@ def main(argv):
     except ValueError:
         port = 5000 # Default port.
 
-    api_proc = Process(target=runApi, args=(conf, conf.get_conf("Client", "static-files-path"), port))
+    api_proc = Process(target=runApi, args=(conf, conf.get_conf("Client", "static-files-path"),
+            port))
     api_proc.start()
     # api_proc = Process(name="Telemetry client API", target=app.run, kwargs={"port": port})
     # api_proc.start()
     if verbose:
         _logger.debug("API Process is: %s", api_proc.pid)
-        f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w', encoding="utf-8")
+        f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w',
+                encoding="utf-8")
         f.write(str(api_proc.pid))
         f.close()
 
@@ -80,6 +89,7 @@ def main(argv):
         # ax_listener.add_callback(print_frame)
         ax_listener.add_callback(database.insert_ax_frame)
         ax_listener.add_callback(sids_relay.relay)
+        ax_listener.add_callback(telemetry_listener.receive)
 
         k = kiss.TCPKISS(
             conf.get_conf("TNC interface", "tnc-ip"),

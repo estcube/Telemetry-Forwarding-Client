@@ -5,6 +5,33 @@ info:
   title: "Estcube 2 Telemetry API"
 basePath: "/api"
 paths:
+  /telemetry/packets:
+    get:
+      tags:
+        - "telemetry"
+      summary: "Saved telemetry packets."
+      description: "Returns the saved telemetry packets."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/TelemetryPackets"
+  /telemetry/configuration:
+    get:
+      tags:
+        - "telemetry"
+      summary: "Configuration of the telemetry fields."
+      description: "Returns the configuration of the telemetry fields."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/TelemetryConf"
+
+
+
   /conf:
     post:
       tags:
@@ -42,7 +69,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/Conf"  
+            $ref: "#/definitions/Conf"
   /conf/full:
     get:
       tags:
@@ -58,7 +85,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/ConfFull" 
+            $ref: "#/definitions/ConfFull"
   /conf/constraints:
     get:
       tags:
@@ -90,19 +117,103 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/Data"         
+            $ref: "#/definitions/Data"
 
 definitions:
-  ClientConfObject:
-      type: "object"
-      properties:
-        database:
+  TelemetryPackets:
+    type: "object"
+    properties:
+      packets:
+        type: "array"
+        items:
+          $ref: "#/definitions/TelemetryPacket"
+
+  TelemetryPacket:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      packet_timestamp:
+        type: "string"
+        example: "2019-11-21T21:43:58.977179"
+      receive_timestamp:
+        type: "string"
+        example: "2019-11-21T21:55:58.977179"
+      fields:
+        type: "object"
+
+
+  TelemetryConf:
+    type: "object"
+    properties:
+      prefix:
+        type: "string"
+        example: "data.payload"
+      msgTimestamp:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            example: "timestamp"
+          type:
+            type: "string"
+            example: "unix_timestamp"
+      fields:
+        type: "array"
+        items:
+          $ref: "#/definitions/TelemetryConfField"
+      graphs:
+        type: "array"
+        items:
+          $ref: "#/definitions/TelemetryConfGraph"
+
+  TelemetryConfField:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "main_bus_volt"
+      type:
+        type: "string"
+        example: "int"
+      unit:
+        type: "string"
+        example: "Volts"
+      label:
+        type: "string"
+        example: "Main bus voltage"
+
+  TelemetryConfGraph:
+    type: "object"
+    properties:
+      xAxis:
+        type: "string"
+        example: "timestamp"
+      yAxis:
+        type: "array"
+        items:
           type: "string"
-        frontend-port:
-          type: "string"  
-        static-files-path:
-          type: "string" 
-        
+        example:
+          - "bat_a_volt"
+          - "bat_b_volt"
+          - "bat_c_volt"
+      title:
+        type: "string"
+        example: "Battery voltages"
+
+
+
+  ClientConfObject:
+    type: "object"
+    properties:
+      database:
+        type: "string"
+      frontend-port:
+        type: "string"
+      static-files-path:
+        type: "string"
+
   ClientConfObjectFull:
     type: "object"
     properties:
@@ -131,7 +242,7 @@ definitions:
           type:
             type: "string"
           value:
-            type: "string"   
+            type: "string"
       static-files-path:
         type: "object"
         properties:
@@ -144,8 +255,8 @@ definitions:
           type:
             type: "string"
           value:
-            type: "string" 
-    
+            type: "string"
+
   ClientConfObjectConstraints:
     type: "object"
     properties:
@@ -182,25 +293,25 @@ definitions:
             type: "boolean"
           type:
             type: "string"
- 
-  
-  
+
+
+
   MCSConfObject:
     type: "object"
     properties:
       latitude:
         type: "string"
       longitude:
-        type: "string" 
+        type: "string"
       mcs-relay-url:
         type: "string"
       noradID:
         type: "string"
       receiver-callsign:
-        type: "string"   
+        type: "string"
       relay-enabled:
-        type: "boolean" 
-  
+        type: "boolean"
+
   MCSConfObjectFull:
     type: "object"
     properties:
@@ -221,7 +332,7 @@ definitions:
           type:
             type: "string"
           value:
-            type: "integer"  
+            type: "integer"
       mcs-relay-url:
         type: "object"
         properties:
@@ -230,7 +341,7 @@ definitions:
           type:
             type: "string"
           value:
-            type: "string" 
+            type: "string"
       norad-id:
         type: "object"
         properties:
@@ -248,7 +359,7 @@ definitions:
           type:
             type: "string"
           value:
-            type: "string"   
+            type: "string"
       relay-enabled:
         type: "object"
         properties:
@@ -258,7 +369,7 @@ definitions:
             type: "string"
           value:
             type: "boolean"
-   
+
   MCSConfObjectConstraints:
     type: "object"
     properties:
@@ -304,8 +415,8 @@ definitions:
             type: "string"
           type:
             type: "string"
-   
-  
+
+
   TNCConfObject:
     type: "object"
     properties:
@@ -323,7 +434,7 @@ definitions:
         type: "string"
       tnc-protocol-type:
         type: "string"
-  
+
   TNCConfObjectFull:
     type: "object"
     properties:
@@ -348,7 +459,7 @@ definitions:
           value:
             type: "integer"
           requiresRestart:
-            type: "boolean" 
+            type: "boolean"
       tnc-connection-type:
         type: "object"
         properties:
@@ -364,7 +475,7 @@ definitions:
             type: "array"
             items:
               type: "string"
-            example: ["RS232", "TCP/IP"]  
+            example: ["RS232", "TCP/IP"]
       tnc-device:
         type: "object"
         properties:
@@ -375,7 +486,7 @@ definitions:
           value:
             type: "string"
           requiresRestart:
-            type: "boolean"  
+            type: "boolean"
       tnc-ip:
         type: "object"
         properties:
@@ -386,7 +497,7 @@ definitions:
           value:
             type: "string"
           requiresRestart:
-            type: "boolean" 
+            type: "boolean"
       tnc-protocol-type:
         type: "object"
         properties:
@@ -402,13 +513,13 @@ definitions:
             type: "array"
             items:
               type: "string"
-            example: ["KISS"] 
+            example: ["KISS"]
           disabledOptions:
             type: "array"
             items:
               type: "string"
-            example: ["AGW"]  
-  
+            example: ["AGW"]
+
   TNCConfObjectConstraints:
     type: "object"
     properties:
@@ -429,7 +540,7 @@ definitions:
           type:
             type: "string"
           requiresRestart:
-            type: "boolean" 
+            type: "boolean"
       tnc-connection-type:
         type: "object"
         properties:
@@ -443,7 +554,7 @@ definitions:
             type: "array"
             items:
               type: "string"
-            example: ["RS232", "TCP/IP"]  
+            example: ["RS232", "TCP/IP"]
       tnc-device:
         type: "object"
         properties:
@@ -452,7 +563,7 @@ definitions:
           type:
             type: "string"
           requiresRestart:
-            type: "boolean"  
+            type: "boolean"
       tnc-ip:
         type: "object"
         properties:
@@ -461,7 +572,7 @@ definitions:
           type:
             type: "string"
           requiresRestart:
-            type: "boolean" 
+            type: "boolean"
       tnc-protocol-type:
         type: "object"
         properties:
@@ -475,7 +586,7 @@ definitions:
             type: "array"
             items:
               type: "string"
-            example: ["KISS"] 
+            example: ["KISS"]
           disabledOptions:
             type: "array"
             items:
@@ -496,9 +607,9 @@ definitions:
       "Mission Control":
         $ref: "#/definitions/MCSConfObjectConstraints"
       "TNC Interface":
-        $ref: "#/definitions/TNCConfObjectConstraints"  
+        $ref: "#/definitions/TNCConfObjectConstraints"
     xml:
-      name: "ConfFull"    
+      name: "ConfFull"
   ConfFull:
     type: "object"
     properties:
@@ -507,7 +618,7 @@ definitions:
       "Mission Control":
         $ref: "#/definitions/MCSConfObjectFull"
       "TNC Interface":
-        $ref: "#/definitions/TNCConfObjectFull"  
+        $ref: "#/definitions/TNCConfObjectFull"
     xml:
       name: "ConfFull"
   Conf:
@@ -518,7 +629,7 @@ definitions:
       "Mission Control":
         $ref: "#/definitions/MCSConfObject"
       "TNC Interface":
-        $ref: "#/definitions/TNCConfObject"  
+        $ref: "#/definitions/TNCConfObject"
     xml:
       name: "Conf"
   ConfPost:
@@ -542,4 +653,4 @@ definitions:
       timestamp:
         type: "string"
     xml:
-      name: "Data"     
+      name: "Data"
