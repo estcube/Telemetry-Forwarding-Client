@@ -1,5 +1,6 @@
 """
 Taken from: https://www.oreilly.com/library/view/python-cookbook/0596001673/ch06s04.html
+Added the ProxyLock to allow using the read_lock and write_lock with the 'with' statement.
 
 Copyright (c) 2001, Sami Hangaslammi
 All rights reserved.
@@ -30,6 +31,17 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import threading
 
+class ProxyLock:
+    def __init__(self, acq: callable, rel: callable):
+        self.acq = acq
+        self.rel = rel
+
+    def __enter__(self):
+        return self.acq()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.rel()
+
 class ReadWriteLock:
     """ A lock object that allows many simultaneous "read locks", but
     only one "write lock." """
@@ -37,6 +49,9 @@ class ReadWriteLock:
     def __init__(self):
         self._read_ready = threading.Condition(threading.Lock())
         self._readers = 0
+
+        self.read_lock = ProxyLock(self.acquire_read, self.release_read)
+        self.write_lock = ProxyLock(self.acquire_write, self.release_write)
 
     def acquire_read(self):
         """ Acquire a read lock. Blocks only if a thread has

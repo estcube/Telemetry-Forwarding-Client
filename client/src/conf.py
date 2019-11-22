@@ -1,7 +1,9 @@
 """Provides a class for configuration parsing and modifying"""
 
 import configparser
+import logging
 from copy import deepcopy
+from rw_lock import ReadWriteLock
 
 CONSTRAINTS = {
     "Mission Control": {
@@ -105,6 +107,8 @@ CONSTRAINTS = {
 class Configuration(object):
     """ Class for parsing and modifying the configuration. """
 
+    _log = logging.getLogger(__name__)
+
     def __init__(self, path: str):
         self.config = configparser.RawConfigParser()
         self.config_path = path
@@ -112,13 +116,16 @@ class Configuration(object):
         self.constraints = {}
         self.sections = self.config.sections()
 
+        self.lock = ReadWriteLock()
+
     def get_conf(self, section, element):
         """
         Retrieves the configured value at the specified field.
 
         example: getConf("Mission Control", "relay-enabled")
         """
-        return self.config.get(section, element)
+        with self.lock.read_lock:
+            return self.config.get(section, element)
 
     def get_constraints(self):
         """ Returns all of the constraints for the configuration. """
@@ -129,15 +136,16 @@ class Configuration(object):
         Returns the whole configuration as a dictionary, where each section is mapped to its own
         dictionary or fields.
         """
-        conf = {}
-        config = self.config
-        for each_section in config.sections():
-            section = {}
-            for (each_key, each_val) in config.items(each_section):
-                section[each_key] = each_val
-            conf[each_section] = section
+        with self.lock.read_lock:
+            conf = {}
+            config = self.config
+            for each_section in config.sections():
+                section = {}
+                for (each_key, each_val) in config.items(each_section):
+                    section[each_key] = each_val
+                conf[each_section] = section
 
-        return conf
+            return conf
 
     # example: setConf("Mission Control", "relay-enabled", False)
     def set_conf(self, section, element, value):
@@ -149,60 +157,63 @@ class Configuration(object):
         After setting the value, also overwrites the configuration file with the current
         configuration state after the change.
         """
+        self._log.debug("Acquiring write lock!")
+        with self.lock.write_lock:
+            self._log.debug("Acquired write lock!")
+            if section not in CONSTRAINTS:
+                raise ValueError("Section {} does not exist.".format(section))
 
-        if section not in CONSTRAINTS:
-            raise ValueError("Section {} does not exist.".format(section))
+            section_constraints = CONSTRAINTS[section]
+            if element not in section_constraints:
+                raise ValueError("Field {} - {} does not exist.".format(section, element))
 
-        section_constraints = CONSTRAINTS[section]
-        if element not in section_constraints:
-            raise ValueError("Field {} - {} does not exist.".format(section, element))
+            constr = section_constraints[element]
+            if constr["type"] == "str":
+                pass
+            elif constr["type"] == "int":
+                try:
+                    if not isinstance(value, int):
+                        value = int(value)
+                except Exception as e:
+                    raise type(e)(section, element, value, "Integer")
+            elif constr["type"] == "float":
+                try:
+                    if not isinstance(value, float):
+                        value = float(value)
+                except Exception as e:
+                    raise type(e)(section, element, value, "Float")
+            elif constr["type"] == "bool":
+                if not isinstance(value, bool):
+                    if value.lower() == "true":
+                        value = True
+                    elif value.lower() == "false":
+                        value = False
+                    else:
+                        raise ValueError(section, element, value, "Boolean")
+            elif constr["type"] == "select":
+                if value not in constr["options"]:
+                    raise ValueError("{} - {} only supports values: {}".format(
+                        section, element, constr["options"]))
 
-        constr = section_constraints[element]
-        if constr["type"] == "str":
-            pass
-        elif constr["type"] == "int":
-            try:
-                if not isinstance(value, int):
-                    value = int(value)
-            except Exception as e:
-                raise type(e)(section, element, value, "Integer")
-        elif constr["type"] == "float":
-            try:
-                if not isinstance(value, float):
-                    value = float(value)
-            except Exception as e:
-                raise type(e)(section, element, value, "Float")
-        elif constr["type"] == "bool":
-            if not isinstance(value, bool):
-                if value.lower() == "true":
-                    value = True
-                elif value.lower() == "false":
-                    value = False
-                else:
-                    raise ValueError(section, element, value, "Boolean")
-        elif constr["type"] == "select":
-            if value not in constr["options"]:
-                raise ValueError(
-                    "{} - {} only supports values: {}".format(section, element, constr["options"])
-                )
+            self.config.set(section, element, value)
 
-        self.config.set(section, element, value)
-
-        with open(self.config_path, 'w') as configfile:
-            self.config.write(configfile)
+            with open(self.config_path, 'w') as configfile:
+                self.config.write(configfile)
+        self._log.debug("Released write lock!")
 
     def get_conf_with_constraints(self):
         """
         Goes through the constraints and the values and returns a dictionary with constraints that have the value appended.
         """
-        constraints = deepcopy(CONSTRAINTS)
-        config = self.get_all_conf()
+        with self.lock.read_lock:
+            constraints = deepcopy(CONSTRAINTS)
+            config = self.get_all_conf()
 
-        for i in constraints:
-            for j in constraints[i]:
-                val = None
-                if i in config and j in config[i]:
-                    val = (config[i][j])
-                constraints[i][j].update({"value": val})
+            for i in constraints:
+                for j in constraints[i]:
+                    val = None
+                    if i in config and j in config[i]:
+                        val = (config[i][j])
+                    constraints[i][j].update({"value": val})
 
-        return constraints
+            return constraints
