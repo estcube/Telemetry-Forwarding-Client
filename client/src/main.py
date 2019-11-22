@@ -4,6 +4,7 @@ import os
 import logging
 import time
 import sys
+import signal
 from getopt import getopt
 from multiprocessing import Process
 import kiss
@@ -24,6 +25,9 @@ app = None
 def runApi(conf, static_path, port):
     app = api.create_app(conf, static_path)
     app.run(port=port)
+
+def terminate_handler(_signo, _stack_frame):
+    sys.exit(0)
 
 def main(argv):
     """ Main loop function. """
@@ -84,6 +88,8 @@ def main(argv):
         f.write(str(api_proc.pid))
         f.close()
 
+    signal.signal(signal.SIGTERM, terminate_handler)
+
     try:
         # Hook the callbacks to the ax_listener.
         # ax_listener.add_callback(print_frame)
@@ -121,7 +127,7 @@ def main(argv):
 
         try:
             k.read(callback=ax_listener.receive)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, SystemExit):
             pass
         k.stop()
     finally:
