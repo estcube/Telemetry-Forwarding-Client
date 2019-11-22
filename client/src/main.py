@@ -72,13 +72,15 @@ def main(argv):
     except ValueError:
         port = 5000 # Default port.
 
-    api_proc = Process(target=runApi, args=(conf, conf.get_conf("Client", "static-files-path"), port))
+    api_proc = Process(target=runApi, args=(conf, conf.get_conf("Client", "static-files-path"),
+            port))
     api_proc.start()
     # api_proc = Process(name="Telemetry client API", target=app.run, kwargs={"port": port})
     # api_proc.start()
     if verbose:
         _logger.debug("API Process is: %s", api_proc.pid)
-        f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w', encoding="utf-8")
+        f = open(os.path.join(os.path.dirname(__file__), "__test__", "api.pid"), 'w',
+                encoding="utf-8")
         f.write(str(api_proc.pid))
         f.close()
 

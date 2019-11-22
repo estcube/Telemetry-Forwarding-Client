@@ -35,24 +35,20 @@ class TelemetryListener():
         self.database = db
         self.conf = json.loads(conf)
         if "prefix" not in self.conf:
-            raise ValueError("The configuration does not include the 'prefix' field")
+            raise ValueError("The telemetry configuration does not include the 'prefix' field")
         if "fields" not in self.conf:
-            raise ValueError("The configuration does not include the 'fields' field")
+            raise ValueError("The telemetry configuration does not include the 'fields' field")
+        if "msgTimestamp" not in self.conf:
+            raise ValueError(
+                    "The telemetry configuration does not include the 'msgTimestamp' field")
+
         self.prefix = self.conf["prefix"].split(".")
 
-        self.msg_ts_id: str = None
-        self.msg_ts_type: TimestampType = None
-        for field in self.conf["fields"]:
-            if "isMsgTimestamp" in field and field["isMsgTimestamp"] == True:
-                self.msg_ts_id = field["id"]
-                try:
-                    self.msg_ts_type = TimestampType(field["type"])
-                except ValueError:
-                    raise ValueError("The type of the message timestamp is unknown.")
-
-
-        if self.msg_ts_id is None or self.msg_ts_type is None:
-            raise ValueError("The id of the message timestamp field is not defined.")
+        self.msg_ts_id: str = self.conf["msgTimestamp"]["id"]
+        try:
+            self.msg_ts_type: TimestampType = TimestampType(self.conf["msgTimestamp"]["type"])
+        except ValueError:
+            raise ValueError("The type of the message timestamp is unknown.")
 
     def receive(self, ax_frame: AXFrame):
         """

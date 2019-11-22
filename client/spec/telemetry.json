@@ -1,11 +1,10 @@
 {
   "prefix": "data.payload",
+  "msgTimestamp": {
+    "id": "timestamp",
+    "type": "unix_timestamp"
+  },
   "fields": [
-    {
-      "id": "timestamp",
-      "type": "unix_timestamp",
-      "isMsgTimestamp": true
-    },
     {
       "id": "main_bus_volt",
       "type": "int",
