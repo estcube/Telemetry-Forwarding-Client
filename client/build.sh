@@ -7,6 +7,7 @@ rm -rf "$DISTDIR"
 mkdir "$DISTDIR"
 
 cp -r "$BASEDIR/src" "$DISTDIR/src"
+rm -r "$DISTDIR"/src/_*
 cp -r "$BASEDIR/spec" "$DISTDIR/spec"
 cp "$BASEDIR/configuration.ini.sample" "$DISTDIR/configuration.ini"
 cp "$BASEDIR/README.md" "$DISTDIR/"
