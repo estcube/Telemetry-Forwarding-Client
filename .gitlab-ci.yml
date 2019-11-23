@@ -18,32 +18,18 @@ test-frontend:
     - yarn test
 
 test-client:
+  image: martmaemees/ec2-telemetry:0.1-client
   stage: test
   script:
     - cd client
-    - apt-get -yq update
-    - apt-get -yq install python3-pip
-    - pip3 install --user bitarray kaitaistruct
-    - pip3 install --user https://github.com/rogerbinns/apsw/releases/download/3.30.1-r1/apsw-3.30.1-r1.zip
-        --global-option=fetch --global-option=--version --global-option=3.30.1 --global-option=--all
-        --global-option=build --global-option=--enable-all-extensions
     - python3 src/_unit_tests.py
 
 systest-client:
+  image: martmaemees/ec2-telemetry:0.1-client
   stage: test
   script:
-    - apt-get -yq update
-    - apt-get -yq install python3-pip
-    - pip3 install --user bitarray flask flask-cors flask_swagger_ui kaitaistruct
-    - pip3 install --upgrade --user idna
-    - git clone https://github.com/martmaemees/aprs.git
-    - cd aprs
-    - python3 setup.py install
-    - pip3 install --user https://github.com/rogerbinns/apsw/releases/download/3.30.1-r1/apsw-3.30.1-r1.zip
-        --global-option=fetch --global-option=--version --global-option=3.30.1 --global-option=--all
-        --global-option=build --global-option=--enable-all-extensions
-    - cd ../client
-    - bash sys_test.sh
+    - cd client
+    - sh sys_test.sh
 
 build-frontend:
   stage: build-frontend
@@ -61,7 +47,7 @@ build-client:
   stage: build-client
   script:
     - cd client
-    - bash build.sh
+    - sh build.sh
   artifacts:
     paths:
       - dist
