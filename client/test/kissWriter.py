@@ -2,6 +2,7 @@ import kiss
 import time
 import socket
 import logging
+from beaconDataGenerator import BeaconGenerator
 
 # bytearray(b'\x00\r\x88\xd4\xb2\xa9\xbf\x04\x8a\xf2s\xcf\x8b\xa7\xcf\xc0\xf1'),
 # bytearray(b'\x00\xcbtZa,\x07\x9c\xc3"u\xe7'),
@@ -86,16 +87,18 @@ class TCPKISSServer(kiss.KISS):
 def main():
     logging.basicConfig(format="%(asctime)s : %(message)s", level=logging.INFO)
 
+    gen = BeaconGenerator("ESTCUB", "MICTRL")
     ki = TCPKISSServer(host="localhost", port=3030)
     try:
         ki.start()
 
         i = 0
         while True:
-            ki.write(packets[i % len(packets)])
+            # ki.write(packets[i % len(packets)])
+            ki.write(gen.generate())
             logging.info("Sent message: {}".format(packets[i % len(packets)]))
             i += 1
-            time.sleep(10)
+            time.sleep(2)
 
     except KeyboardInterrupt:
         pass

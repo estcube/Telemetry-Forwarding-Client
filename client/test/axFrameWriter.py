@@ -1,4 +1,3 @@
-import bitarray
 import typing
 import struct
 
