@@ -5,7 +5,7 @@ Module containing the logic for decoding AX.25 packets.
 import logging
 from datetime import datetime
 from typing import Callable
-from bitarray import bitarray
+# from bitarray import bitarray
 
 class AXFrame(object):
     """ Simple data class for holding the decoded data of an AX.25 frame. """
@@ -137,41 +137,41 @@ class AXListener(object):
         return (addr, frame_part[-1], is_last)
 
 
-    def clean_frame(self, frame: bytearray) -> bytearray:
-        """Removes the extra bits resulting from bitstuffing
-        and the bytes marking the start and end of the frame."""
-        one_count = 0
-        bit_arr = bitarray(endian="little")
-        res_arr = bitarray(endian="little")
-        bit_arr.frombytes(bytes(frame))
-        flag_count = 0
+    # def clean_frame(self, frame: bytearray) -> bytearray:
+    #     """Removes the extra bits resulting from bitstuffing
+    #     and the bytes marking the start and end of the frame."""
+    #     one_count = 0
+    #     bit_arr = bitarray(endian="little")
+    #     res_arr = bitarray(endian="little")
+    #     bit_arr.frombytes(bytes(frame))
+    #     flag_count = 0
 
-        for i in range(0, len(bit_arr)):
-            bit = bit_arr[i]
+    #     for i in range(0, len(bit_arr)):
+    #         bit = bit_arr[i]
 
-            if bit == 1:
-                one_count += 1
+    #         if bit == 1:
+    #             one_count += 1
 
-            if bit == 0 and one_count == 5:  # Destuff bits
-                one_count = 0
-                continue
-            elif bit == 0 and one_count == 6: # Reached a flag
-                flag_count += 1
-                if flag_count == 2:
-                    if (len(res_arr) - 7) % 8 != 0:
-                        self._logger.warning(
-                            """Improper amount of bits (%d) between the first two AX.25 \
-                            flags in the msg (%s).""",
-                            len(res_arr) - 7, frame)
-                        return None
-                    return bytearray(res_arr[:-7].tobytes()) # Return without the ending flag bits
-                one_count = 0
-                continue
-            elif bit == 0:
-                one_count = 0
+    #         if bit == 0 and one_count == 5:  # Destuff bits
+    #             one_count = 0
+    #             continue
+    #         elif bit == 0 and one_count == 6: # Reached a flag
+    #             flag_count += 1
+    #             if flag_count == 2:
+    #                 if (len(res_arr) - 7) % 8 != 0:
+    #                     self._logger.warning(
+    #                         """Improper amount of bits (%d) between the first two AX.25 \
+    #                         flags in the msg (%s).""",
+    #                         len(res_arr) - 7, frame)
+    #                     return None
+    #                 return bytearray(res_arr[:-7].tobytes()) # Return without the ending flag bits
+    #             one_count = 0
+    #             continue
+    #         elif bit == 0:
+    #             one_count = 0
 
-            if flag_count == 1: # Only return the bits between the two flags.
-                res_arr.append(bit)
+    #         if flag_count == 1: # Only return the bits between the two flags.
+    #             res_arr.append(bit)
 
-        self._logger.warning("Input (%s) to cleanFrame did not contain a full AX.25 frame.", frame)
-        return None
+    #     self._logger.warning("Input (%s) to cleanFrame did not contain a full AX.25 frame.", frame)
+    #     return None
