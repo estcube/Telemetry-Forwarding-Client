@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { createStyles, withStyles, Theme } from '@material-ui/core/styles';
 import {
-  Paper,
   WithStyles,
   Typography,
   ExpansionPanel,
@@ -36,7 +35,11 @@ const styles = (theme: Theme) =>
       display: 'inherit'
     },
     button: {
-      margin: theme.spacing(1)
+      margin: theme.spacing(4, 0, 0, 0)
+    },
+    extensionPanel: {
+      border: '1px solid',
+      borderRadius: 5
     }
   });
 
@@ -87,7 +90,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
     const { classes } = this.props;
     return Object.keys(confValues).map(sectionName => {
       return (
-        <ExpansionPanel key={sectionName} defaultExpanded>
+        <ExpansionPanel key={sectionName} defaultExpanded className={classes.extensionPanel}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />} aria-controls={sectionName} id={sectionName}>
             <Typography variant="h5">{sectionName}</Typography>
           </ExpansionPanelSummary>
@@ -199,14 +202,12 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
     return (
       <div className="conf-form" data-testid="conf-form">
         <div className={classes.root}>
-          <Paper className={classes.papers}>
-            <Typography variant="h4" className={classes.text}>
-              Configuration
-            </Typography>
-            <form className={classes.paperSlave}>{this.renderFormSections()}</form>
-            {this.renderUpdateButton()}
-            {this.renderSnackbar()}
-          </Paper>
+          <Typography variant="h4" className={classes.text}>
+            Configuration
+          </Typography>
+          <form className={classes.paperSlave}>{this.renderFormSections()}</form>
+          {this.renderUpdateButton()}
+          {this.renderSnackbar()}
         </div>
       </div>
     );

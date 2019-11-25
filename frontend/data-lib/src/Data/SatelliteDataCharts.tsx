@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import { Typography, Paper } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
+import SatelliteDataChart from './SatelliteDataChart';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -17,29 +17,45 @@ const styles = (theme: Theme) =>
     paper: {
       width: 'auto',
       overflowX: 'auto',
-      margin: theme.spacing(3, 1, 2, 1),
-      border: 'solid',
-      borderWidth: 0.5
+      margin: theme.spacing(2, 1, 2, 1)
     }
   });
 
+interface SatelliteDataChartsProps extends WithStyles<typeof styles> {
+  decodedPackets: { [key: string]: { [key: string]: any }[] };
+  telemetryConfiguration: { [key: string]: { [key: string]: any }[] };
+}
+
 /**
- * Component for showing data charts
+ * Component for showing data charts. Gets data and configuration as props
  */
-class SatelliteDataCharts extends React.Component<WithStyles<typeof styles>> {
+class SatelliteDataCharts extends React.Component<SatelliteDataChartsProps> {
+  renderDataCharts() {
+    const children = [];
+    const { decodedPackets, telemetryConfiguration } = this.props;
+    const { graphs } = telemetryConfiguration;
+    for (let i = 0; i < graphs.length; i += 1) {
+      children.push(
+        <SatelliteDataChart
+          key={i}
+          graphInfo={graphs[i]}
+          decodedPackets={decodedPackets}
+          telemetryConfiguration={telemetryConfiguration}
+        />
+      );
+    }
+    if (children.length === 0) {
+      children.push(<></>);
+    }
+    return children;
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <Typography variant="body1">Sample responsive chart/picture</Typography>
-        <Paper className={classes.paper}>
-          <img
-            className={classes.sampleImage}
-            src="https://en.es-static.us/upl/2019/05/spacewalks-chart.jpg"
-            alt="sampleGraph"
-          />
-        </Paper>
+        <div className={classes.paper}>{this.renderDataCharts()}</div>
       </div>
     );
   }

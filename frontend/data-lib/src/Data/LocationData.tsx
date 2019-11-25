@@ -12,7 +12,8 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(2),
       width: 'auto',
       display: 'flex',
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',
+      border: '1px solid'
     },
     div1: {
       width: '50%'

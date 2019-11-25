@@ -78,9 +78,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
       content = <CircularProgress />;
     } else if (!loading && dataFetchErrored) {
       content = (
-        <Typography variant="h4">
-          Connection to client has failed. Try re-launching the client to solve this.
-        </Typography>
+        <Typography variant="h6">Something went wrong. Sorry :( Try re-launching your client to fix this.</Typography>
       );
     } else if (confFetched) {
       content = (

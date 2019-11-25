@@ -3,3 +3,9 @@
     background: #DCDCDC;
     font-size: 16px;
 }
+html, body {
+    min-height: 100vh;
+    background: #DCDCDC;
+    padding-right: 0 !important;
+    overflow: auto !important;
+}

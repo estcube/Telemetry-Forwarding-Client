@@ -37,7 +37,9 @@
         "linebreak-style": "off",
         "react/jsx-wrap-multilines": "off",
         "react/jsx-props-no-spreading": "off",
+        "react/jsx-one-expression-per-line": "off",
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-ts-ignore": "off",
         "jsx-a11y/label-has-associated-control": [
             "error",
             {

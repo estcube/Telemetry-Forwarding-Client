@@ -17,7 +17,8 @@
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
         "react-leaflet": "^2.4.0",
-        "react-router-dom": "^5.1.2"
+        "react-router-dom": "^5.1.2",
+        "recharts": "^1.8.5"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^4.2.3",
@@ -42,6 +43,7 @@
         "jest": "^24.9.0",
         "node-sass": "^4.12.0",
         "prettier": "^1.18.2",
+        "react-devtools": "^4.2.0",
         "sass-loader": "^8.0.0",
         "style-loader": "^1.0.0",
         "ts-jest": "^24.1.0",
