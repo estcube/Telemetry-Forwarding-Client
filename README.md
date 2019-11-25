@@ -7,17 +7,20 @@ This allows the ESTCube team to receive telemetry data, even when the satellite 
 ## Requirements
 
 * Python 3
+* requests
 * flask
 * flask-cors
 * flas-swagger-ui
 * kaitaistruct
-* bitarray ([Github](https://github.com/ilanschnell/bitarray))
-* kiss ([Github](https://github.com/ampledata/kiss))
+<!-- * bitarray ([Github](https://github.com/ilanschnell/bitarray)) -->
+* kiss ([Use this repository](https://gitlab.com/martmaemees/kiss))
 * apsw ([Github](https://github.com/rogerbinns/apsw)) ([Do not install from PyPI!](https://rogerbinns.github.io/apsw/download.html#easy-install-pip-pypi))
 
-The libraries can be installed with pip (except `apsw`, see the link in list for installation instructions.) (`pip install flask kaitaistruct bitarray kiss flask-cors flask-swagger-ui`)
+The libraries can be installed with pip (except `apsw`, see the link in list for installation instructions.) (`pip install --user flask kaitaistruct flask-cors flask-swagger-ui`)
 
-### Installation on Windows
+For installing kiss, use the forked repository: `pip install --user git+https://gitlab.com/martmaemees/kiss`
+
+<!-- ### Installation on Windows
 
 Installation of the `kiss` package might fail on Windows. If it does clone the fork [https://github.com/martmaemees/aprs](https://github.com/martmaemees/aprs) and run the `setup.py` file
 
@@ -25,7 +28,7 @@ Installation of the `kiss` package might fail on Windows. If it does clone the f
 python setup.py install
 ```
 
-This should properly install the aprs package and the kiss package which it depends on.
+This should properly install the aprs package and the kiss package which it depends on. -->
 
 ## Running
 
