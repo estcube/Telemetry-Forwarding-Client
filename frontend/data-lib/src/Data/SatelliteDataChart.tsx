@@ -4,7 +4,7 @@ import { WithStyles } from '@material-ui/styles';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label, ResponsiveContainer } from 'recharts';
-import { Typography } from '@material-ui/core';
+import { MenuItem, Select, Typography } from '@material-ui/core';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -28,6 +28,8 @@ type SatelliteDataChartState = {
   yAxis: any;
   chartData: { [key: string]: any }[];
   chartLineNames: string[];
+  selectedRange: string;
+  chartDomain: number;
 };
 
 /**
@@ -38,7 +40,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     super(props);
     const { graphInfo } = this.props;
     const { yAxis } = graphInfo;
-    this.state = { yAxis, chartData: [], chartLineNames: [] };
+    this.state = { yAxis, chartData: [], chartLineNames: [], selectedRange: '10', chartDomain: 300 };
   }
 
   componentDidMount(): void {
@@ -47,10 +49,11 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
 
   setChartDataWhenMounted() {
     const { decodedPackets, telemetryConfiguration } = this.props;
-    const localChartData: { [key: string]: any }[] = [];
+    let localChartData: { [key: string]: any }[] = [];
     const { yAxis } = this.state;
     const lineNames: string[] = [];
     let chartYaxisName = '';
+    let bestDomain = 0;
     decodedPackets.packets.forEach(packet => {
       const tempObject: { [key: string]: any } = {};
       tempObject.name = packet.packet_timestamp;
@@ -67,11 +70,18 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
           }
         });
         tempObject[realValueName] = packet.fields[yAxisValue];
+        const value = parseInt(packet.fields[yAxisValue], 10);
+        if (value > bestDomain) bestDomain = value;
         tempObject.unit = chartYaxisName;
       });
       localChartData.push(tempObject);
     });
-    this.setState({ chartData: localChartData, chartLineNames: lineNames });
+    localChartData = localChartData.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+    this.setState({ chartData: localChartData, chartLineNames: lineNames, chartDomain: bestDomain });
   }
 
   static getRandomColor() {
@@ -81,6 +91,34 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  }
+
+  handleRangeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    this.setState({ selectedRange: event.target.value as string });
+  };
+
+  renderChartDataSelection() {
+    const { selectedRange } = this.state;
+    const allSelections = [
+      { value: 10, text: 'last 10' },
+      { value: 20, text: 'last 20' },
+      { value: 30, text: 'last 30' },
+      { value: 40, text: 'last 40' },
+      { value: 50, text: 'last 50' },
+      { value: 'all', text: 'all' }
+    ];
+    return (
+      <Select value={selectedRange} onChange={this.handleRangeChange}>
+        {allSelections.map((value, index) => {
+          return (
+            // eslint-disable-next-line react/no-array-index-key
+            <MenuItem key={index} value={value.value}>
+              {value.text}
+            </MenuItem>
+          );
+        })}
+      </Select>
+    );
   }
 
   renderLines() {
@@ -94,6 +132,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
           type="monotone"
           dataKey={lineName}
           stroke={SatelliteDataChart.getRandomColor()}
+          strokeWidth={2}
           activeDot={{ r: 8 }}
         />
       );
@@ -103,16 +142,20 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
 
   renderChart() {
     const { graphInfo, classes } = this.props;
-    const { chartData } = this.state;
+    const { chartData, selectedRange, chartDomain } = this.state;
+    let modifiedChartData = chartData;
+    if (selectedRange !== 'all') {
+      modifiedChartData = chartData.slice(chartData.length - parseInt(selectedRange, 10), chartData.length);
+    }
     if (graphInfo.type === 'line') {
       return (
         <>
           <Typography className={classes.chartTitle} variant="h6">
-            {graphInfo.title}
+            {graphInfo.title} - {this.renderChartDataSelection()} entries
           </Typography>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
-              data={chartData}
+              data={modifiedChartData}
               margin={{
                 top: 5,
                 right: 30,
@@ -124,7 +167,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
               <XAxis dataKey="name" angle={-60} textAnchor="end" scaleToFit height={150}>
                 <Label value={graphInfo.xAxis} position="top" />
               </XAxis>
-              <YAxis>
+              <YAxis domain={[0, chartDomain]}>
                 <Label value={chartData.length > 0 ? chartData[0].unit : ''} angle={-90} offset={0} position="left" />
               </YAxis>
               <Tooltip />

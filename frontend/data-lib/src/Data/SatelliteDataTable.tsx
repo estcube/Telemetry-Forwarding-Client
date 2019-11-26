@@ -30,9 +30,7 @@ const styles = (theme: Theme) =>
     },
     table: {
       width: '100%'
-    },
-    menuitem: {},
-    select: {}
+    }
   });
 
 interface SatelliteDataTableProps extends WithStyles<typeof styles> {
@@ -123,12 +121,12 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Sateli
 
   renderTabledataSelection() {
     const { selectedPage, allPages } = this.state;
-    const { classes } = this.props;
     return (
-      <Select value={selectedPage} onChange={this.handleTimeChange} className={classes.select}>
-        {allPages.map(page => {
+      <Select value={selectedPage} onChange={this.handleTimeChange}>
+        {allPages.map((page, index) => {
           return (
-            <MenuItem key={page} value={page} className={classes.menuitem}>
+            // eslint-disable-next-line react/no-array-index-key
+            <MenuItem key={index} value={page}>
               {page}
             </MenuItem>
           );
