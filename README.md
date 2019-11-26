@@ -59,6 +59,11 @@ When client is running, you can open your browser, which has to have JavaScript 
 
 The repository contains a sample configuration file `client/configuration.ini.sample`, this should be copied to `client/configuration.ini` and values should be changed to suit your needs.
 
+To run the client, execute `python client/src/main.py`.
+
+If you have built the frontend, you can configure the backend to serve the built files (this will not allow hot-reloading).
+In `configuration.ini`, set the `static-files-path` field to point to the built files relative to the `client/src/main.py` file (default location for dev build is `../../frontend/app/dist/).
+
 #### Mocking the TNC
 
 ```
@@ -86,7 +91,7 @@ To install yarn, head to [yarn download page](https://yarnpkg.com/lang/en/docs/i
 
 To install Node.js, head to [Node.js download page](https://nodejs.org/en/) and follow the instructions there.
 
-##### Running the frontend locally
+#### Running the frontend locally
 
 1.  Open up your preferred terminal window.
 2.  Clone the project into suitable directory by typing `git clone https://gitlab.com/martmaemees/estcube2-telemetry.git`.
@@ -96,3 +101,9 @@ To install Node.js, head to [Node.js download page](https://nodejs.org/en/) and 
 6.  Serve the application by typing `yarn serve`.
 7.  Wait until project is served.
 8.  To open the frontend, open up your preferred Web browser and go to `localhost:3000`.
+
+#### Building the frontend
+
+Once you have installed the frontend dependencies (see previous section) you can build the frontend.
+In the directory `frontend/`, run `yarn build`, to build the application frontend into `frontend/app/dist/`.
+For building the frontend in production mode, use `yarn build:prod`.
