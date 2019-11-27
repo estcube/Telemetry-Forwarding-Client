@@ -1,6 +1,6 @@
 meta:
   id: icp
-  endian: le
+  endian: be
 seq:
   - id: dst
     type: u1
@@ -94,6 +94,11 @@ types:
         type: u1
       - id: sys_stat_com
         type: u1
+    instances:
+      spin_rate_z_calc:
+        value: (spin_rate_z * 720) / 2047
+      tether_current_calc:
+        value: tether_current * 5 / 255
   beacon_payload_safe:
     seq:
       - id: timestamp

@@ -95,18 +95,17 @@ def main():
         i = 0
         while True:
             # ki.write(packets[i % len(packets)])
-            ki.write(gen.generate())
+            ki.write(gen.generate_ax())
             logging.info("Sent message: {}".format(packets[i % len(packets)]))
             i += 1
             time.sleep(2)
 
     except KeyboardInterrupt:
         pass
-    except:
-        pass
+    finally:
+        ki.stop()
 
     logging.info("Exiting kissWriter")
-    ki.stop()
 
 if __name__ == "__main__":
     main()

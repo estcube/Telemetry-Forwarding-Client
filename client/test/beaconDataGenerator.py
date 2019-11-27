@@ -15,11 +15,12 @@ class BeaconGenerator:
     def get_temp(self) -> bytearray:
         return random.randint(20, 240).to_bytes(1, "big")
 
-    
+
 
     def generate_normal_beacon(self) -> bytearray:
         offset = timedelta(minutes=random.randrange(7, 10))
         packet_timestamp = datetime.now() - offset
+        print(packet_timestamp)
 
         f = bytearray()
         f += "N".encode("ascii")
@@ -55,7 +56,7 @@ class BeaconGenerator:
 
         return f
 
-    def generate(self):
+    def generate_icp(self):
         beacon_data = self.generate_normal_beacon()
 
         f = bytearray()
@@ -69,5 +70,9 @@ class BeaconGenerator:
         f.append(0x05) # TODO CRC
         f.append(0x05)
 
-        self.ax.setInfo(f)
+        return f
+
+    def generate_ax(self):
+        icp = self.generate_icp()
+        self.ax.setInfo(icp)
         return self.ax.build()
