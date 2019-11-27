@@ -15,7 +15,7 @@ jobs:
         yarn build:prod
     - name: Package the client
       run: |
-        cd ../client
+        cd client
         sh build.sh
     - name: Archive the production artifact.
       uses: actions/upload-artifact@v1
