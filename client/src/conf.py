@@ -158,9 +158,7 @@ class Configuration(object):
         After setting the value, also overwrites the configuration file with the current
         configuration state after the change.
         """
-        self._log.debug("Acquiring write lock!")
         with self.lock.write_lock:
-            self._log.debug("Acquired write lock!")
             if section not in CONSTRAINTS:
                 raise ValueError("Section {} does not exist.".format(section))
 
@@ -200,7 +198,6 @@ class Configuration(object):
 
             with open(self.config_path, 'w') as configfile:
                 self.config.write(configfile)
-        self._log.debug("Released write lock!")
 
     def get_conf_with_constraints(self):
         """
