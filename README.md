@@ -1,8 +1,12 @@
 # ESTCube2 Telemetry
 
-The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs from around the world, to downlink telemetry data sent by the satellite and
+The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs
+from around the world, to downlink telemetry data sent by the satellite and
 see the received results locally. It should also be able to relay the received packets to Mission Control of ESTCube.
-This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible from Estonia. This is important, because the fly-over times of the satellite are relatively brief. The system will be a cross-platform console application that interfaces with a TNC, which will also serve a web frontend, which handles the displaying of data.
+This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible
+from Estonia. This is important, because the fly-over times of the satellite are relatively brief.
+The system will be a cross-platform console application that interfaces with a TNC and serves a
+frontend for browsers, which handles the displaying of data.
 
 ## Requirements
 
