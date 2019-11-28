@@ -37,7 +37,7 @@ The sample file contains comments explaining what the parameters do.
 The file to execute is `src/main.py` inside the downloaded `build-client` folder, not in the repository folder. This can be done from the command line, if the Python 3 executable is mapped to python:
 
 ```
-python src/main.py
+python3 src/main.py
 ```
 
 When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000` (if port 5000 was not changed in `configuration.ini`) to view the web frontend.
@@ -48,7 +48,7 @@ When client is running, you can open your browser, which has to have JavaScript 
 
 The repository contains a sample configuration file `client/configuration.ini.sample`, this should be copied to `client/configuration.ini` and values should be changed to suit your needs.
 
-To run the client, execute `python client/src/main.py`.
+To run the client, execute `python3 client/src/main.py`.
 
 If you have built the frontend, you can configure the backend to serve the built files (this will not allow hot-reloading).
 In `configuration.ini`, set the `static-files-path` field to point to the built files relative to the `client/src/main.py` file (default location for dev build is `../../frontend/app/dist/).
@@ -56,7 +56,7 @@ In `configuration.ini`, set the `static-files-path` field to point to the built 
 #### Mocking the TNC
 
 ```
-python client/test/kissWriter.py
+python3 client/test/kissWriter.py
 ```
 
 This will set up a simple mocked tnc that will listen for connections on `localhost:3030` and continuously transmit randomly generated beacon data packets through KISS to a connected interface.
