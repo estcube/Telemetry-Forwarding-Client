@@ -5,6 +5,7 @@ import logging
 import time
 import sys
 import signal
+import platform
 from getopt import getopt
 from threading import Thread
 import kiss
@@ -99,9 +100,11 @@ def main(argv):
         conn_tries = 0
         max_conn_tries = int(conf.get_conf("TNC interface", "max-connection-attempts"))
         retry_time = int(conf.get_conf("TNC interface", "connection-retry-time"))
+        connected = False
         while True:
             try:
                 k.start()
+                connected=True
                 break
             except ConnectionRefusedError:
                 _logger.error(
@@ -115,11 +118,19 @@ def main(argv):
                     time.sleep(retry_time)
                 else:
                     _logger.error("Maximum TNC connection retries reached.")
-                    api_thread.join()
+                    break
 
-        k.read(callback=ax_listener.receive)
+        
+        if connected:
+            k.read(callback=ax_listener.receive)
+        else:
+            if platform.system() == "Windows":
+                while api_thread.isAlive: api_thread.join(2)
+            else:
+                api_thread.join()
     finally:
-        k.stop()
+        _logger.debug("Stopping kiss listener.")
+        if connected: k.stop()
 
 if __name__ == "__main__":
     main(sys.argv[1:])
