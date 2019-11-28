@@ -12,13 +12,14 @@ from datetime import datetime
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
+from tnc_pool import TNCPool
 from db_interface import TelemetryDB
 
 # from db_interface import TelemetryDB
 from conf import Configuration
 
 
-def create_app(config: Configuration, static_folder: str) -> Flask:
+def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool) -> Flask:
     """ Creates a flask app for the api. """
 
     db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
@@ -44,7 +45,7 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     def get_packets():
         return {"packets": database.get_telemetry_data()}
 
-    @app.route("/api/telemetry/configuration")
+    @app.route("/api/telemetry/configuration", methods=["GET"])
     def get_telemetry_configuration():
         path = os.path.join(os.path.dirname(__file__),
                 config.get_conf("Client", "telemetry-configuration"))
@@ -53,10 +54,21 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
         file.close()
         return json.loads(tel_conf)
 
-    @app.route("/api/data", methods=["GET"])
-    def getdata():
-        """ Test function. """
-        return jsonify({"timestamp": datetime.now(), "data": {"some dats": "dat"*3}})
+    @app.route("/api/tnc/<name>/check", methods=["GET"])
+    def get_tnc_connection_check(name: str):
+        if tnc_pool is None:
+            return jsonify({"error": "TNC Pool is not defined."}), 500
+
+        res = tnc_pool.check_tnc(name)
+        return jsonify({"name": name, "isAlive": res}), 200
+
+    @app.route("/api/tnc/<name>/stop", methods=["POST"])
+    def post_tnc_connection_stop(name: str):
+        if tnc_pool is None:
+            return jsonify({"error": "TNC Pool is not defined."}), 500
+
+        tnc_pool.stop_tnc(name)
+        return '', 204
 
     @app.route("/api/conf", methods=["GET"])
     def getconf():

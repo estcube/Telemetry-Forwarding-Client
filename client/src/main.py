@@ -76,12 +76,6 @@ def main(argv):
     except ValueError:
         port = 5000 # Default port.
 
-    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
-    # We set the daemon option to True, so that the client will quit once the other threads have
-    #  finished because we don't have a good way of stopping the Flask app properly.
-    api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
-    api_thread.start()
-
     # Set the handler for SIGTERM, so we can exit a bit more gracefully.
     signal.signal(signal.SIGTERM, terminate_handler)
 
@@ -100,6 +94,12 @@ def main(argv):
             int(conf.get_conf("TNC interface", "max-connection-attempts")),
             int(conf.get_conf("TNC interface", "connection-retry-time"))
         ), ax_listener.receive)
+
+    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"), tnc_pool)
+    # We set the daemon option to True, so that the client will quit once the other threads have
+    #  finished because we don't have a good way of stopping the Flask app properly.
+    api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
+    api_thread.start()
 
     try:
         if platform.system() == "Windows":
