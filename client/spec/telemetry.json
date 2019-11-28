@@ -64,6 +64,26 @@
       "type": "int",
       "unit": "Volts",
       "label": "Battery D Temperature"
+    },
+    {
+      "id": "spin_rate_z_calc",
+      "type": "float",
+      "unit": "deg/s",
+      "label": "Spin rate Z"
+    },
+    {
+      "id": "tether_current_calc",
+      "type": "float",
+      "unit": "mA",
+      "label": "Tether Current"
+    },
+    {
+      "id": "sat_mission_phase",
+      "type": "enum",
+      "values": [
+        "Detumbling", "Nadir pointing", "Tether deployment", "E-sail force measurement"
+      ],
+      "label": "Satellite mission phase"
     }
   ],
   "graphs": [

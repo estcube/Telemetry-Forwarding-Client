@@ -1,8 +1,12 @@
 # ESTCube2 Telemetry
 
-The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs from around the world, to downlink telemetry data sent by the satellite and
+The ESTCube-2 telemetry decoder and relay will be open-source software, which allows radio amateurs
+from around the world, to downlink telemetry data sent by the satellite and
 see the received results locally. It should also be able to relay the received packets to Mission Control of ESTCube.
-This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible from Estonia. This is important, because the fly-over times of the satellite are relatively brief. The system will be a cross-platform console application that interfaces with a TNC, which will also serve a web frontend, which handles the displaying of data.
+This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible
+from Estonia. This is important, because the fly-over times of the satellite are relatively brief.
+The system will be a cross-platform console application that interfaces with a TNC and serves a
+frontend for browsers, which handles the displaying of data.
 
 ## Requirements
 
@@ -20,20 +24,9 @@ The libraries can be installed with pip (except `apsw`, see the link in list for
 
 For installing kiss, use the forked repository: `pip install --user git+https://gitlab.com/martmaemees/kiss`
 
-<!-- ### Installation on Windows
-
-Installation of the `kiss` package might fail on Windows. If it does clone the fork [https://github.com/martmaemees/aprs](https://github.com/martmaemees/aprs) and run the `setup.py` file
-
-```
-python setup.py install
-```
-
-This should properly install the aprs package and the kiss package which it depends on. -->
-
 ## Running
 
 The packaged version of the client can be downloaded from the downloads section of the repository, the artifact is named `build-client`. This contains the client python source files, the configuration file and the built static frontend files ready for use.
-**This does not mock the TNC! See more at "Notable Known Bugs" section in Wiki**.
 
 ### Configuration file
 
@@ -48,7 +41,7 @@ The sample file contains comments explaining what the parameters do.
 The file to execute is `src/main.py` inside the downloaded `build-client` folder, not in the repository folder. This can be done from the command line, if the Python 3 executable is mapped to python:
 
 ```
-python src/main.py
+python3 src/main.py
 ```
 
 When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000` (if port 5000 was not changed in `configuration.ini`) to view the web frontend.
@@ -59,7 +52,7 @@ When client is running, you can open your browser, which has to have JavaScript 
 
 The repository contains a sample configuration file `client/configuration.ini.sample`, this should be copied to `client/configuration.ini` and values should be changed to suit your needs.
 
-To run the client, execute `python client/src/main.py`.
+To run the client, execute `python3 client/src/main.py`.
 
 If you have built the frontend, you can configure the backend to serve the built files (this will not allow hot-reloading).
 In `configuration.ini`, set the `static-files-path` field to point to the built files relative to the `client/src/main.py` file (default location for dev build is `../../frontend/app/dist/).
@@ -67,12 +60,12 @@ In `configuration.ini`, set the `static-files-path` field to point to the built 
 #### Mocking the TNC
 
 ```
-python client/test/kissWriter.py
+python3 client/test/kissWriter.py
 ```
 
-This will set up a simple mocked tnc that will listen for connections `localhost:3030` and continuously transmit one sample AX.25 frame through KISS to connected interfaces.
+This will set up a simple mocked tnc that will listen for connections on `localhost:3030` and continuously transmit randomly generated beacon data packets through KISS to a connected interface.
 
-When using this, the client programs (`main.py`) should be exited before the mock server (`kissWriter.py`) to prevent problems.
+When using this, the client programs (`main.py`) should be exited before the mock server (`kissWriter.py`) because when done otherwise, the port the kissWriter uses (3030 by default) might stay unavailable for a few minutes after terminating both programs. (*Known bug with the mock server*)
 
 ### Frontend
 
