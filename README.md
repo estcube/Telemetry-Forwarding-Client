@@ -20,20 +20,9 @@ The libraries can be installed with pip (except `apsw`, see the link in list for
 
 For installing kiss, use the forked repository: `pip install --user git+https://gitlab.com/martmaemees/kiss`
 
-<!-- ### Installation on Windows
-
-Installation of the `kiss` package might fail on Windows. If it does clone the fork [https://github.com/martmaemees/aprs](https://github.com/martmaemees/aprs) and run the `setup.py` file
-
-```
-python setup.py install
-```
-
-This should properly install the aprs package and the kiss package which it depends on. -->
-
 ## Running
 
 The packaged version of the client can be downloaded from the downloads section of the repository, the artifact is named `build-client`. This contains the client python source files, the configuration file and the built static frontend files ready for use.
-**This does not mock the TNC! See more at "Notable Known Bugs" section in Wiki**.
 
 ### Configuration file
 
@@ -70,9 +59,9 @@ In `configuration.ini`, set the `static-files-path` field to point to the built 
 python client/test/kissWriter.py
 ```
 
-This will set up a simple mocked tnc that will listen for connections `localhost:3030` and continuously transmit one sample AX.25 frame through KISS to connected interfaces.
+This will set up a simple mocked tnc that will listen for connections on `localhost:3030` and continuously transmit randomly generated beacon data packets through KISS to a connected interface.
 
-When using this, the client programs (`main.py`) should be exited before the mock server (`kissWriter.py`) to prevent problems.
+When using this, the client programs (`main.py`) should be exited before the mock server (`kissWriter.py`) because when done otherwise, the port the kissWriter uses (3030 by default) might stay unavailable for a few minutes after terminating both programs. (*Known bug with the mock server*)
 
 ### Frontend
 
