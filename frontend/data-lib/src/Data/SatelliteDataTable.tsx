@@ -166,7 +166,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Sateli
     return (
       <>
         <Typography className={classes.tableHeader} variant="h6">
-          Data from {this.renderTabledataSelection()}
+          Data on {this.renderTabledataSelection()}
         </Typography>
         <Table className={classes.table} size="small">
           <TableHead>

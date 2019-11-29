@@ -39,7 +39,6 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
       .finally(() => this.setState({ loading: false }));
   };
 
-  // eslint-disable-next-line class-methods-use-this
   postConfValues = (event: any, data: { [key: string]: { [key: string]: any } }) => {
     event.preventDefault();
     this.setState({ confPostLoading: true });

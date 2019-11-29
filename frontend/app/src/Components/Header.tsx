@@ -7,8 +7,7 @@ import {
   withStyles,
   Toolbar,
   WithStyles,
-  Checkbox,
-  FormControlLabel
+  CircularProgress
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
@@ -40,6 +39,8 @@ type HeaderState = {
   isAtConfPage: boolean;
   interval: any;
   fetchedOnce: boolean;
+  postFailed: boolean;
+  posting: boolean;
 };
 
 /**
@@ -58,7 +59,9 @@ class Header extends React.Component<WithStyles<typeof styles>, HeaderState> {
       dataFetchedFirstTime: false,
       // eslint-disable-next-line react/no-unused-state
       interval: null,
-      fetchedOnce: false
+      fetchedOnce: false,
+      postFailed: false,
+      posting: false
     };
   }
 
@@ -102,6 +105,7 @@ class Header extends React.Component<WithStyles<typeof styles>, HeaderState> {
   };
 
   postConfValues = (data: { [key: string]: { [key: string]: any } }) => {
+    this.setState({ postFailed: false, posting: true });
     const dataObject = Object.assign(
       {},
       ...Object.entries(data).map(([sectionKey, section]) => ({
@@ -112,46 +116,69 @@ class Header extends React.Component<WithStyles<typeof styles>, HeaderState> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dataObject)
-    });
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .catch(() => {
+        const { confObject } = this.state;
+        const copyOfConfObject = JSON.parse(JSON.stringify(confObject));
+        if (copyOfConfObject['Mission Control']['relay-enabled'].value) {
+          copyOfConfObject['Mission Control']['relay-enabled'].value = 'False';
+        } else {
+          copyOfConfObject['Mission Control']['relay-enabled'].value = 'True';
+        }
+        this.setState({ confObject: copyOfConfObject, postFailed: true });
+      })
+      .finally(() => this.setState({ posting: false }));
   };
 
-  handleRelayChange(event: any, confElemName: string, sectionName: string) {
+  handleRelayChange(event: any, currentValue: boolean) {
+    event.preventDefault();
     const { confObject } = this.state;
     const copyOfConfObject = JSON.parse(JSON.stringify(confObject));
-    if (event.target.checked) {
-      copyOfConfObject[sectionName][confElemName].value = 'True';
+    if (currentValue) {
+      copyOfConfObject['Mission Control']['relay-enabled'].value = 'False';
     } else {
-      copyOfConfObject[sectionName][confElemName].value = 'False';
+      copyOfConfObject['Mission Control']['relay-enabled'].value = 'True';
     }
     this.setState({ confObject: copyOfConfObject });
     this.postConfValues(copyOfConfObject);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   renderRelaySwitch() {
-    const { loadingFirstTime, dataFetchErrored, confObject, dataFetchedFirstTime } = this.state;
+    const { loadingFirstTime, posting, dataFetchErrored, confObject, dataFetchedFirstTime, postFailed } = this.state;
     if (!loadingFirstTime && !dataFetchErrored && dataFetchedFirstTime) {
       let { value } = confObject['Mission Control']['relay-enabled'];
       value = value === 'True' || value === true;
-      const requiresRestart = !!confObject['Mission Control']['relay-enabled'].requiresRestart;
-      const relayLabel = confObject['Mission Control']['relay-enabled'].label;
+      if (value === true) {
+        return (
+          <>
+            {posting ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              <Button color="primary" variant="contained" onClick={event => this.handleRelayChange(event, value)}>
+                Turn relay {posting ? 'on' : 'off'}
+              </Button>
+            )}
+            {postFailed && <p>There was an error, whilst turning relay off</p>}
+          </>
+        );
+      }
       return (
-        <FormControlLabel
-          control={
-            <Checkbox
-              required={requiresRestart}
-              checked={value}
-              id="relay-enabled"
-              onChange={event => this.handleRelayChange(event, 'relay-enabled', 'Mission Control')}
-              value={value}
-              style={{ color: '#54ebff' }}
-              inputProps={{
-                'aria-label': 'primary checkbox'
-              }}
-            />
-          }
-          label={relayLabel}
-        />
+        <>
+          {posting ? (
+            <CircularProgress color="secondary" />
+          ) : (
+            <Button color="primary" variant="contained" onClick={event => this.handleRelayChange(event, value)}>
+              Turn relay {posting ? 'off' : 'on'}
+            </Button>
+          )}
+          {postFailed && <p>There was an error, whilst turning relay on</p>}
+        </>
       );
     }
     return <></>;
@@ -167,7 +194,7 @@ class Header extends React.Component<WithStyles<typeof styles>, HeaderState> {
             <Box width={1 / 3}>
               <Link to="/">
                 <Button className={classes.linkButton} color="default">
-                  EstCube 2 Telemetry
+                  Telemetry client
                 </Button>
               </Link>
             </Box>

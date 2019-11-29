@@ -36,6 +36,20 @@ const ConfigurationFormTextField = ({
   textChangeHandler,
   confElemType
 }: ConfigurationFormTextFieldProps) => {
+  const isNumber = (toCheck: string) => {
+    return /^(0|[1-9][0-9]*)(\.|,)?[0-9]*$/.test(toCheck);
+  };
+  // Validate if field contains only numbers or is a string
+  const localTextChangeHandler = (event: any) => {
+    const { value } = event.target;
+    if (confElemType === 'int' || confElemType === 'float') {
+      if (isNumber(value)) {
+        textChangeHandler(event);
+      }
+    } else {
+      textChangeHandler(event);
+    }
+  };
   const classes = useStyles();
 
   const renderField = (isRecursive: boolean) => {
@@ -48,7 +62,7 @@ const ConfigurationFormTextField = ({
           required={confElemRequiresRestart}
           label={confElemName}
           className={classes.textField}
-          onChange={textChangeHandler}
+          onChange={localTextChangeHandler}
           margin="normal"
           value={confElemValue}
         />
