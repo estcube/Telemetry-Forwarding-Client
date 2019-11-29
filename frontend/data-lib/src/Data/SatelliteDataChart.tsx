@@ -15,6 +15,12 @@ const styles = (theme: Theme) =>
       border: '1px solid',
       borderRadius: 5,
       margin: theme.spacing(1)
+    },
+    legend: {
+      '&:hover': {
+        cursor: 'pointer'
+      },
+      color: 'red'
     }
   });
 
@@ -30,6 +36,8 @@ type SatelliteDataChartState = {
   chartLineNames: string[];
   selectedRange: string;
   chartDomain: number;
+  lineVisibility: { [key: string]: any }[];
+  highlightedLine: string | null;
 };
 
 /**
@@ -40,7 +48,15 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     super(props);
     const { graphInfo } = this.props;
     const { yAxis } = graphInfo;
-    this.state = { yAxis, chartData: [], chartLineNames: [], selectedRange: '10', chartDomain: 300 };
+    this.state = {
+      lineVisibility: [],
+      yAxis,
+      chartData: [],
+      chartLineNames: [],
+      selectedRange: '10',
+      chartDomain: 300,
+      highlightedLine: null
+    };
   }
 
   componentDidMount(): void {
@@ -81,21 +97,93 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
       if (a.name > b.name) return 1;
       return 0;
     });
-    this.setState({ chartData: localChartData, chartLineNames: lineNames, chartDomain: bestDomain });
+    const visibilityTempObject = lineNames.map(lineName => {
+      return { lineName, visibility: true };
+    });
+    this.setState({
+      lineVisibility: visibilityTempObject,
+      chartData: localChartData,
+      chartLineNames: lineNames,
+      chartDomain: bestDomain
+    });
   }
 
-  static getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i += 1) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  static getColor(index: number) {
+    const colours = [
+      '#e6194b',
+      '#3cb44b',
+      '#ffe119',
+      '#4363d8',
+      '#f58231',
+      '#911eb4',
+      '#46f0f0',
+      '#f032e6',
+      '#bcf60c',
+      '#fabebe',
+      '#008080',
+      '#e6beff',
+      '#9a6324',
+      '#fffac8',
+      '#800000',
+      '#aaffc3',
+      '#808000',
+      '#ffd8b1',
+      '#000075',
+      '#808080',
+      '#000000'
+    ];
+    return colours[index];
   }
 
   handleRangeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     this.setState({ selectedRange: event.target.value as string });
   };
+
+  restoreVisibility() {
+    const { lineVisibility } = this.state;
+    const newVisibility: { [key: string]: any }[] = lineVisibility.map(line => {
+      return {
+        lineName: line.lineName,
+        visibility: true
+      };
+    });
+    return newVisibility;
+  }
+
+  hideOtherLines(e: any) {
+    const { lineVisibility, highlightedLine } = this.state;
+    let newVisibility: { [key: string]: any }[];
+    if (!highlightedLine) {
+      newVisibility = lineVisibility.map(line => {
+        if (line.lineName !== e.dataKey) {
+          return {
+            lineName: line.lineName,
+            visibility: !line.visibility
+          };
+        }
+        return line;
+      });
+      this.setState({ highlightedLine: e.dataKey });
+    } else if (highlightedLine === e.dataKey) {
+      newVisibility = this.restoreVisibility();
+      this.setState({ highlightedLine: null });
+    } else {
+      newVisibility = lineVisibility.map(line => {
+        if (line.lineName !== e.dataKey) {
+          return {
+            lineName: line.lineName,
+            visibility: false
+          };
+        }
+        return {
+          lineName: line.lineName,
+          visibility: true
+        };
+      });
+      this.setState({ highlightedLine: e.dataKey });
+    }
+    this.setState({ lineVisibility: newVisibility });
+  }
 
   renderChartDataSelection() {
     const { selectedRange } = this.state;
@@ -122,18 +210,26 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
   }
 
   renderLines() {
-    const { chartLineNames } = this.state;
+    const { chartLineNames, lineVisibility } = this.state;
     const children: any[] = [];
-    chartLineNames.forEach((lineName: string) => {
+    chartLineNames.forEach((lineName: string, index: number) => {
+      let show = false;
+      lineVisibility.forEach(line => {
+        if (line.lineName === lineName) {
+          show = line.visibility;
+        }
+      });
       children.push(
         <Line
           key={lineName}
           name={lineName}
           type="monotone"
           dataKey={lineName}
-          stroke={SatelliteDataChart.getRandomColor()}
+          stroke={SatelliteDataChart.getColor(index)}
           strokeWidth={2}
           activeDot={{ r: 8 }}
+          ref={lineName}
+          opacity={show ? 1 : 0}
         />
       );
     });
@@ -171,7 +267,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
                 <Label value={chartData.length > 0 ? chartData[0].unit : ''} angle={-90} offset={0} position="left" />
               </YAxis>
               <Tooltip />
-              <Legend />
+              <Legend onClick={(event: any) => this.hideOtherLines(event)} />
               {this.renderLines()}
             </LineChart>
           </ResponsiveContainer>
