@@ -8,7 +8,6 @@ Does not include any authentication, so should not be open to the external netwo
 import sys
 import os
 import json
-from datetime import datetime
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -113,17 +112,8 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool) -> 
 
     return app
 
-
-
-# # @app.route('/post', methods=['POST'])
-# # def addConf():
-# #     some_json = request.get_json("Data")
-# #     print(some_json)
-# #     return jsonify(some_json), 201
-
-
 if __name__ == '__main__':
     CONF_PATH = os.path.join(os.path.dirname(__file__), "../configuration.ini")
     STATIC_PATH = os.path.join(os.path.dirname(__file__), "../static")
-    APP = create_app(Configuration(CONF_PATH), STATIC_PATH)
+    APP = create_app(Configuration(CONF_PATH), STATIC_PATH, None)
     APP.run(debug=True)
