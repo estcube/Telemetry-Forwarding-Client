@@ -108,10 +108,11 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
     return Object.keys(confSectionValues).map(confElemName => {
       const confElemParams = confSectionValues[confElemName];
       const confElemType = confElemParams.type;
-      const confElemValue = confElemParams.value ? confElemParams.value : '';
+      const confElemValue = confElemParams.value || '';
       const confElemRequiresRestart = !!confElemParams.requiresRestart;
       const confElemLabel = confElemParams.label;
       const confElemIsHidden = confElemParams.hidden;
+      const confElemDescription = confElemParams.description || '';
       if (!confElemIsHidden) {
         if (confElemType === 'str' || confElemType === 'int' || confElemType === 'float') {
           return (
@@ -122,6 +123,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
               confElemName={confElemLabel}
               confElemRequiresRestart={confElemRequiresRestart}
               confElemValue={confElemValue}
+              confElemDescription={confElemDescription}
             />
           );
         }
@@ -137,6 +139,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
               confElemName={confElemLabel}
               confElemRequiresRestart={confElemRequiresRestart}
               confElemValue={value}
+              confElemDescription={confElemDescription}
             />
           );
         }
@@ -156,6 +159,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
               confElemName={confElemLabel}
               confElemOptions={confElemOptionsObject}
               confElemDisabledOptions={confElemDisabledOptions}
+              confElemDescription={confElemDescription}
             />
           );
         }

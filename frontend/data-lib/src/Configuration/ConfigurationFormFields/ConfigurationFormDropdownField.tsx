@@ -21,6 +21,7 @@ type ConfigurationFormDropdownFieldProps = {
   confElemRequiresRestart: boolean;
   confElemValue: string;
   confElemName: string;
+  confElemDescription: string;
   confElemOptions: { [key: string]: any };
   confElemDisabledOptions: Array<string>;
   dropdownChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,6 +35,7 @@ type ConfigurationFormDropdownFieldProps = {
  * @param confElemOptions array of objects
  * @param dropdownChangeHandler callback function
  * @param confElemDisabledOptions array
+ * @param confElemDescription string
  * @constructor
  */
 const ConfigurationFormDropdownField = ({
@@ -42,7 +44,8 @@ const ConfigurationFormDropdownField = ({
   confElemName,
   confElemOptions,
   dropdownChangeHandler,
-  confElemDisabledOptions
+  confElemDisabledOptions,
+  confElemDescription
 }: ConfigurationFormDropdownFieldProps) => {
   const classes = useStyles();
 
@@ -60,6 +63,7 @@ const ConfigurationFormDropdownField = ({
           onChange={dropdownChangeHandler}
           margin="normal"
           value={confElemValue}
+          helperText={confElemDescription}
         >
           {confElemOptions.map((option: any) => (
             <MenuItem key={option.value} value={option.value} disabled={confElemDisabledOptions.includes(option.value)}>

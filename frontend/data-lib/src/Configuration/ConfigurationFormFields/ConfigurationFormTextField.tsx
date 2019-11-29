@@ -18,6 +18,7 @@ type ConfigurationFormTextFieldProps = {
   confElemValue: string;
   confElemName: string;
   confElemType: string;
+  confElemDescription: string;
   textChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 /**
@@ -27,6 +28,7 @@ type ConfigurationFormTextFieldProps = {
  * @param confElemName string
  * @param textChangeHandler callback function
  * @param confElemType  string
+ * @param confElemDescription string
  * @constructor
  */
 const ConfigurationFormTextField = ({
@@ -34,10 +36,11 @@ const ConfigurationFormTextField = ({
   confElemValue,
   confElemName,
   textChangeHandler,
-  confElemType
+  confElemType,
+  confElemDescription
 }: ConfigurationFormTextFieldProps) => {
   const isNumber = (toCheck: string) => {
-    return /^(0|[1-9][0-9]*)(\.|,)?[0-9]*$/.test(toCheck);
+    return /^((0|[1-9][0-9]*)(\.|,)?[0-9]*)|(?![\s\S])$/.test(toCheck);
   };
   // Validate if field contains only numbers or is a string
   const localTextChangeHandler = (event: any) => {
@@ -65,6 +68,7 @@ const ConfigurationFormTextField = ({
           onChange={localTextChangeHandler}
           margin="normal"
           value={confElemValue}
+          helperText={confElemDescription}
         />
       );
     }
