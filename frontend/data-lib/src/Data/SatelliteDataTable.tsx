@@ -21,7 +21,7 @@ const styles = (theme: Theme) =>
     paper: {
       width: 'auto',
       overflowX: 'auto',
-      margin: theme.spacing(3, 1, 2, 1),
+      margin: theme.spacing(3, 2, 2, 2),
       border: 'solid',
       borderWidth: 0.5
     },

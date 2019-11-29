@@ -7,21 +7,21 @@ import SatelliteDataTable from './SatelliteDataTable';
 
 const styles = (theme: Theme) =>
   createStyles({
-    paperLeft: {
+    paperTop: {
       padding: 1,
-      margin: theme.spacing(0, 1, 2, 2),
-      width: '50%',
+      margin: theme.spacing(0, 2, 2, 2),
       border: '1px solid'
     },
-    paperRight: {
+    paperBottom: {
       padding: 1,
       // Top, right, bottom, left
-      margin: theme.spacing(0, 2, 2, 1),
-      width: '50%',
+      margin: theme.spacing(0, 2, 2, 2),
       border: '1px solid'
     },
     box: {
-      position: 'absolute'
+      position: 'absolute',
+      width: '100%',
+      marginRight: theme.spacing(5)
     }
   });
 
@@ -39,11 +39,11 @@ class SatelliteData extends React.Component<SatelliteDataProps> {
 
     return (
       <div>
-        <Box display="flex" flexDirection="row" width="100%" className={classes.box}>
-          <Paper className={classes.paperLeft}>
+        <Box width="100%" className={classes.box}>
+          <Paper className={classes.paperTop}>
             <SatelliteDataCharts decodedPackets={decodedPackets} telemetryConfiguration={telemetryConfiguration} />
           </Paper>
-          <Paper className={classes.paperRight}>
+          <Paper className={classes.paperBottom}>
             <SatelliteDataTable decodedPackets={decodedPackets} telemetryConfiguration={telemetryConfiguration} />
           </Paper>
         </Box>

@@ -19,7 +19,7 @@ class BeaconGenerator:
 
     def generate_normal_beacon(self) -> bytearray:
         offset = timedelta(minutes=random.randrange(7, 10))
-        packet_timestamp = datetime.now() - offset
+        packet_timestamp = datetime.utcnow() - offset
         print(packet_timestamp)
 
         f = bytearray()

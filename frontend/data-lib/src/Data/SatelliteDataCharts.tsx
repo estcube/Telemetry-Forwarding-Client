@@ -8,12 +8,6 @@ const styles = (theme: Theme) =>
     root: {
       width: '100%'
     },
-    sampleImage: {
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(2),
-      width: '100%',
-      height: 'auto'
-    },
     paper: {
       width: 'auto',
       overflowX: 'auto',

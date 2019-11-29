@@ -3,8 +3,9 @@ import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Label, ResponsiveContainer } from 'recharts';
-import { MenuItem, Select, Typography } from '@material-ui/core';
+import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Typography } from '@material-ui/core';
+import DateTimePicker from './DateTimePicker';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -16,12 +17,7 @@ const styles = (theme: Theme) =>
       borderRadius: 5,
       margin: theme.spacing(1)
     },
-    legend: {
-      '&:hover': {
-        cursor: 'pointer'
-      },
-      color: 'red'
-    }
+    legend: {}
   });
 
 interface SatelliteDataChartProps extends WithStyles<typeof styles> {
@@ -34,10 +30,11 @@ type SatelliteDataChartState = {
   yAxis: any;
   chartData: { [key: string]: any }[];
   chartLineNames: string[];
-  selectedRange: string;
   chartDomain: number;
   lineVisibility: { [key: string]: any }[];
   highlightedLine: string | null;
+  toDate: string;
+  fromDate: string;
 };
 
 /**
@@ -48,14 +45,18 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     super(props);
     const { graphInfo } = this.props;
     const { yAxis } = graphInfo;
+    const now = new Date();
+    const anotherDate = new Date();
+    const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
     this.state = {
       lineVisibility: [],
       yAxis,
       chartData: [],
       chartLineNames: [],
-      selectedRange: '10',
       chartDomain: 300,
-      highlightedLine: null
+      highlightedLine: null,
+      toDate: now.toISOString(),
+      fromDate: oneDayAgo.toISOString()
     };
   }
 
@@ -72,7 +73,9 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     let bestDomain = 0;
     decodedPackets.packets.forEach(packet => {
       const tempObject: { [key: string]: any } = {};
-      tempObject.name = packet.packet_timestamp;
+      const name = packet.packet_timestamp.replace('T', ' ');
+      tempObject.name = name;
+      tempObject.timestamp = packet.packet_timestamp;
       yAxis.forEach((yAxisValue: string) => {
         const telemetryFields: { [key: number]: any } = telemetryConfiguration.fields;
         let realValueName = '';
@@ -93,8 +96,8 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
       localChartData.push(tempObject);
     });
     localChartData = localChartData.sort((a, b) => {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
+      if (a.timestamp < b.timestamp) return -1;
+      if (a.timestamp > b.timestamp) return 1;
       return 0;
     });
     const visibilityTempObject = lineNames.map(lineName => {
@@ -135,19 +138,9 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     return colours[index];
   }
 
-  handleRangeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    this.setState({ selectedRange: event.target.value as string });
-  };
-
-  restoreVisibility() {
-    const { lineVisibility } = this.state;
-    const newVisibility: { [key: string]: any }[] = lineVisibility.map(line => {
-      return {
-        lineName: line.lineName,
-        visibility: true
-      };
-    });
-    return newVisibility;
+  getSelectedDataInWindow() {
+    const { fromDate, toDate, chartData } = this.state;
+    return chartData.filter(dataElement => dataElement.timestamp <= toDate && dataElement.timestamp >= fromDate);
   }
 
   hideOtherLines(e: any) {
@@ -185,27 +178,36 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     this.setState({ lineVisibility: newVisibility });
   }
 
+  restoreVisibility() {
+    const { lineVisibility } = this.state;
+    const newVisibility: { [key: string]: any }[] = lineVisibility.map(line => {
+      return {
+        lineName: line.lineName,
+        visibility: true
+      };
+    });
+    return newVisibility;
+  }
+
+  customHandle(e: any, version: string) {
+    if (version === 'to') {
+      this.setState({ toDate: new Date(e).toISOString() });
+    } else {
+      this.setState({ fromDate: new Date(e).toISOString() });
+    }
+  }
+
   renderChartDataSelection() {
-    const { selectedRange } = this.state;
-    const allSelections = [
-      { value: 10, text: 'last 10' },
-      { value: 20, text: 'last 20' },
-      { value: 30, text: 'last 30' },
-      { value: 40, text: 'last 40' },
-      { value: 50, text: 'last 50' },
-      { value: 'all', text: 'all' }
-    ];
+    const { toDate, fromDate } = this.state;
     return (
-      <Select value={selectedRange} onChange={this.handleRangeChange}>
-        {allSelections.map((value, index) => {
-          return (
-            // eslint-disable-next-line react/no-array-index-key
-            <MenuItem key={index} value={value.value}>
-              {value.text}
-            </MenuItem>
-          );
-        })}
-      </Select>
+      <>
+        <DateTimePicker
+          defaultValue={fromDate}
+          label="From"
+          dateChangeHandler={(e: any) => this.customHandle(e, 'from')}
+        />
+        <DateTimePicker defaultValue={toDate} label="To" dateChangeHandler={(e: any) => this.customHandle(e, 'to')} />
+      </>
     );
   }
 
@@ -238,16 +240,20 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
 
   renderChart() {
     const { graphInfo, classes } = this.props;
-    const { chartData, selectedRange, chartDomain } = this.state;
-    let modifiedChartData = chartData;
-    if (selectedRange !== 'all') {
-      modifiedChartData = chartData.slice(chartData.length - parseInt(selectedRange, 10), chartData.length);
+    const { chartDomain } = this.state;
+    let modifiedChartData = this.getSelectedDataInWindow();
+    const modifiedDataLength = modifiedChartData.length;
+    if (modifiedDataLength > 100) {
+      modifiedChartData = modifiedChartData.slice(modifiedDataLength - 100, modifiedDataLength);
     }
+
     if (graphInfo.type === 'line') {
       return (
         <>
           <Typography className={classes.chartTitle} variant="h6">
-            {graphInfo.title} - {this.renderChartDataSelection()} entries
+            {graphInfo.title}
+            <br />
+            {this.renderChartDataSelection()}
           </Typography>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart
@@ -264,7 +270,12 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
                 <Label value={graphInfo.xAxis} position="top" />
               </XAxis>
               <YAxis domain={[0, chartDomain]}>
-                <Label value={chartData.length > 0 ? chartData[0].unit : ''} angle={-90} offset={0} position="left" />
+                <Label
+                  value={modifiedChartData.length > 0 && modifiedChartData[0] ? modifiedChartData[0].unit : ''}
+                  angle={-90}
+                  offset={0}
+                  position="left"
+                />
               </YAxis>
               <Tooltip />
               <Legend onClick={(event: any) => this.hideOtherLines(event)} />
