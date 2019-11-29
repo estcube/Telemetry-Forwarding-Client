@@ -55,11 +55,13 @@ class AXListener(object):
 
         recv_time = datetime.now()
 
-        if self.clean_frames:
-            clean_frame = self.clean_frame(frame)
-        else:
-            # Supposedly the TNC outputs clean frames.
-            clean_frame = frame[1:-1]
+        # if self.clean_frames:
+        #     clean_frame = self.clean_frame(frame)
+        # else:
+        #     # Supposedly the TNC outputs clean frames.
+        #     clean_frame = frame[1:-1]
+
+        clean_frame = frame[1:-1]
 
         # Destination and source address parsing.
         (dest, _, is_last) = self.extract_address(clean_frame[:7])
@@ -137,6 +139,8 @@ class AXListener(object):
         return (addr, frame_part[-1], is_last)
 
 
+    # Commented out to remove the need to have bitarray installed.
+    # According to the client, the TNC will output already cleaned frames.
     # def clean_frame(self, frame: bytearray) -> bytearray:
     #     """Removes the extra bits resulting from bitstuffing
     #     and the bytes marking the start and end of the frame."""
