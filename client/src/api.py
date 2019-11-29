@@ -13,12 +13,14 @@ from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from tnc_pool import TNCPool
 from db_interface import TelemetryDB
+from sids_relay import SIDSRelay
 
 # from db_interface import TelemetryDB
 from conf import Configuration
 
 
-def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool) -> Flask:
+def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
+               sids_relay: SIDSRelay) -> Flask:
     """ Creates a flask app for the api. """
 
     db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
@@ -39,6 +41,10 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool) -> 
     )
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
     # end swagger specific
+
+    @app.route("/api/sids/status", methods=["GET"])
+    def get_sids_status():
+        return jsonify(sids_relay.get_status()), 200
 
     @app.route("/api/telemetry/packets", methods=["GET"])
     def get_packets():

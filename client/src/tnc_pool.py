@@ -52,10 +52,13 @@ class TCPKISSThread(TNCThread):
         self.kiss = kiss.TCPKISS(conn_conf.ip, conn_conf.port, strip_df_start=True)
         self.conn_conf = conn_conf
         self.callback = callback
+        self.stop_signal = False
 
     def run(self):
         conn_tries = 0
         while True:
+            if self.stop_signal:
+                return
             try:
                 self.kiss.start()
                 break
@@ -80,6 +83,7 @@ class TCPKISSThread(TNCThread):
             self.kiss.stop()
 
     def stop(self):
+        self.stop_signal = True
         self.kiss.stop_read()
 
 class TNCPool():

@@ -65,12 +65,12 @@ class AXListener(object):
 
         # Destination and source address parsing.
         (dest, _, is_last) = self.extract_address(clean_frame[:7])
-        self._logger.debug("Destination: %s\tIs last: %s", dest, is_last)
+        # self._logger.debug("Destination: %s\tIs last: %s", dest, is_last)
         if is_last:
             self._logger.warning("Destination address had the 'last address' bit set.")
             return
         (source, _, is_last) = self.extract_address(clean_frame[7:14])
-        self._logger.debug("Source: %s\tIs last: %s", source, is_last)
+        # self._logger.debug("Source: %s\tIs last: %s", source, is_last)
 
         # TODO: Check the source is ESTCube-2.
 
@@ -89,11 +89,11 @@ class AXListener(object):
 
         # Pointer to the current byte
         byte_pointer = 7 * (i+2)
-        self._logger.debug("Byte pointer: %i", byte_pointer)
+        # self._logger.debug("Byte pointer: %i", byte_pointer)
 
         # Control byte
         control = clean_frame[byte_pointer]
-        self._logger.debug("Control frame: %d", control)
+        # self._logger.debug("Control frame: %d", control)
         if control & 0x3 != 0x3:
             self._logger.info("Read an AX.25 frame that is not an UI Frame. Discarding..")
             return
@@ -113,7 +113,7 @@ class AXListener(object):
         # Send Frame obj to callbacks.
         ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, fcs, clean_frame,
                            recv_time)
-        self._logger.debug(ax_frame)
+        # self._logger.debug(ax_frame)
 
         for callback in self.callbacks:
             callback(ax_frame)

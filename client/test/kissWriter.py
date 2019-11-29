@@ -98,7 +98,7 @@ def main():
             ki.write(gen.generate_ax())
             logging.info("Sent message: {}".format(packets[i % len(packets)]))
             i += 1
-            time.sleep(0.25)
+            time.sleep(3)
 
     except KeyboardInterrupt:
         pass

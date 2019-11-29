@@ -95,7 +95,8 @@ def main(argv):
             int(conf.get_conf("TNC interface", "connection-retry-time"))
         ), ax_listener.receive)
 
-    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"), tnc_pool)
+    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"), tnc_pool,
+                             sids_relay)
     # We set the daemon option to True, so that the client will quit once the other threads have
     #  finished because we don't have a good way of stopping the Flask app properly.
     api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
