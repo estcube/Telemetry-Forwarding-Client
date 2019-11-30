@@ -25,19 +25,26 @@ enum SIDSStatusType {
   UNKNOWN_EXCEPTION = 'UNKNOWN_EXCEPTION'
 }
 
+enum TNCStatusType {
+  CONNECTING = 'CONNECTING',
+  CONNECTED = 'CONNECTED',
+  DISCONNECTING = 'DISCONNECTING',
+  DISCONNECTED = 'DISCONNECTED'
+}
+
 interface SIDSStatus {
   lastStatus: SIDSStatusType;
   requestCount: number;
 }
 
 interface TNCCheck {
-  isAlive: boolean;
+  status: TNCStatusType;
   name: string;
 }
 
 interface TNCStatusState {
   sidsStatus: SIDSStatus | null;
-  tncAlive: boolean;
+  tncStatus: TNCStatusType | null;
   sidsTimeout?: number;
   tncTimeout?: number;
   tncBtnEnabled: boolean;
@@ -47,15 +54,18 @@ const styles = () =>
   createStyles({
     row: {
       display: 'flex',
-      'flex-direction': 'row',
-      'align-items': 'center',
-      'margin-top': 6
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 6
     },
     rowFill: {
       'flex-grow': 1
     },
     lowerPadding: {
-      padding: '10 14'
+      padding: '6px 14px',
+      '&:last-child': {
+        paddingBottom: 10
+      }
     }
   });
 
@@ -66,7 +76,7 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
     super(props);
     this.state = {
       sidsStatus: null,
-      tncAlive: false,
+      tncStatus: null,
       tncBtnEnabled: true
     };
   }
@@ -86,21 +96,25 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
     fetch('/api/sids/status')
       .then(res => res.json() as Promise<SIDSStatus>)
       .then((res: SIDSStatus) => {
+        this.setState({ sidsStatus: res });
+      })
+      .finally(() => {
         if (keepGoing) {
           const sidsTimeout = window.setTimeout(this.checkSidsStatus, CHECK_TIMER);
-          this.setState({ sidsStatus: res, sidsTimeout });
-        } else {
-          this.setState({ sidsStatus: res });
+          this.setState({ sidsTimeout });
         }
       });
   };
 
   checkTNCStatus = () => {
-    fetch('/api/tnc/Main/check')
+    fetch('/api/tnc/Main/status')
       .then(res => res.json() as Promise<TNCCheck>)
       .then((res: TNCCheck) => {
+        this.setState({ tncStatus: res.status, tncBtnEnabled: true });
+      })
+      .finally(() => {
         const tncTimeout = window.setTimeout(this.checkTNCStatus, CHECK_TIMER);
-        this.setState({ tncAlive: res.isAlive, tncTimeout, tncBtnEnabled: true });
+        this.setState({ tncTimeout });
       });
   };
 
@@ -118,19 +132,23 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
     this.checkSidsStatus(false);
   };
 
-  handleTncToggle = () => {
-    const { tncAlive } = this.state;
-    if (tncAlive) {
-      fetch('/api/tnc/Main/stop', { method: 'POST' });
-      this.setState({ tncBtnEnabled: false });
-    } else {
-      // TODO
-    }
+  handleTncStop = () => {
+    fetch('/api/tnc/Main/stop', { method: 'POST' }).then(() => {
+      this.setState({ tncStatus: TNCStatusType.DISCONNECTING });
+    });
+    this.setState({ tncBtnEnabled: false });
   };
 
+  handleTncStart = () => {
+    // TODO No endpoint yet.
+  };
+
+  // TODO: Redirect to configuration page.
   render() {
     const { classes } = this.props;
-    const { sidsStatus, tncAlive, tncBtnEnabled } = this.state;
+    const { sidsStatus, tncStatus, tncBtnEnabled } = this.state;
+    const tncAlive = tncStatus === TNCStatusType.CONNECTED || tncStatus === TNCStatusType.CONNECTING;
+    const tncBtnDisabled = !tncBtnEnabled || tncStatus === TNCStatusType.DISCONNECTING;
 
     return (
       <Card>
@@ -142,13 +160,20 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
                 Main TNC
               </Typography>
               <Typography variant="subtitle1" color="textSecondary">
-                {tncAlive ? 'Connected' : 'Not connected'}
+                {/* {tncAlive ? 'Connected' : 'Not connected'} */}
+                {tncStatus}
               </Typography>
             </div>
             <div className={classes.rowFill} />
-            <IconButton disabled={!tncBtnEnabled} onClick={this.handleTncToggle}>
-              {tncAlive ? <StopIcon /> : <PlayCircleOutlineIcon />}
-            </IconButton>
+            {tncAlive ? (
+              <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStop}>
+                <StopIcon />
+              </IconButton>
+            ) : (
+              <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStart}>
+                <PlayCircleOutlineIcon />
+              </IconButton>
+            )}
             <IconButton>
               <SettingsIcon />
             </IconButton>

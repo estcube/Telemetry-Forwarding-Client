@@ -59,13 +59,13 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
         file.close()
         return json.loads(tel_conf)
 
-    @app.route("/api/tnc/<name>/check", methods=["GET"])
+    @app.route("/api/tnc/<name>/status", methods=["GET"])
     def get_tnc_connection_check(name: str):
         if tnc_pool is None:
             return jsonify({"error": "TNC Pool is not defined."}), 500
 
         res = tnc_pool.check_tnc(name)
-        return jsonify({"name": name, "isAlive": res}), 200
+        return jsonify({"name": name, "status": res.name}), 200
 
     @app.route("/api/tnc/<name>/stop", methods=["POST"])
     def post_tnc_connection_stop(name: str):

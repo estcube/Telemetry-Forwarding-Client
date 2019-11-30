@@ -98,6 +98,12 @@
       "yAxis": ["bat_a_temp", "bat_b_temp", "bat_c_temp", "bat_d_temp"],
       "title": "Battery temperatures",
       "type": "line"
+    },
+    {
+      "xAxis": "timestamp",
+      "yAxis": ["sat_mission_phase"],
+      "title": "Mission phase",
+      "type": "enum"
     }
   ]
 }
