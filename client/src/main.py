@@ -14,6 +14,7 @@ from conf import Configuration
 from db_interface import TelemetryDB
 from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
+from tnc_pool import TNCPool, ConnectionConfiguration, ConnectionType, ConnectionProtocol
 import api
 
 
@@ -75,12 +76,6 @@ def main(argv):
     except ValueError:
         port = 5000 # Default port.
 
-    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"))
-    # We set the daemon option to True, so that the client will quit once the other threads have
-    #  finished because we don't have a good way of stopping the Flask app properly.
-    api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
-    api_thread.start()
-
     # Set the handler for SIGTERM, so we can exit a bit more gracefully.
     signal.signal(signal.SIGTERM, terminate_handler)
 
@@ -90,47 +85,33 @@ def main(argv):
     ax_listener.add_callback(sids_relay.relay)
     ax_listener.add_callback(telemetry_listener.receive)
 
-    k = kiss.TCPKISS(
-        conf.get_conf("TNC interface", "tnc-ip"),
-        conf.get_conf("TNC interface", "tnc-port"), strip_df_start=True
-    )
+    tnc_pool = TNCPool()
+    tnc_pool.connect_tnc("Main", ConnectionConfiguration(
+            ConnectionType.TCPIP,
+            ConnectionProtocol.KISS,
+            conf.get_conf("TNC interface", "tnc-ip"),
+            conf.get_conf("TNC interface", "tnc-port"),
+            int(conf.get_conf("TNC interface", "max-connection-attempts")),
+            int(conf.get_conf("TNC interface", "connection-retry-time"))
+        ), ax_listener.receive)
+
+    api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"), tnc_pool,
+                             sids_relay)
+    # We set the daemon option to True, so that the client will quit once the other threads have
+    #  finished because we don't have a good way of stopping the Flask app properly.
+    api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
+    api_thread.start()
 
     try:
-        # Open the connection to the TNC.
-        conn_tries = 0
-        max_conn_tries = int(conf.get_conf("TNC interface", "max-connection-attempts"))
-        retry_time = int(conf.get_conf("TNC interface", "connection-retry-time"))
-        connected = False
-        while True:
-            try:
-                k.start()
-                connected=True
-                break
-            except ConnectionRefusedError:
-                _logger.error(
-                    "Could not initialize a TCP connection to %s:%s",
-                    conf.get_conf("TNC interface", "tnc-ip"),
-                    conf.get_conf("TNC interface", "tnc-port")
-                    )
-                if conn_tries < max_conn_tries:
-                    conn_tries = conn_tries + 1
-                    _logger.info("Retrying TNC connection in %d seconds...", retry_time)
-                    time.sleep(retry_time)
-                else:
-                    _logger.error("Maximum TNC connection retries reached.")
-                    break
-
-        
-        if connected:
-            k.read(callback=ax_listener.receive)
+        if platform.system() == "Windows":
+            while api_thread.isAlive:
+                api_thread.join(2)
         else:
-            if platform.system() == "Windows":
-                while api_thread.isAlive: api_thread.join(2)
-            else:
-                api_thread.join()
+            api_thread.join()
+    except (KeyboardInterrupt, SystemExit):
+        pass
     finally:
-        _logger.debug("Stopping kiss listener.")
-        if connected: k.stop()
+        tnc_pool.cleanup()
 
 if __name__ == "__main__":
     main(sys.argv[1:])

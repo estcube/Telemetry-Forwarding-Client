@@ -2,6 +2,8 @@ import kiss
 import time
 import socket
 import logging
+import sys
+from getopt import getopt
 from beaconDataGenerator import BeaconGenerator
 
 # bytearray(b'\x00\r\x88\xd4\xb2\xa9\xbf\x04\x8a\xf2s\xcf\x8b\xa7\xcf\xc0\xf1'),
@@ -84,7 +86,17 @@ class TCPKISSServer(kiss.KISS):
         self._write_handler(frame_kiss)
 
 
-def main():
+def main(argv):
+
+    # Parse command line options
+    opts, args = getopt(argv, "t:")
+    sleep_time = 3
+    for opt, arg in opts:
+        if opt == "-t":
+            sleep_time = int(arg)
+        # if opt == "-v":
+        #     verbose = True
+
     logging.basicConfig(format="%(asctime)s : %(message)s", level=logging.INFO)
 
     gen = BeaconGenerator("ESTCUB", "MICTRL")
@@ -98,7 +110,7 @@ def main():
             ki.write(gen.generate_ax())
             logging.info("Sent message: {}".format(packets[i % len(packets)]))
             i += 1
-            time.sleep(2)
+            time.sleep(sleep_time)
 
     except KeyboardInterrupt:
         pass
@@ -108,4 +120,4 @@ def main():
     logging.info("Exiting kissWriter")
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

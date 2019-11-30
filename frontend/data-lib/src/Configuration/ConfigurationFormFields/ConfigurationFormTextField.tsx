@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       width: '90%',
       maxWidth: '350px'
+    },
+    diferentWidth: {
+      maxWidth: '100px',
+      marginTop: '0px'
     }
   })
 );
@@ -20,6 +24,7 @@ type ConfigurationFormTextFieldProps = {
   confElemType: string;
   confElemDescription: string;
   textChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  diferentWidth?: boolean;
 };
 /**
  * Text field for configuration form
@@ -29,6 +34,7 @@ type ConfigurationFormTextFieldProps = {
  * @param textChangeHandler callback function
  * @param confElemType  string
  * @param confElemDescription string
+ * @param diferentWidth boolean
  * @constructor
  */
 const ConfigurationFormTextField = ({
@@ -37,7 +43,8 @@ const ConfigurationFormTextField = ({
   confElemName,
   textChangeHandler,
   confElemType,
-  confElemDescription
+  confElemDescription,
+  diferentWidth
 }: ConfigurationFormTextFieldProps) => {
   const isNumber = (toCheck: string) => {
     return /^((0|[1-9][0-9]*)(\.|,)?[0-9]*)|(?![\s\S])$/.test(toCheck);
@@ -64,7 +71,7 @@ const ConfigurationFormTextField = ({
           id={confElemName}
           required={confElemRequiresRestart}
           label={confElemName}
-          className={classes.textField}
+          className={diferentWidth ? classes.diferentWidth : classes.textField}
           onChange={localTextChangeHandler}
           margin="normal"
           value={confElemValue}

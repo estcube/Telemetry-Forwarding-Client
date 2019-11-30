@@ -6,6 +6,7 @@ import { WithStyles } from '@material-ui/styles';
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Typography } from '@material-ui/core';
 import DateTimePicker from './DateTimePicker';
+import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -17,7 +18,9 @@ const styles = (theme: Theme) =>
       borderRadius: 5,
       margin: theme.spacing(1)
     },
-    legend: {}
+    limit: {
+      maxWidth: 100
+    }
   });
 
 interface SatelliteDataChartProps extends WithStyles<typeof styles> {
@@ -35,6 +38,7 @@ type SatelliteDataChartState = {
   highlightedLine: string | null;
   toDate: string;
   fromDate: string;
+  maxEntriesPerGraph: number;
 };
 
 /**
@@ -56,7 +60,8 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
       chartDomain: 300,
       highlightedLine: null,
       toDate: now.toISOString(),
-      fromDate: oneDayAgo.toISOString()
+      fromDate: oneDayAgo.toISOString(),
+      maxEntriesPerGraph: 100
     };
   }
 
@@ -73,8 +78,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     let bestDomain = 0;
     decodedPackets.packets.forEach(packet => {
       const tempObject: { [key: string]: any } = {};
-      const name = packet.packet_timestamp.replace('T', ' ');
-      tempObject.name = name;
+      tempObject.name = packet.packet_timestamp.replace('T', ' ').substr(11, 8);
       tempObject.timestamp = packet.packet_timestamp;
       yAxis.forEach((yAxisValue: string) => {
         const telemetryFields: { [key: number]: any } = telemetryConfiguration.fields;
@@ -197,8 +201,16 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     }
   }
 
-  renderChartDataSelection() {
-    const { toDate, fromDate } = this.state;
+  handleLimitChange(e: any) {
+    if (e.target.value !== '') {
+      this.setState({ maxEntriesPerGraph: parseInt(e.target.value, 10) });
+    } else {
+      this.setState({ maxEntriesPerGraph: 0 });
+    }
+  }
+
+  renderChartDateSelection() {
+    const { toDate, fromDate, maxEntriesPerGraph } = this.state;
     return (
       <>
         <DateTimePicker
@@ -207,6 +219,15 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
           dateChangeHandler={(e: any) => this.customHandle(e, 'from')}
         />
         <DateTimePicker defaultValue={toDate} label="To" dateChangeHandler={(e: any) => this.customHandle(e, 'to')} />
+        <ConfigurationFormTextField
+          diferentWidth
+          confElemRequiresRestart={false}
+          confElemValue={maxEntriesPerGraph.toString()}
+          confElemName="Limit"
+          confElemType="int"
+          confElemDescription=""
+          textChangeHandler={event => this.handleLimitChange(event)}
+        />
       </>
     );
   }
@@ -238,24 +259,42 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     return children;
   }
 
+  static renderCustomTooltip(current: any) {
+    const { active, payload } = current;
+    if (active && payload) {
+      return (
+        <div style={{ backgroundColor: '#fff', boxShadow: '1px 1px grey' }}>
+          <p style={{ margin: '0', fontWeight: 'bold' }}>{payload[0].payload.timestamp}</p>
+          {payload.map((payloadElem: any, index: number) => {
+            return (
+              <p key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
+                {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
+              </p>
+            );
+          })}
+        </div>
+      );
+    }
+    return null;
+  }
+
   renderChart() {
     const { graphInfo, classes } = this.props;
-    const { chartDomain } = this.state;
+    const { chartDomain, maxEntriesPerGraph } = this.state;
     let modifiedChartData = this.getSelectedDataInWindow();
     const modifiedDataLength = modifiedChartData.length;
-    if (modifiedDataLength > 100) {
-      modifiedChartData = modifiedChartData.slice(modifiedDataLength - 100, modifiedDataLength);
+    if (modifiedDataLength > maxEntriesPerGraph) {
+      modifiedChartData = modifiedChartData.slice(modifiedDataLength - maxEntriesPerGraph, modifiedDataLength);
     }
-
     if (graphInfo.type === 'line') {
       return (
         <>
           <Typography className={classes.chartTitle} variant="h6">
             {graphInfo.title}
             <br />
-            {this.renderChartDataSelection()}
+            {this.renderChartDateSelection()}
           </Typography>
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={300}>
             <LineChart
               data={modifiedChartData}
               margin={{
@@ -266,7 +305,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
               }}
             >
               <CartesianGrid />
-              <XAxis dataKey="name" angle={-60} textAnchor="end" scaleToFit height={150}>
+              <XAxis dataKey="name" angle={-15} textAnchor="end" scaleToFit height={50}>
                 <Label value={graphInfo.xAxis} position="top" />
               </XAxis>
               <YAxis domain={[0, chartDomain]}>
@@ -277,7 +316,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
                   position="left"
                 />
               </YAxis>
-              <Tooltip />
+              <Tooltip content={(current: any) => SatelliteDataChart.renderCustomTooltip(current)} />
               <Legend onClick={(event: any) => this.hideOtherLines(event)} />
               {this.renderLines()}
             </LineChart>

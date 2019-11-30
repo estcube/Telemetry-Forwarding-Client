@@ -14,7 +14,7 @@ frontend for browsers, which handles the displaying of data.
 * requests
 * flask
 * flask-cors
-* flas-swagger-ui
+* flask-swagger-ui
 * kaitaistruct
 <!-- * bitarray ([Github](https://github.com/ilanschnell/bitarray)) -->
 * kiss ([Use this repository](https://gitlab.com/martmaemees/kiss))

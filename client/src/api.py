@@ -8,17 +8,19 @@ Does not include any authentication, so should not be open to the external netwo
 import sys
 import os
 import json
-from datetime import datetime
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
+from tnc_pool import TNCPool
 from db_interface import TelemetryDB
+from sids_relay import SIDSRelay
 
 # from db_interface import TelemetryDB
 from conf import Configuration
 
 
-def create_app(config: Configuration, static_folder: str) -> Flask:
+def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
+               sids_relay: SIDSRelay) -> Flask:
     """ Creates a flask app for the api. """
 
     db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
@@ -40,11 +42,15 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
     # end swagger specific
 
+    @app.route("/api/sids/status", methods=["GET"])
+    def get_sids_status():
+        return jsonify(sids_relay.get_status()), 200
+
     @app.route("/api/telemetry/packets", methods=["GET"])
     def get_packets():
         return {"packets": database.get_telemetry_data()}
 
-    @app.route("/api/telemetry/configuration")
+    @app.route("/api/telemetry/configuration", methods=["GET"])
     def get_telemetry_configuration():
         path = os.path.join(os.path.dirname(__file__),
                 config.get_conf("Client", "telemetry-configuration"))
@@ -53,10 +59,21 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
         file.close()
         return json.loads(tel_conf)
 
-    @app.route("/api/data", methods=["GET"])
-    def getdata():
-        """ Test function. """
-        return jsonify({"timestamp": datetime.now(), "data": {"some dats": "dat"*3}})
+    @app.route("/api/tnc/<name>/check", methods=["GET"])
+    def get_tnc_connection_check(name: str):
+        if tnc_pool is None:
+            return jsonify({"error": "TNC Pool is not defined."}), 500
+
+        res = tnc_pool.check_tnc(name)
+        return jsonify({"name": name, "isAlive": res}), 200
+
+    @app.route("/api/tnc/<name>/stop", methods=["POST"])
+    def post_tnc_connection_stop(name: str):
+        if tnc_pool is None:
+            return jsonify({"error": "TNC Pool is not defined."}), 500
+
+        tnc_pool.stop_tnc(name)
+        return '', 204
 
     @app.route("/api/conf", methods=["GET"])
     def getconf():
@@ -101,17 +118,8 @@ def create_app(config: Configuration, static_folder: str) -> Flask:
 
     return app
 
-
-
-# # @app.route('/post', methods=['POST'])
-# # def addConf():
-# #     some_json = request.get_json("Data")
-# #     print(some_json)
-# #     return jsonify(some_json), 201
-
-
 if __name__ == '__main__':
     CONF_PATH = os.path.join(os.path.dirname(__file__), "../configuration.ini")
     STATIC_PATH = os.path.join(os.path.dirname(__file__), "../static")
-    APP = create_app(Configuration(CONF_PATH), STATIC_PATH)
+    APP = create_app(Configuration(CONF_PATH), STATIC_PATH, None)
     APP.run(debug=True)

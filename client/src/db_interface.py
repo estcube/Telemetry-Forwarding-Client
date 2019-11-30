@@ -6,13 +6,14 @@ Provides a class for interfacing with the database.
 # import sqlite3
 import logging
 from datetime import datetime
-from collections import defaultdict
-import apsw
 from typing import TYPE_CHECKING
+import apsw
 from ax_listener import AXFrame
 
 if TYPE_CHECKING:
     from telemetry_listener import TelemetryFrame
+
+CONN_TIMEOUT = 2000
 
 class TelemetryDB():
     """
@@ -60,6 +61,7 @@ class TelemetryDB():
         Will store the entire frame in a blob along with its recv_time.
         """
         conn = apsw.Connection(self.conn_str)
+        conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
         cur.execute("insert into ax_frame values (?, ?);", (frame.recv_time.isoformat(), frame.frame))
         conn.close()
@@ -69,6 +71,7 @@ class TelemetryDB():
         Adds the telemetry data into the database.
         """
         conn = apsw.Connection(self.conn_str)
+        conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
 
         # cur.setexectrace(self.my_trace)
@@ -107,7 +110,8 @@ class TelemetryDB():
 
         results = {}
 
-        conn = apsw.Connection(self.conn_str)
+        conn = apsw.Connection(self.conn_str, flags=apsw.SQLITE_OPEN_READONLY)
+        conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
 
         for ident, packet_ts, recv_ts, f_name, f_val in cur.execute(query, params):
@@ -121,7 +125,7 @@ class TelemetryDB():
 
     def my_trace(self, cursor, statement, bindings):
         """ Debug trace function for the cursors. Called just before executing each statement """
-        print ("SQL:",statement)
+        print ("SQL:", statement)
         if bindings:
             print ("Bindings:",bindings)
         return True  # if you return False then execution is aborted
