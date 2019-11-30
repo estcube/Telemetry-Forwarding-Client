@@ -223,21 +223,23 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
       if (header !== 'id' && header !== 'type') {
         return (
           <TableRow key={header}>
-            <TableCell className={classes.tableCellHeader} variant="head" style={{ fontWeight: 'bold' }}>
-              {header}
+            <TableCell className={classes.tableCellHeader} variant="head">
+              <Typography variant="body2" style={{ fontWeight: 'bold' }}>
+                {header}
+              </Typography>
             </TableCell>
             {combinedVerticalTableData[header] &&
               combinedVerticalTableData[header].map((element, index) => {
                 if (header === 'Timestamp') {
                   return (
                     <TableCell className={classes.tableCell} key={index}>
-                      {element.replace('T', '\n')}
+                      <Typography variant="body2">{element.replace('T', '\n')}</Typography>
                     </TableCell>
                   );
                 }
                 return (
                   <TableCell className={classes.tableCell} key={index}>
-                    {element}
+                    <Typography variant="body2">{element}</Typography>
                   </TableCell>
                 );
               })}

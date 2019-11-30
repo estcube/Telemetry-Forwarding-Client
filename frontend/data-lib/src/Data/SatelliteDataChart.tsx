@@ -20,7 +20,8 @@ const styles = (theme: Theme) =>
     },
     limit: {
       maxWidth: 100
-    }
+    },
+    tooltipBox: { backgroundColor: '#fff', boxShadow: '1px 1px grey' }
   });
 
 interface SatelliteDataChartProps extends WithStyles<typeof styles> {
@@ -259,17 +260,20 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     return children;
   }
 
-  static renderCustomTooltip(current: any) {
+  renderCustomTooltip(current: any) {
     const { active, payload } = current;
+    const { classes } = this.props;
     if (active && payload) {
       return (
-        <div style={{ backgroundColor: '#fff', boxShadow: '1px 1px grey' }}>
-          <p style={{ margin: '0', fontWeight: 'bold' }}>{payload[0].payload.timestamp}</p>
+        <div className={classes.tooltipBox}>
+          <Typography variant="body2" style={{ margin: '0', fontWeight: 'bold' }}>
+            {payload[0].payload.timestamp}
+          </Typography>
           {payload.map((payloadElem: any, index: number) => {
             return (
-              <p key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
+              <Typography variant="body2" key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
                 {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
-              </p>
+              </Typography>
             );
           })}
         </div>
@@ -316,7 +320,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
                   position="left"
                 />
               </YAxis>
-              <Tooltip content={(current: any) => SatelliteDataChart.renderCustomTooltip(current)} />
+              <Tooltip content={(current: any) => this.renderCustomTooltip(current)} />
               <Legend onClick={(event: any) => this.hideOtherLines(event)} />
               {this.renderLines()}
             </LineChart>

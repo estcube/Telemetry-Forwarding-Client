@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
-
+import 'typeface-roboto';
 import './styles.scss';
 import TNCStatus from 'Components/TNCStatus';
 import Header from './Components/Header';
