@@ -140,7 +140,10 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
   };
 
   handleTncStart = () => {
-    // TODO No endpoint yet.
+    fetch('/api/tnc/Main/start', { method: 'POST' }).then(() => {
+      this.setState({ tncStatus: TNCStatusType.CONNECTING });
+    });
+    this.setState({ tncBtnEnabled: false });
   };
 
   // TODO: Redirect to configuration page.

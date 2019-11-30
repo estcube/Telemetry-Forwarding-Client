@@ -20,7 +20,7 @@ from conf import Configuration
 
 
 def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
-               sids_relay: SIDSRelay) -> Flask:
+               sids_relay: SIDSRelay, ax_listener) -> Flask:
     """ Creates a flask app for the api. """
 
     db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
@@ -66,6 +66,14 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
 
         res = tnc_pool.check_tnc(name)
         return jsonify({"name": name, "status": res.name}), 200
+
+    @app.route("/api/tnc/Main/start", methods=["POST"])
+    def post_tnc_main_start():
+        if tnc_pool is None:
+            return jsonify({"error": "TNC Pool is not defined."}), 500
+
+        tnc_pool.connect_main_tnc()
+        return '', 204
 
     @app.route("/api/tnc/<name>/stop", methods=["POST"])
     def post_tnc_connection_stop(name: str):

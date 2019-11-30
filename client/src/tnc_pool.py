@@ -2,8 +2,10 @@ import logging
 import time
 from enum import Enum, auto
 from typing import Callable
-from threading import Thread, Lock, Lock
+from threading import Thread, Lock
 import kiss
+from ax_listener import AXListener
+from conf import Configuration
 
 
 class ConnectionStatus(Enum):
@@ -114,13 +116,25 @@ class TNCPool():
 
     _log = logging.getLogger(__name__)
 
-    def __init__(self):
+    def __init__(self, conf: Configuration, ax_listener: AXListener):
+        self.main_listener = ax_listener
+        self.conf = conf
         self.tnc_connections = dict()
         self.lock = Lock()
 
     def __get_conn(self, name: str) -> TNCThread:
         """ Getter function pretty much just to get type to variable. """
         return self.tnc_connections.get(name, None)
+
+    def connect_main_tnc(self):
+        self.connect_tnc("Main", ConnectionConfiguration(
+            ConnectionType.TCPIP,
+            ConnectionProtocol.KISS,
+            self.conf.get_conf("TNC interface", "tnc-ip"),
+            self.conf.get_conf("TNC interface", "tnc-port"),
+            int(self.conf.get_conf("TNC interface", "max-connection-attempts")),
+            int(self.conf.get_conf("TNC interface", "connection-retry-time"))
+        ), self.main_listener.receive)
 
     def connect_tnc(self, name: str, conn_conf: ConnectionConfiguration, callback: Callable):
         if not callable(callback):
