@@ -66,6 +66,13 @@ const styles = () =>
       '&:last-child': {
         paddingBottom: 10
       }
+    },
+    rootCard: {
+      minWidth: 260,
+      boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+      '&:hover': {
+        boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
+      }
     }
   });
 
@@ -154,7 +161,7 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
     const tncBtnDisabled = !tncBtnEnabled || tncStatus === TNCStatusType.DISCONNECTING;
 
     return (
-      <Card>
+      <Card className={classes.rootCard}>
         <CardContent className={classes.lowerPadding}>
           <div className={classes.row}>
             {/* Do not skip heading levels. */}

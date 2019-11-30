@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Data } from '@estcube/data-components';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography, createStyles, WithStyles, withStyles } from '@material-ui/core';
+import TNCStatus from './TNCStatus';
 
 type MainPageState = {
   decodedPackets: { [key: string]: [{ [key: string]: string | number | { [key: string]: string } }] };
@@ -11,11 +12,20 @@ type MainPageState = {
   loading: boolean;
 };
 
+const styles = () =>
+  createStyles({
+    tncRow: {
+      display: 'flex',
+      flexDirection: 'row',
+      margin: 16
+    }
+  });
+
 /**
  * Front-page view
  */
-class MainPage extends React.Component<{}, MainPageState> {
-  constructor(props: {}) {
+class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState> {
+  constructor(props: WithStyles<typeof styles>) {
     super(props);
     this.state = {
       telemetryConfiguration: {},
@@ -56,6 +66,7 @@ class MainPage extends React.Component<{}, MainPageState> {
   }
 
   render() {
+    const { classes } = this.props;
     const {
       loading,
       decodedPackets,
@@ -74,8 +85,15 @@ class MainPage extends React.Component<{}, MainPageState> {
     } else if (telemetryConfLoaded && packetsLoaded) {
       content = <Data telemetryConfiguration={telemetryConfiguration} decodedPackets={decodedPackets} />;
     }
-    return <div data-testid="confDiv">{content}</div>;
+    return (
+      <div data-testid="confDiv">
+        <div className={classes.tncRow}>
+          <TNCStatus />
+        </div>
+        {content}
+      </div>
+    );
   }
 }
 
-export default MainPage;
+export default withStyles(styles)(MainPage);
