@@ -18,14 +18,14 @@ test-frontend:
     - yarn test
 
 test-client:
-  image: martmaemees/ec2-telemetry:0.1-client
+  image: martmaemees/ec2-telemetry:0.1.1-client
   stage: test
   script:
     - cd client
     - python3 src/_unit_tests.py
 
 systest-client:
-  image: martmaemees/ec2-telemetry:0.1-client
+  image: martmaemees/ec2-telemetry:0.1.1-client
   stage: test
   script:
     - cd client
