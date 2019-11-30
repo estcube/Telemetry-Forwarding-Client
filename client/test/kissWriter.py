@@ -93,7 +93,7 @@ def main(argv):
     sleep_time = 3
     for opt, arg in opts:
         if opt == "-t":
-            sleep_time = int(arg)
+            sleep_time = float(arg)
         # if opt == "-v":
         #     verbose = True
 
