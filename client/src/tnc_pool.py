@@ -1,9 +1,16 @@
 import logging
 import time
-from enum import Enum
+from enum import Enum, auto
 from typing import Callable
 from threading import Thread, Lock, Lock
 import kiss
+
+
+class ConnectionStatus(Enum):
+    CONNECTING = auto(),
+    CONNECTED = auto(),
+    DISCONNECTING = auto(),
+    DISCONNECTED = auto()
 
 class ConnectionType(Enum):
     TCPIP = 0,
@@ -41,7 +48,9 @@ class TNCThread(Thread):
         """
         Abstract function. Stops the reading of packets, leads to the termination of the thread.
         """
-        pass
+
+    def status(self) -> ConnectionStatus:
+        """ Abstract function. Returns the state of the TNC Connection. """
 
 class TCPKISSThread(TNCThread):
 
@@ -57,8 +66,9 @@ class TCPKISSThread(TNCThread):
     def run(self):
         conn_tries = 0
         while True:
-            if self.stop_signal:
-                return
+            with self.lock:
+                if self.stop_signal:
+                    return
             try:
                 self.kiss.start()
                 break
@@ -79,12 +89,26 @@ class TCPKISSThread(TNCThread):
         except Exception as err:
             self._log.error(err)
         finally:
-            self.set_connected(False)
             self.kiss.stop()
+            self.set_connected(False)
 
     def stop(self):
-        self.stop_signal = True
+        with self.lock:
+            self.stop_signal = True
         self.kiss.stop_read()
+
+    def status(self) -> ConnectionStatus:
+        with self.lock:
+            if not self.isAlive():
+                return ConnectionStatus.DISCONNECTED
+            elif self.connected:
+                if self.stop_signal:
+                    return ConnectionStatus.DISCONNECTING
+                else:
+                    return ConnectionStatus.CONNECTED
+            else:
+                return ConnectionStatus.CONNECTING
+
 
 class TNCPool():
 
@@ -123,12 +147,13 @@ class TNCPool():
             self._log.info("Stopping TNC connection %s", name)
             self.__get_conn(name).stop()
 
-    def check_tnc(self, name: str) -> bool:
+    def check_tnc(self, name: str) -> ConnectionStatus:
         if name not in self.tnc_connections:
             raise ValueError("No TNC Connection with name {}".format(name))
 
+        # TODO: More locking than needed?
         with self.lock:
-            return self.__get_conn(name).is_connected()
+            return self.__get_conn(name).status()
 
     def cleanup(self):
         self._log.debug("Cleaning up all TNC Connections.")
