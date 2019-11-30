@@ -15,12 +15,6 @@ module.exports = {
             {
                 test: /.s?css$/,
                 use: ['style-loader', 'css-loader', 'sass-loader']
-            },
-            {
-                test: /\.(woff|woff2)$/,
-                use: {
-                    loader: 'url-loader'
-                }
             }
         ]
     },
