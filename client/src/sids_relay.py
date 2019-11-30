@@ -11,6 +11,7 @@ from rw_lock import ReadWriteLock
 
 class RelayStatus(Enum):
     NO_REQUESTS = auto() # No requests have been done yet.
+    TURNED_OFF = auto()
     SUCCESS = auto() # Last request went through successfully.
     CONNECTION_ERROR = auto()
     TIMEOUT = auto()
@@ -78,6 +79,8 @@ class SIDSRelay(object):
         """ Returns the status of the last SIDS request and the number of successful requests. """
         with self.lock.read_lock:
             return {
-                "lastStatus": self.last_status.name,
+                "lastStatus": self.last_status.name if \
+                    str(self.config.get_conf("Mission Control", "relay-enabled")) == "True" \
+                        else RelayStatus.TURNED_OFF.name,
                 "requestCount": self.request_counter
             }

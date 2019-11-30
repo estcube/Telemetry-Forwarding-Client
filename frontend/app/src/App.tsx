@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
 
 import './styles.scss';
+import TNCStatus from 'Components/TNCStatus';
 import Header from './Components/Header';
 import MainPage from './Components/MainPage';
 import ConfigurationPage from './Components/ConfigurationPage';
@@ -20,6 +21,9 @@ export default class App extends React.Component {
         <Switch>
           <Route path="/" exact>
             <MainPage />
+          </Route>
+          <Route path="/sids">
+            <TNCStatus />
           </Route>
           <Route path="/configure" exact>
             <ConfigurationPage />
