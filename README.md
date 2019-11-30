@@ -17,12 +17,12 @@ frontend for browsers, which handles the displaying of data.
 * flask-swagger-ui
 * kaitaistruct
 <!-- * bitarray ([Github](https://github.com/ilanschnell/bitarray)) -->
-* kiss ([Use this repository](https://gitlab.com/martmaemees/kiss))
+* kiss ([Use this repository](https://github.com/estcube/kiss))
 * apsw ([Github](https://github.com/rogerbinns/apsw)) ([Do not install from PyPI!](https://rogerbinns.github.io/apsw/download.html#easy-install-pip-pypi))
 
 The libraries can be installed with pip (except `apsw`, see the link in list for installation instructions.) (`pip install --user flask kaitaistruct flask-cors flask-swagger-ui`)
 
-For installing kiss, use the forked repository: `pip install --user git+https://gitlab.com/martmaemees/kiss`
+For installing kiss, use the forked repository: `pip install --user git+https://github.com/estcube/kiss`
 
 ## Running
 
