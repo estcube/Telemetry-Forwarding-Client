@@ -8,6 +8,7 @@ type ConfigurationPageState = {
   loading: boolean;
   dataPosted: true | false | null;
   confPostLoading: true | false;
+  errorMessage: string | null;
 };
 
 /**
@@ -16,7 +17,14 @@ type ConfigurationPageState = {
 class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
   constructor(props: {}) {
     super(props);
-    this.state = { confValues: {}, dataFetchErrored: false, loading: false, dataPosted: null, confPostLoading: false };
+    this.state = {
+      errorMessage: null,
+      confValues: {},
+      dataFetchErrored: false,
+      loading: false,
+      dataPosted: null,
+      confPostLoading: false
+    };
   }
 
   componentDidMount(): void {
@@ -48,6 +56,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
         [sectionKey]: Object.assign({}, ...Object.entries(section).map(([k, v]) => ({ [k]: v.value })))
       }))
     );
+    this.setState({ errorMessage: null });
     fetch('/api/conf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -55,14 +64,13 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
     })
       .then(response => {
         if (!response.ok) {
+          response.json().then(body => {
+            this.setState({ dataPosted: false, errorMessage: body.Error });
+          });
           throw Error(response.statusText);
+        } else {
+          this.setState({ dataPosted: true });
         }
-      })
-      .then(() => {
-        this.setState({ dataPosted: true });
-      })
-      .catch(() => {
-        this.setState({ dataPosted: false });
       })
       .finally(() => {
         this.setState({ confPostLoading: false });
@@ -70,7 +78,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
   };
 
   render() {
-    const { loading, dataFetchErrored, confValues, dataPosted, confPostLoading } = this.state;
+    const { loading, dataFetchErrored, confValues, dataPosted, confPostLoading, errorMessage } = this.state;
     const confFetched = Object.keys(confValues).length > 0;
     let content;
     if (loading) {
@@ -86,6 +94,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
             confValues={confValues}
             handleConfPost={this.postConfValues}
             dataPosted={dataPosted}
+            errorMessage={errorMessage}
             confPostLoading={confPostLoading}
           />
         </div>

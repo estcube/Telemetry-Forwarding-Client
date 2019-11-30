@@ -48,10 +48,12 @@ interface ConfigurationProps extends WithStyles<typeof styles> {
   handleConfPost: (event: React.MouseEvent<HTMLButtonElement>, data: { [key: string]: { [key: string]: any } }) => void;
   dataPosted: true | false | null;
   confPostLoading: true | false;
+  errorMessage: string | null;
 }
 
 type ConfigurationState = {
   confValues: { [key: string]: { [key: string]: any } };
+  allowPosting: boolean;
 };
 
 /**
@@ -60,7 +62,7 @@ type ConfigurationState = {
 class Configuration extends React.Component<ConfigurationProps, ConfigurationState> {
   constructor(props: ConfigurationProps) {
     super(props);
-    this.state = { confValues: {} };
+    this.state = { allowPosting: false, confValues: {} };
   }
 
   componentDidMount(): void {
@@ -82,7 +84,7 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
         copyOfConfValues[sectionName][confElemName].value = 'False';
       }
     }
-    this.setState({ confValues: copyOfConfValues });
+    this.setState({ confValues: copyOfConfValues, allowPosting: true });
   }
 
   renderFormSections() {
@@ -113,8 +115,11 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
       const confElemLabel = confElemParams.label;
       const confElemIsHidden = confElemParams.hidden;
       const confElemDescription = confElemParams.description || '';
+      const confElemMinValue = confElemParams.min || null;
+      const confElemMaxValue = confElemParams.max || null;
+      const confElemMaxLen = confElemParams.max_len || null;
       if (!confElemIsHidden) {
-        if (confElemType === 'str' || confElemType === 'int' || confElemType === 'float') {
+        if (confElemType === 'str' || confElemType === 'url' || confElemType === 'int' || confElemType === 'float') {
           return (
             <ConfigurationFormTextField
               confElemType={confElemType}
@@ -124,6 +129,9 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
               confElemRequiresRestart={confElemRequiresRestart}
               confElemValue={confElemValue}
               confElemDescription={confElemDescription}
+              confElemMinValue={confElemMinValue}
+              confElemMaxValue={confElemMaxValue}
+              confElemMaxLen={confElemMaxLen}
             />
           );
         }
@@ -169,20 +177,25 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
   }
 
   renderSnackbar = () => {
-    const { confPostLoading } = this.props;
+    const { confPostLoading, errorMessage } = this.props;
     const { dataPosted } = this.props;
     if (dataPosted !== null && !confPostLoading) {
       if (dataPosted) {
-        return <ConfigurationSnackbar type="success" />;
+        return <ConfigurationSnackbar type="success" text="Configuration parameters updated!" />;
       }
-      return <ConfigurationSnackbar type="error" />;
+      if (errorMessage) {
+        return <ConfigurationSnackbar type="error" text={errorMessage} />;
+      }
     }
     return <></>;
   };
 
   renderUpdateButton = () => {
     const { confPostLoading, classes, handleConfPost } = this.props;
-    const { confValues } = this.state;
+    const { confValues, allowPosting } = this.state;
+    if (!allowPosting) {
+      return <></>;
+    }
     if (!confPostLoading) {
       return (
         <Button

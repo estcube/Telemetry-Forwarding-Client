@@ -8,7 +8,15 @@ function sampleFunc() {
 
 function renderConfPage() {
   const props = { A: { B: 'C' } };
-  return render(<Configuration confValues={props} handleConfPost={sampleFunc} dataPosted confPostLoading={false} />);
+  return render(
+    <Configuration
+      confValues={props}
+      handleConfPost={sampleFunc}
+      dataPosted
+      confPostLoading={false}
+      errorMessage={null}
+    />
+  );
 }
 
 describe('Find conf form class', () => {

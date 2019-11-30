@@ -4,6 +4,7 @@ import configparser
 import logging
 from copy import deepcopy
 from rw_lock import ReadWriteLock
+import re
 
 CONSTRAINTS = {
     "Mission Control": {
@@ -12,25 +13,32 @@ CONSTRAINTS = {
             "label": "Relay enabled"
         },
         "mcs-relay-url": {
-            "type": "str",
+            "type": "url",
             "label": "MCS relay URL"
         },
 
         "receiver-callsign": {
             "type": "str",
-            "label": "Receiver callsign"
+            "label": "Receiver callsign",
+            "max_len": 6
         },
         "norad-id": {
             "type": "int",
-            "label": "Norad ID"
+            "label": "Norad ID",
+            "min": 1,
+            "max": 99999
         },
         "longitude": {
             "type": "float",
-            "label": "Longitude"
+            "label": "Longitude",
+            "min": -180,
+            "max": 180
         },
         "latitude": {
             "type": "float",
-            "label": "Latitude"
+            "label": "Latitude",
+            "min": -180,
+            "max": 180
         }
     },
 
@@ -63,13 +71,17 @@ CONSTRAINTS = {
             "type": "int",
             "requiresRestart": True,
             "label": "Max connection attempts",
-            "hidden": True
+            "hidden": True,
+            "min": 1,
+            "max": 10000
         },
         "connection-retry-time": {
             "type": "int",
             "requiresRestart": True,
             "label": "Connection retry time",
-            "hidden": True
+            "hidden": True,
+            "min": 1,
+            "max": 600
         }
     },
 
@@ -99,7 +111,9 @@ CONSTRAINTS = {
             "type": "int",
             "description": "Port that the frontend and api are served on.",
             "requiresRestart": True,
-            "label": "Frontend port"
+            "label": "Frontend port",
+            "min": 1024,
+            "max": 65535
         }
     }
 }
@@ -169,18 +183,23 @@ class Configuration(object):
             constr = section_constraints[element]
             if constr["type"] == "str":
                 pass
+            elif constr["type"] == "url":
+                regex = '^https?:\/\/(www\.)?([0-9a-zA-Z]+\.)+[a-z]+(:\d+)?(\/\S+)*$'
+                is_valid = re.match(regex, value)
+                if not is_valid:
+                    raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
             elif constr["type"] == "int":
                 try:
                     if not isinstance(value, int):
                         value = int(value)
                 except Exception as e:
-                    raise type(e)("Error: Expected {} as {} value (got '{}')".format("integer", element, value))
+                    raise type(e)("Expected {} as {} value (got '{}')".format("integer", element, value))
             elif constr["type"] == "float":
                 try:
                     if not isinstance(value, float):
                         value = float(value)
                 except Exception as e:
-                    raise type(e)("Error: Expected {} as {} value (got '{}')".format("float", element, value))
+                    raise type(e)("Expected {} as {} value (got '{}')".format("float", element, value))
             elif constr["type"] == "bool":
                 if not isinstance(value, bool):
                     if value.lower() == "true":
@@ -188,7 +207,7 @@ class Configuration(object):
                     elif value.lower() == "false":
                         value = False
                     else:
-                        raise ValueError("Error: Expected {} as {} value (got '{}')".format("True or False", element,
+                        raise ValueError("Expected {} as {} value (got '{}')".format("True or False", element,
                                                                                             value))
             elif constr["type"] == "select":
                 if value not in constr["options"]:

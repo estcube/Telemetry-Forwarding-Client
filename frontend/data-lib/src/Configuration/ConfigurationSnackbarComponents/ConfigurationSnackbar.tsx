@@ -4,13 +4,14 @@ import SnackbarContentWrapper from './SnackbarContentWrapper';
 
 interface ConfigurationSnackbarProps {
   type: 'success' | 'error';
+  text: string;
 }
 
 /**
  * Component for displaying success/error messages when updating conf
  * @param type  string ('success'|'error')
  */
-export default function ConfigurationSnackbar({ type }: ConfigurationSnackbarProps) {
+export default function ConfigurationSnackbar({ type, text }: ConfigurationSnackbarProps) {
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
@@ -26,17 +27,11 @@ export default function ConfigurationSnackbar({ type }: ConfigurationSnackbarPro
 
   const renderCorrectType = () => {
     if (type === 'success') {
-      return (
-        <SnackbarContentWrapper onClose={handleClose} variant="success" message="Configuration parameters updated!" />
-      );
+      return <SnackbarContentWrapper onClose={handleClose} variant="success" message={text} />;
     }
     if (type === 'error') {
       return (
-        <SnackbarContentWrapper
-          onClose={handleClose}
-          variant="error"
-          message="Configuration parameters have not been updated!"
-        />
+        <SnackbarContentWrapper onClose={handleClose} variant="error" message={`Configuration not updated! ${text}`} />
       );
     }
     return <></>;
@@ -50,7 +45,7 @@ export default function ConfigurationSnackbar({ type }: ConfigurationSnackbarPro
           horizontal: 'left'
         }}
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={10000}
         onClose={handleClose}
       >
         {renderCorrectType()}

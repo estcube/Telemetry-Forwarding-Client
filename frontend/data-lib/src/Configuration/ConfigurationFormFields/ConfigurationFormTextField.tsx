@@ -25,6 +25,9 @@ type ConfigurationFormTextFieldProps = {
   confElemDescription: string;
   textChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
   diferentWidth?: boolean;
+  confElemMinValue?: number | null;
+  confElemMaxValue?: number | null;
+  confElemMaxLen?: number | null;
 };
 /**
  * Text field for configuration form
@@ -35,6 +38,9 @@ type ConfigurationFormTextFieldProps = {
  * @param confElemType  string
  * @param confElemDescription string
  * @param diferentWidth boolean
+ * @param confElemMinValue integer
+ * @param confElemMaxValue integer
+ * @param confElemMaxLen integer
  * @constructor
  */
 const ConfigurationFormTextField = ({
@@ -44,16 +50,32 @@ const ConfigurationFormTextField = ({
   textChangeHandler,
   confElemType,
   confElemDescription,
-  diferentWidth
+  diferentWidth,
+  confElemMinValue,
+  confElemMaxValue,
+  confElemMaxLen
 }: ConfigurationFormTextFieldProps) => {
   const isNumber = (toCheck: string) => {
-    return /^((0|[1-9][0-9]*)(\.|,)?[0-9]*)|(?![\s\S])$/.test(toCheck);
+    return /^(-?(0|[1-9][0-9]*)(\.|,)?[0-9]*)|(?![\s\S])$/.test(toCheck);
   };
-  // Validate if field contains only numbers or is a string
+  // Validate if field contains only numbers (and is smaller than max) or is a string
   const localTextChangeHandler = (event: any) => {
     const { value } = event.target;
     if (confElemType === 'int' || confElemType === 'float') {
       if (isNumber(value)) {
+        if (confElemMinValue && confElemMaxValue) {
+          if (parseInt(value, 10) <= confElemMaxValue) {
+            textChangeHandler(event);
+          }
+        } else {
+          textChangeHandler(event);
+        }
+      }
+      if (value === '') {
+        textChangeHandler(event);
+      }
+    } else if (confElemMaxLen) {
+      if (value.length <= confElemMaxLen) {
         textChangeHandler(event);
       }
     } else {
@@ -63,8 +85,11 @@ const ConfigurationFormTextField = ({
   const classes = useStyles();
 
   const renderField = (isRecursive: boolean) => {
-    const popoverMessage = 'Client needs to be restarted if this parameter is changed';
-    if (!confElemRequiresRestart || isRecursive) {
+    const popoverMessage = 'Client needs to be restarted if this parameter is changed.';
+    const advancedPopoverMessage = `${confElemRequiresRestart ? popoverMessage : ''}${
+      confElemMinValue && confElemMaxValue ? ` Must be in range: ${confElemMinValue}...${confElemMaxValue}` : ''
+    }${confElemMaxLen ? ` Maximum length can be ${confElemMaxLen}` : ''}`;
+    if (isRecursive) {
       return (
         <TextField
           type={confElemType === 'int' || confElemType === 'float' ? 'number' : 'text'}
@@ -80,7 +105,7 @@ const ConfigurationFormTextField = ({
       );
     }
     return (
-      <Tooltip placement="top-start" title={popoverMessage}>
+      <Tooltip placement="top-start" title={advancedPopoverMessage}>
         {renderField(true)}
       </Tooltip>
     );
