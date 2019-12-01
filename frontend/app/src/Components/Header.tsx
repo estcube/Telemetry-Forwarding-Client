@@ -5,17 +5,14 @@ import { Link } from 'react-router-dom';
 const styles = () =>
   createStyles({
     root: {
-      flexGrow: 1,
       width: '100%',
       textAlign: 'center'
     },
     button: {
-      flexGrow: 1,
       display: 'inline-block',
       fontSize: '18px'
     },
     linkButton: {
-      flexGrow: 1,
       display: 'inline-block',
       color: 'white',
       fontSize: '18px'

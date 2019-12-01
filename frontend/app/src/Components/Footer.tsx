@@ -4,6 +4,7 @@ import { createStyles, withStyles, WithStyles, Typography } from '@material-ui/c
 const styles = () =>
   createStyles({
     rootFooter: {
+      height: 145,
       padding: '16px 20px',
       display: 'flex',
       flexDirection: 'column',
