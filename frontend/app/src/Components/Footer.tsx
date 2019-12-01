@@ -26,7 +26,7 @@ class Footer extends React.Component<WithStyles<typeof styles>> {
     const { classes } = this.props;
     return (
       <div className={classes.rootFooter}>
-        <img src="././images/estcube.png" alt="logo" className={classes.logo} />
+        <img src="./images/estcube.png" alt="logo" className={classes.logo} />
         <Typography variant="body2">ESTCube Telemetry Forwarding Client</Typography>
         <Typography variant="body2">
           © Eesti Tudengisatelliidi Sihtasutus (Estonian Student Satellite Foundation)

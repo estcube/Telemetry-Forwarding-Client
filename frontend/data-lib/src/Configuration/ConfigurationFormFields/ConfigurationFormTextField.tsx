@@ -85,7 +85,7 @@ const ConfigurationFormTextField = ({
   const classes = useStyles();
 
   const renderField = (isRecursive: boolean) => {
-    const popoverMessage = 'Client needs to be restarted if this parameter is changed.';
+    const popoverMessage = 'Client needs to be restarted for changes to this to apply.';
     const advancedPopoverMessage = `${confElemRequiresRestart ? popoverMessage : ''}${
       confElemMinValue && confElemMaxValue ? ` Must be in range: ${confElemMinValue}...${confElemMaxValue}` : ''
     }${confElemMaxLen ? ` Maximum length can be ${confElemMaxLen}` : ''}`;

@@ -50,7 +50,7 @@ const ConfigurationFormDropdownField = ({
   const classes = useStyles();
 
   const renderField = (isRecursive: boolean) => {
-    const popoverMessage = 'Client needs to be restarted if this parameter is changed';
+    const popoverMessage = 'Client needs to be restarted for changes to this to apply.';
     if (!confElemRequiresRestart || isRecursive) {
       return (
         <TextField
