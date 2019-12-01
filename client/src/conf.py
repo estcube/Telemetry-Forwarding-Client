@@ -192,7 +192,7 @@ class Configuration(object):
                 raise ValueError("Field {} - {} does not exist.".format(section, element))
 
             constr = section_constraints[element]
-            if constr["hidden"] == True:
+            if 'hidden' in constr and constr["hidden"] == True:
                 return
             if constr["type"] == "str":
                 pass
