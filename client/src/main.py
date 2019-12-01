@@ -9,6 +9,7 @@ import platform
 from getopt import getopt
 from threading import Thread
 import kiss
+import util
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
 from db_interface import TelemetryDB
@@ -47,22 +48,21 @@ def main(argv):
         #     verbose = True
 
     if conf_path is None: # Default conf path
-        conf_path = os.path.join(os.path.dirname(__file__), "..", "configuration.ini")
+        conf_path = os.path.join(util.get_root(), "configuration.ini")
     _logger.info("Using configuration from: %s", conf_path)
 
     # Create the configuration object
     conf = Configuration(conf_path)
 
     # Create the database object
-    db_loc = os.path.join(os.path.dirname(__file__), conf.get_conf("Client", "database"))
+    db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
     database.init_db()
 
     # Read the json configuration of telemetry fields.
-    f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
-            encoding="utf-8")
-    telemetry_conf = f.read()
-    f.close()
+    with open(os.path.join(util.get_root(), conf.get_conf("Client", "telemetry-configuration")), "r",
+        encoding="utf-8") as f:
+        telemetry_conf = f.read()
 
     # Build the other components.
     ax_listener = AXListener()

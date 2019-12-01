@@ -11,6 +11,7 @@ import json
 import subprocess
 import logging
 import requests
+import util
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -28,7 +29,7 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
 
     log = logging.getLogger(__name__)
 
-    db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
+    db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
 
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
@@ -57,18 +58,23 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
 
     @app.route("/api/telemetry/configuration", methods=["GET"])
     def get_telemetry_configuration():
-        path = os.path.join(os.path.dirname(__file__),
-                config.get_conf("Client", "telemetry-configuration"))
-        file = open(path, "r", encoding="utf-8")
-        tel_conf = file.read()
-        file.close()
+        path = os.path.join(util.get_root(), config.get_conf("Client", "telemetry-configuration"))
+        with open(path, "r", encoding="utf-8") as file:
+            tel_conf = file.read()
         return json.loads(tel_conf)
 
     @app.route("/api/update", methods=[ "POST" ])
     def post_update_telemetry_configuration():
-        spec_folder = os.path.join(os.path.dirname(__file__), "..", "spec")
         telconf_url = config.get_conf("Client", "telemetry-configuration-url")
         kaitai_url = config.get_conf("Client", "packet-structure-url")
+        telconf_path = os.path.join(
+            util.get_root(),
+            config.get_conf("Client", "telemetry-configuration")
+        )
+        kaitai_path = os.path.join(
+            util.get_root(),
+            config.get_conf("Client", "kaitai-configuration")
+        )
 
         try:
             tel_req = requests.get(telconf_url)
@@ -95,15 +101,15 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
                 "statusCode": kaitai_req.status_code
             }), 500
 
-        with open(os.path.join(spec_folder, "telemetry.json"), "w", encoding="utf-8") as tel_f:
+        with open(telconf_path, "w", encoding="utf-8") as tel_f:
             tel_f.write(tel_req.text)
 
         # TODO: Revert changes is compiling ksy fails?
-        with open(os.path.join(spec_folder, "icp.ksy"), "w", encoding="utf-8") as kaitai_f:
+        with open(kaitai_path, "w", encoding="utf-8") as kaitai_f:
             kaitai_f.write(kaitai_req.text)
 
         comp_path = os.path.join(
-            os.path.dirname(__file__),
+            util.get_root(),
             config.get_conf("Client", "kaitai-compiler-path")
         )
         if not os.path.isfile(comp_path):
@@ -116,7 +122,7 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
         )
         p_open = subprocess.Popen(
             args,
-            cwd=os.path.join(os.path.dirname(__file__), ".."),
+            cwd=os.path.join(util.get_root()),
             stdout=subprocess.PIPE
         )
         exit_code = p_open.wait()
@@ -198,7 +204,8 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
     return app
 
 if __name__ == '__main__':
-    CONF_PATH = os.path.join(os.path.dirname(__file__), "../configuration.ini")
-    STATIC_PATH = os.path.join(os.path.dirname(__file__), "../static")
-    APP = create_app(Configuration(CONF_PATH), STATIC_PATH, None)
+    CONF_PATH = os.path.join(util.get_root(), "configuration.ini")
+    conf = Configuration(CONF_PATH)
+    STATIC_PATH = os.path.join(util.get_root(), conf.get_conf("Client", "static-files-path"))
+    APP = create_app(conf, STATIC_PATH, None)
     APP.run(debug=True)
