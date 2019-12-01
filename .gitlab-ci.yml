@@ -70,7 +70,7 @@ deploy-client:
     - ssh -l deploy "$TEST_ENV_IP" "rm -rf /srv/client/*"
     - scp -r * deploy@"$TEST_ENV_IP":/srv/client
     # - ssh -l deploy "$TEST_ENV_IP" "chown -R :www-data /srv/client"
-    # - ssh -l deploy "$TEST_ENV_IP" "chmod -R g+w /srv/client"
+    - ssh -l deploy "$TEST_ENV_IP" "chmod -R g+w /srv/client/*"
     - ssh -l deploy "$TEST_ENV_IP" "sudo /bin/systemctl start estcube-client"
   only:
     - master
