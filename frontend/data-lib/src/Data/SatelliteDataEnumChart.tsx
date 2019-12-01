@@ -1,11 +1,8 @@
 import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Typography } from '@material-ui/core';
+import { Chart } from 'react-google-charts';
 import DateTimePicker from './DateTimePicker';
 import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
 
@@ -21,8 +18,7 @@ const styles = (theme: Theme) =>
     },
     limit: {
       maxWidth: 100
-    },
-    tooltipBox: { backgroundColor: '#fff', boxShadow: '1px 1px grey' }
+    }
   });
 
 interface SatelliteDataEnumChartProps extends WithStyles<typeof styles> {
@@ -32,131 +28,92 @@ interface SatelliteDataEnumChartProps extends WithStyles<typeof styles> {
 }
 
 type SatelliteDataEnumChartState = {
-  yAxis: any;
-  chartData: { [key: string]: any }[];
   toDate: string;
   fromDate: string;
   maxEntriesPerGraph: number;
-  enumValues: string[];
+  timelineChartData: any[][];
+  allEnumValues: { [key: string]: string[] };
+  enumIdToLabelMapping: { [key: string]: string };
 };
 
 /**
- * Component for drawing data graphs. Gets graph info and data as props.
+ * Component for drawing enum charts. Gets graph info and data as props.
  */
 class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps, SatelliteDataEnumChartState> {
   constructor(props: SatelliteDataEnumChartProps) {
     super(props);
-    const { graphInfo } = this.props;
-    const { yAxis } = graphInfo;
     const now = new Date();
     const anotherDate = new Date();
     const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
     this.state = {
-      yAxis,
-      chartData: [],
       toDate: now.toISOString(),
       fromDate: oneDayAgo.toISOString(),
-      maxEntriesPerGraph: 100,
-      enumValues: []
+      maxEntriesPerGraph: 50,
+      timelineChartData: [],
+      allEnumValues: {},
+      enumIdToLabelMapping: {}
     };
   }
 
   componentDidMount(): void {
-    this.setChartDataWhenMounted();
+    this.makeTimelineFields();
   }
 
-  setChartDataWhenMounted() {
-    const months: { [key: number]: string } = {
-      1: 'Jan',
-      2: 'Feb',
-      3: 'Mar',
-      4: 'Apr',
-      5: 'May',
-      6: 'Jun',
-      7: 'Jul',
-      8: 'Aug',
-      9: 'Sep',
-      10: 'Oct',
-      11: 'Nov',
-      12: 'Dec'
-    };
-    const { decodedPackets, telemetryConfiguration } = this.props;
-    let localChartData: { [key: string]: any }[] = [];
-    const { yAxis } = this.state;
-    let chartYaxisName = '';
-    decodedPackets.packets.forEach(packet => {
-      const tempObject: { [key: string]: any } = {};
-      const time = packet.packet_timestamp;
-      const month = new Date(time).getMonth();
-      tempObject.name = `${time.substr(8, 2)}${months[month]}-${time.substr(11, 5)}`;
-      tempObject.timestamp = packet.packet_timestamp;
-      yAxis.forEach((yAxisValue: string) => {
-        const telemetryFields: { [key: number]: any } = telemetryConfiguration.fields;
-        let realValueName = '';
-        Object.keys(telemetryFields).forEach((field: any) => {
-          if (telemetryFields[field].type === 'enum') {
-            this.setState({ enumValues: telemetryFields[field].values });
-          }
-          if (telemetryFields[field].id === yAxisValue) {
-            chartYaxisName = telemetryFields[field].unit;
-            realValueName = telemetryFields[field].id;
+  getEnumsForLabel(label: string) {
+    const { telemetryConfiguration } = this.props;
+    const { allEnumValues, enumIdToLabelMapping } = this.state;
+    const { fields } = telemetryConfiguration;
+    const fieldObject = fields.filter(field => field.id === label);
+    const copyOfAllEnumValues: { [key: string]: string[] } = allEnumValues;
+    const copyOfAllEnumIdToLabelMapping = enumIdToLabelMapping;
+    copyOfAllEnumIdToLabelMapping[label] = fieldObject[0].label;
+    copyOfAllEnumValues[label] = fieldObject[0].values;
+    this.setState({ allEnumValues: copyOfAllEnumValues, enumIdToLabelMapping: copyOfAllEnumIdToLabelMapping });
+  }
+
+  makeTimelineFields() {
+    const { graphInfo } = this.props;
+    const tempArrayOfChartData: any[][] = [];
+    if (typeof graphInfo.yAxis === 'object') {
+      tempArrayOfChartData.push([]);
+      graphInfo.yAxis.forEach((element: string) => {
+        this.getEnumsForLabel(element);
+        tempArrayOfChartData[0].push({ type: 'string', id: element });
+        tempArrayOfChartData[0].push({ type: 'string', id: 'Name' });
+      });
+      tempArrayOfChartData[0].push({ type: 'date', id: 'Start' });
+      tempArrayOfChartData[0].push({ type: 'date', id: 'End' });
+    }
+    this.makeTimelineData(tempArrayOfChartData);
+  }
+
+  makeTimelineData(dataArray: any[][]) {
+    const { allEnumValues, enumIdToLabelMapping } = this.state;
+    const { decodedPackets } = this.props;
+    const copyOfDecodedPackets = decodedPackets.packets.sort((a, b) => {
+      if (a.packet_timestamp < b.packet_timestamp) return -1;
+      if (a.packet_timestamp > b.packet_timestamp) return 1;
+      return 0;
+    });
+    let previousTimestamp: string;
+    copyOfDecodedPackets.forEach(packet => {
+      const { fields } = packet;
+      Object.keys(fields).forEach(fieldKey => {
+        Object.keys(allEnumValues).forEach(enumValueKey => {
+          if (enumValueKey === fieldKey) {
+            const endDate = new Date(packet.packet_timestamp);
+            if (!previousTimestamp) {
+              previousTimestamp = endDate.toISOString();
+            }
+            const startDate = new Date(previousTimestamp);
+            const statusName = allEnumValues[enumValueKey][fields[fieldKey]];
+            dataArray.push([enumIdToLabelMapping[fieldKey], statusName, startDate, endDate]);
           }
         });
-
-        tempObject[realValueName] = packet.fields[yAxisValue];
-
-        tempObject.unit = chartYaxisName;
       });
-      localChartData.push(tempObject);
+      previousTimestamp = packet.packet_timestamp;
     });
-    localChartData = localChartData.sort((a, b) => {
-      if (a.timestamp < b.timestamp) return -1;
-      if (a.timestamp > b.timestamp) return 1;
-      return 0;
-    });
-
-    this.setState({
-      chartData: localChartData
-    });
-  }
-
-  static getColor(index: number) {
-    const colours = [
-      '#e6194b',
-      '#3cb44b',
-      '#ffe119',
-      '#4363d8',
-      '#f58231',
-      '#911eb4',
-      '#46f0f0',
-      '#f032e6',
-      '#bcf60c',
-      '#fabebe',
-      '#008080',
-      '#e6beff',
-      '#9a6324',
-      '#fffac8',
-      '#800000',
-      '#aaffc3',
-      '#808000',
-      '#ffd8b1',
-      '#000075',
-      '#808080',
-      '#000000'
-    ];
-    return colours[index];
-  }
-
-  getSelectedDataInWindow() {
-    const { fromDate, toDate, chartData } = this.state;
-    const filtered = chartData.filter(
-      dataElement => dataElement.timestamp <= toDate && dataElement.timestamp >= fromDate
-    );
-    return filtered.sort((a, b) => {
-      if (a.timestamp < b.timestamp) return -1;
-      if (a.timestamp > b.timestamp) return 1;
-      return 0;
-    });
+    this.setState({ timelineChartData: dataArray });
   }
 
   customHandle(e: any, version: string) {
@@ -198,56 +155,40 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
     );
   }
 
-  renderCustomTooltip(current: { [key: string]: any }) {
-    const { active, payload } = current;
-    const { classes } = this.props;
-    if (active && payload) {
-      return (
-        <div className={classes.tooltipBox}>
-          <Typography variant="body2" style={{ margin: '0', fontWeight: 'bold' }}>
-            {payload[0].payload.timestamp}
-          </Typography>
-          {payload.map((payloadElem: any, index: number) => {
-            return (
-              <Typography variant="body2" key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
-                {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
-              </Typography>
-            );
-          })}
-        </div>
-      );
-    }
-    return null;
-  }
-
-  renderChart() {
-    const { graphInfo, classes } = this.props;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { maxEntriesPerGraph, enumValues, yAxis } = this.state;
-    let modifiedChartData = this.getSelectedDataInWindow();
-    const modifiedDataLength = modifiedChartData.length;
-    if (modifiedDataLength > maxEntriesPerGraph) {
-      modifiedChartData = modifiedChartData.slice(modifiedDataLength - maxEntriesPerGraph, modifiedDataLength);
+  render() {
+    const { classes, graphInfo } = this.props;
+    const { timelineChartData, maxEntriesPerGraph, toDate, fromDate } = this.state;
+    const copyOfFirstElement = timelineChartData[0];
+    let modifiedTimelineData = timelineChartData.slice(1, timelineChartData.length - 2).reverse();
+    // @ts-ignore
+    modifiedTimelineData = modifiedTimelineData.filter(element => element.Start >= fromDate && element.Stop <= toDate);
+    modifiedTimelineData.unshift(copyOfFirstElement);
+    if (maxEntriesPerGraph > 0) {
+      modifiedTimelineData = timelineChartData.slice(0, maxEntriesPerGraph + 1);
+    } else {
+      modifiedTimelineData = [];
     }
     return (
-      <div>
+      <div className={classes.root}>
         <Typography className={classes.chartTitle} variant="h6">
           {graphInfo.title}
           <br />
           {this.renderChartDateSelection()}
         </Typography>
-        <p>
-          {modifiedChartData.map(dataObject => {
-            return enumValues[dataObject[yAxis[0]]];
-          })}
-        </p>
+        <div>
+          <Chart
+            width="100%"
+            height="150px"
+            chartType="Timeline"
+            loader={<div>Loading Chart</div>}
+            data={modifiedTimelineData}
+            options={{
+              avoidOverlappingGridLines: false
+            }}
+          />
+        </div>
       </div>
     );
-  }
-
-  render() {
-    const { classes } = this.props;
-    return <div className={classes.root}>{this.renderChart()}</div>;
   }
 }
 
