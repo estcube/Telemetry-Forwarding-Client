@@ -13,6 +13,7 @@ import {
 import SettingsIcon from '@material-ui/icons/Settings';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 
 enum SIDSStatusType {
   NO_REQUESTS = 'NO_REQUESTS',
@@ -48,6 +49,7 @@ interface TNCStatusState {
   sidsTimeout?: number;
   tncTimeout?: number;
   tncBtnEnabled: boolean;
+  updateBtnEnabled: boolean;
 }
 
 const styles = () =>
@@ -68,7 +70,7 @@ const styles = () =>
       }
     },
     rootCard: {
-      minWidth: 260,
+      minWidth: 300,
       boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
       '&:hover': {
         boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
@@ -84,7 +86,8 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
     this.state = {
       sidsStatus: null,
       tncStatus: null,
-      tncBtnEnabled: true
+      tncBtnEnabled: true,
+      updateBtnEnabled: true
     };
   }
 
@@ -153,10 +156,17 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
     this.setState({ tncBtnEnabled: false });
   };
 
+  handleTelConfUpdate = () => {
+    this.setState({ updateBtnEnabled: false });
+    fetch('/api/update', { method: 'POST' }).finally(() => {
+      this.setState({ updateBtnEnabled: true });
+    });
+  };
+
   // TODO: Redirect to configuration page.
   render() {
     const { classes } = this.props;
-    const { sidsStatus, tncStatus, tncBtnEnabled } = this.state;
+    const { sidsStatus, tncStatus, tncBtnEnabled, updateBtnEnabled } = this.state;
     const tncAlive = tncStatus === TNCStatusType.CONNECTED || tncStatus === TNCStatusType.CONNECTING;
     const tncBtnDisabled = !tncBtnEnabled || tncStatus === TNCStatusType.DISCONNECTING;
 
@@ -184,6 +194,9 @@ class TNCStatus extends React.Component<WithStyles<typeof styles>, TNCStatusStat
                 <PlayCircleOutlineIcon />
               </IconButton>
             )}
+            <IconButton disabled={!updateBtnEnabled} onClick={this.handleTelConfUpdate}>
+              <SystemUpdateAltIcon />
+            </IconButton>
             <IconButton>
               <SettingsIcon />
             </IconButton>

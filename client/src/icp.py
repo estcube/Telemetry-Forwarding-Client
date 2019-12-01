@@ -34,7 +34,7 @@ class Icp(KaitaiStruct):
             self.data = self._root.BeaconPacket(self._io, self, self._root)
         else:
             self.data = self._root.DataBlob(self._io, self, self._root)
-        self.crc = self._io.read_u2le()
+        self.crc = self._io.read_u2be()
 
     class DataBlob(KaitaiStruct):
         def __init__(self, _io, _parent=None, _root=None):
@@ -71,7 +71,7 @@ class Icp(KaitaiStruct):
             self._read()
 
         def _read(self):
-            self.timestamp = self._io.read_u4le()
+            self.timestamp = self._io.read_u4be()
             self.main_bus_volt = self._io.read_u1()
             self.avg_power_balance = self._io.read_u1()
             self.bat_a_volt = self._io.read_u1()
@@ -82,7 +82,7 @@ class Icp(KaitaiStruct):
             self.bat_b_temp = self._io.read_u1()
             self.bat_c_temp = self._io.read_u1()
             self.bat_d_temp = self._io.read_u1()
-            self.spin_rate_z = self._io.read_s2le()
+            self.spin_rate_z = self._io.read_s2be()
             self.recv_sig_str = self._io.read_s1()
             self.sat_mission_phase = self._io.read_bits_int(2)
             self.time_since_last_reset_obc = self._io.read_bits_int(2)
@@ -125,11 +125,11 @@ class Icp(KaitaiStruct):
             self._read()
 
         def _read(self):
-            self.timestamp = self._io.read_u4le()
+            self.timestamp = self._io.read_u4be()
             self.err_code_1 = self._io.read_u1()
             self.err_code_2 = self._io.read_u1()
             self.err_code_3 = self._io.read_u1()
-            self.time_safemode = self._io.read_u2le()
+            self.time_safemode = self._io.read_u2be()
             self.main_bus_volt = self._io.read_u1()
             self.status_obc = self._io.read_bits_int(1) != 0
             self.status_obc_bsw = self._io.read_bits_int(1) != 0
