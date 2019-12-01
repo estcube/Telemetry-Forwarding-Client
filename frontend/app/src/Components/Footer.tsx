@@ -1,24 +1,15 @@
 import React from 'react';
-import { AppBar, Box, createStyles, Toolbar, withStyles, WithStyles, Typography } from '@material-ui/core';
+import { createStyles, withStyles, WithStyles, Typography } from '@material-ui/core';
 
 const styles = () =>
   createStyles({
     rootFooter: {
-      position: 'absolute',
-      textAlign: 'right',
-      right: '0',
-      bottom: '0',
-      left: '0',
-      padding: '1rem'
-    },
-    footerBar: {
-      minHeight: '120px',
-      display: 'block'
-    },
-    footerBox: {
-      display: 'inline-block',
-      paddingTop: '1%',
-      paddingBottom: '0.5%'
+      padding: '16px 20px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      backgroundColor: '#3f51b5',
+      color: '#fff'
     },
     logo: {
       maxHeight: '60px',
@@ -27,10 +18,6 @@ const styles = () =>
       marginTop: '1px',
       marginBottom: '11px',
       display: 'block'
-    },
-    footerText: {
-      color: 'white',
-      textAlign: 'left'
     }
   });
 
@@ -39,19 +26,11 @@ class Footer extends React.Component<WithStyles<typeof styles>> {
     const { classes } = this.props;
     return (
       <div className={classes.rootFooter}>
-        <AppBar position="static">
-          <Toolbar className={classes.footerBar}>
-            <Box className={classes.footerBox}>
-              <img src="././images/estcube.png" alt="logo" className={classes.logo} />
-              <Typography variant="body2" className={classes.footerText}>
-                ESTCube Telemetry Forwarding Client
-              </Typography>
-              <Typography variant="body2" className={classes.footerText}>
-                © Eesti Tudengisatelliidi Sihtasutus (Estonian Student Satellite Foundation)
-              </Typography>
-            </Box>
-          </Toolbar>
-        </AppBar>
+        <img src="././images/estcube.png" alt="logo" className={classes.logo} />
+        <Typography variant="body2">ESTCube Telemetry Forwarding Client</Typography>
+        <Typography variant="body2">
+          © Eesti Tudengisatelliidi Sihtasutus (Estonian Student Satellite Foundation)
+        </Typography>
       </div>
     );
   }

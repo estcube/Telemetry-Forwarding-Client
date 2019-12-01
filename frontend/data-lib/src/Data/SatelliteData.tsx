@@ -19,7 +19,6 @@ const styles = (theme: Theme) =>
       border: '1px solid'
     },
     box: {
-      position: 'absolute',
       width: '100%',
       marginRight: theme.spacing(5)
     }
