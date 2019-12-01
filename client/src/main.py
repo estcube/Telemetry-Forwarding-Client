@@ -87,17 +87,9 @@ def main(argv):
 
     tnc_pool = TNCPool(conf, ax_listener)
     tnc_pool.connect_main_tnc()
-    # tnc_pool.connect_tnc("Main", ConnectionConfiguration(
-    #         ConnectionType.TCPIP,
-    #         ConnectionProtocol.KISS,
-    #         conf.get_conf("TNC interface", "tnc-ip"),
-    #         conf.get_conf("TNC interface", "tnc-port"),
-    #         int(conf.get_conf("TNC interface", "max-connection-attempts")),
-    #         int(conf.get_conf("TNC interface", "connection-retry-time"))
-    #     ), ax_listener.receive)
 
     api_app = api.create_app(conf, conf.get_conf("Client", "static-files-path"), tnc_pool,
-                             sids_relay, ax_listener)
+                             sids_relay)
     # We set the daemon option to True, so that the client will quit once the other threads have
     #  finished because we don't have a good way of stopping the Flask app properly.
     api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)

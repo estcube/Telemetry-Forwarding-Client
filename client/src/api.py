@@ -8,19 +8,22 @@ Does not include any authentication, so should not be open to the external netwo
 import sys
 import os
 import json
+import subprocess
+import requests
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from tnc_pool import TNCPool
 from db_interface import TelemetryDB
 from sids_relay import SIDSRelay
+from telemetry_listener import TelemetryListener
 
 # from db_interface import TelemetryDB
 from conf import Configuration
 
 
 def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
-               sids_relay: SIDSRelay, ax_listener) -> Flask:
+               sids_relay: SIDSRelay) -> Flask:
     """ Creates a flask app for the api. """
 
     db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
@@ -58,6 +61,63 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
         tel_conf = file.read()
         file.close()
         return json.loads(tel_conf)
+
+    @app.route("/api/update", methods=[ "POST" ])
+    def post_update_telemetry_configuration():
+        spec_folder = os.path.join(os.path.dirname(__file__), "..", "spec")
+        telconf_url = config.get_conf("Client", "telemetry-configuration-url")
+        kaitai_url = config.get_conf("Client", "packet-structure-url")
+
+        try:
+            tel_req = requests.get(telconf_url)
+        except ConnectionError:
+            return jsonify({
+                "error": "Connection to telemetry configuration endpoint failed"
+            }), 500
+
+        if tel_req.status_code != 200:
+            return jsonify({
+                "error": "Request for the telemetry configuration failed",
+                "statusCode": tel_req.status_code
+            }), 500
+
+        try:
+            kaitai_req = requests.get(kaitai_url)
+        except ConnectionError:
+            return jsonify({
+                "error": "Connection to kaitai configuration endpoint failed."
+            }), 500
+        if kaitai_req.status_code != 200:
+            return jsonify({
+                "error": "Request for the kaitai configuration failed.",
+                "statusCode": kaitai_req.status_code
+            }), 500
+
+        with open(os.path.join(spec_folder, "telemetry.json"), "w", encoding="utf-8") as tel_f:
+            tel_f.write(tel_req.text)
+
+        # TODO: Revert changes is compiling ksy fails?
+        with open(os.path.join(spec_folder, "icp.ksy"), "w", encoding="utf-8") as kaitai_f:
+            kaitai_f.write(kaitai_req.text)
+
+        comp_path = os.path.join(
+            os.path.dirname(__file__),
+            config.get_conf("Client", "kaitai-compiler-path")
+        )
+        if not os.path.isfile(comp_path):
+            return jsonify({"error": "Telemetry conf updated. Cannot find kaitai-struct-compiler executable."}), 500
+
+        args = (comp_path, "--target", "python", "--outdir", "src", "--python-package", "icp",
+            "spec/icp.ksy"
+        )
+        p_open = subprocess.Popen(
+            args,
+            cwd=os.path.join(os.path.dirname(__file__), ".."),
+            stdout=subprocess.PIPE
+        )
+        p_open.wait()
+
+        return '', 204
 
     @app.route("/api/tnc/<name>/status", methods=["GET"])
     def get_tnc_connection_check(name: str):
@@ -105,7 +165,7 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.errorhandler(404)
-    def not_found(e):
+    def not_found(err):
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.route('/api/static/<path:path>')
@@ -113,14 +173,14 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
         return send_from_directory('static', path)
 
     @app.route('/api/conf', methods=["POST"])
-    def set_conf():
+    def post_set_conf():
         some_json = request.get_json()
         try:
             for i in some_json:
                 for j in some_json[i]:
                     config.set_conf(section=i, element=j, value=some_json[i][j])
         except:
-            err_type, error, traceback = sys.exc_info()
+            _, error, _ = sys.exc_info()
             return jsonify({"Error": '{err}'.format(err=error)}), 500
         return jsonify(some_json), 200
 

@@ -24,19 +24,19 @@ CONSTRAINTS = {
         },
         "norad-id": {
             "type": "int",
-            "label": "Norad ID",
+            "label": "Satellite Norad ID",
             "min": 1,
             "max": 99999
         },
         "longitude": {
             "type": "float",
-            "label": "Longitude",
+            "label": "Receiver longitude",
             "min": -180,
             "max": 180
         },
         "latitude": {
             "type": "float",
-            "label": "Latitude",
+            "label": "Receiver latitude",
             "min": -180,
             "max": 180
         }
@@ -101,12 +101,6 @@ CONSTRAINTS = {
             "label": "Static files path",
             "hidden": True
         },
-        "telemetry-configuration": {
-            "type": "str",
-            "description": "Path to the file that specified the telemetry data fields.",
-            "requiresRestart": True,
-            "label": "Telemetry data configuration"
-        },
         "frontend-port": {
             "type": "int",
             "description": "Port that the frontend and api are served on.",
@@ -114,6 +108,23 @@ CONSTRAINTS = {
             "label": "Frontend port",
             "min": 1024,
             "max": 65535
+        },
+        "telemetry-configuration-url": {
+            "type": "url",
+            "description": "URL of the latest telemetry configuration endpoint.",
+            "requireRestart": False,
+            "label": "Telemetry configuration URL"
+        },
+        "kaitai-compiler-path": {
+            "type": "str",
+            "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
+            "requireRestart": False,
+            "hidden": True
+        },
+        "packet-structure-url": {
+            "type": "url",
+            "description": "URL of the latest packet structure (kaitai) endpoint.",
+            "label": "Packet structure URL"
         }
     }
 }
@@ -181,6 +192,8 @@ class Configuration(object):
                 raise ValueError("Field {} - {} does not exist.".format(section, element))
 
             constr = section_constraints[element]
+            if constr["hidden"] == True:
+                return
             if constr["type"] == "str":
                 pass
             elif constr["type"] == "url":
