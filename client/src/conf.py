@@ -197,7 +197,7 @@ class Configuration(object):
             if constr["type"] == "str":
                 pass
             elif constr["type"] == "url":
-                regex = '^https?:\/\/(www\.)?([0-9a-zA-Z]+\.)+[a-z]+(:\d+)?(\/\S+)*$'
+                regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
                 is_valid = re.match(regex, value)
                 if not is_valid:
                     raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))

@@ -105,7 +105,9 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
             config.get_conf("Client", "kaitai-compiler-path")
         )
         if not os.path.isfile(comp_path):
-            return jsonify({"error": "Telemetry conf updated. Cannot find kaitai-struct-compiler executable."}), 500
+            return jsonify({
+                "error": "Telemetry conf updated. Cannot find kaitai-struct-compiler executable."
+            }), 500
 
         args = (comp_path, "--target", "python", "--outdir", "src", "--python-package", "icp",
             "spec/icp.ksy"
@@ -115,7 +117,13 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
             cwd=os.path.join(os.path.dirname(__file__), ".."),
             stdout=subprocess.PIPE
         )
-        p_open.wait()
+        exit_code = p_open.wait()
+        print(exit_code)
+        if exit_code != 0:
+            return jsonify({
+                "error": "Telemetry conf updated. Kaitai file failed compilation.",
+                "exitCode": exit_code
+            }), 500
 
         return '', 204
 

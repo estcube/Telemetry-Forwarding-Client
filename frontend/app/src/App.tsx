@@ -2,6 +2,7 @@ import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { CssBaseline, createStyles, withStyles, WithStyles } from '@material-ui/core';
 import 'typeface-roboto';
+import { SnackbarProvider } from 'notistack';
 import './styles.scss';
 import Footer from './Components/Footer';
 import Header from './Components/Header';
@@ -32,23 +33,25 @@ class App extends React.Component<WithStyles<typeof styles>> {
     return (
       <BrowserRouter>
         <CssBaseline />
-        <div className={classes.root}>
-          <Header />
-          <div className={classes.main}>
-            <Switch>
-              <Route path="/" exact>
-                <MainPage />
-              </Route>
-              <Route path="/configure" exact>
-                <ConfigurationPage />
-              </Route>
-              <Route path="/*">
-                <PageNotFound />
-              </Route>
-            </Switch>
+        <SnackbarProvider>
+          <div className={classes.root}>
+            <Header />
+            <div className={classes.main}>
+              <Switch>
+                <Route path="/" exact>
+                  <MainPage />
+                </Route>
+                <Route path="/configure" exact>
+                  <ConfigurationPage />
+                </Route>
+                <Route path="/*">
+                  <PageNotFound />
+                </Route>
+              </Switch>
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        </SnackbarProvider>
       </BrowserRouter>
     );
   }
