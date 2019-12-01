@@ -9,6 +9,7 @@ import sys
 import os
 import json
 import subprocess
+import logging
 import requests
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
@@ -16,7 +17,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from tnc_pool import TNCPool
 from db_interface import TelemetryDB
 from sids_relay import SIDSRelay
-from telemetry_listener import TelemetryListener
 
 # from db_interface import TelemetryDB
 from conf import Configuration
@@ -25,6 +25,8 @@ from conf import Configuration
 def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
                sids_relay: SIDSRelay) -> Flask:
     """ Creates a flask app for the api. """
+
+    log = logging.getLogger(__name__)
 
     db_loc = os.path.join(os.path.dirname(__file__), config.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
@@ -118,8 +120,9 @@ def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
             stdout=subprocess.PIPE
         )
         exit_code = p_open.wait()
-        print(exit_code)
+
         if exit_code != 0:
+            log.error(p_open.stdout.read())
             return jsonify({
                 "error": "Telemetry conf updated. Kaitai file failed compilation.",
                 "exitCode": exit_code
