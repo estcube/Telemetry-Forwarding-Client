@@ -175,19 +175,24 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
         if (res.status === 204) {
           enqueueSnackbar('Configurations successfully updated.', { variant: 'success' });
         } else {
-          res.json().then((response: UpdateFailResponse) => {
-            if (response?.error) {
-              let codeStr = '';
-              if (response.exitCode) {
-                codeStr = `Compiler exit code: ${response.exitCode}`;
-              } else if (response.statusCode) {
-                codeStr = `Status code: ${response.statusCode}`;
+          res
+            .json()
+            .then((response: UpdateFailResponse) => {
+              if (response?.error) {
+                let codeStr = '';
+                if (response.exitCode) {
+                  codeStr = `Compiler exit code: ${response.exitCode}`;
+                } else if (response.statusCode) {
+                  codeStr = `Status code: ${response.statusCode}`;
+                }
+                enqueueSnackbar(`${response.error} ${codeStr}`, { variant: 'error' });
+              } else {
+                enqueueSnackbar('Failed to update configurations.', { variant: 'error' });
               }
-              enqueueSnackbar(`${response.error} ${codeStr}`, { variant: 'error' });
-            } else {
-              enqueueSnackbar('Failed to update configurations.', { variant: 'error' });
-            }
-          });
+            })
+            .catch(() => {
+              enqueueSnackbar(res.statusText, { variant: 'error' });
+            });
         }
       })
       .catch((reason: any) => {
