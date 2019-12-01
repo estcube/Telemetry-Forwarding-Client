@@ -1,5 +1,4 @@
 import React from 'react';
-import { Map, Marker, TileLayer } from 'react-leaflet';
 import { Button } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
@@ -51,13 +50,13 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
         </Button>
         {mapOpened && (
           <div data-testid="leafletMap">
-            <Map className={classes.mapStyle} center={[58.378025, 26.728493]} zoom={14}>
-              <TileLayer
-                url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <Marker position={[58.378025, 26.728493]} />
-            </Map>
+            <iframe
+              src="https://www.n2yo.com/widgets/widget-tracker.php?s=43792&amp;size=medium&amp;all=1&amp;me=10&amp;map=5"
+              height="500"
+              width="600"
+              scrolling="yes"
+              title="map"
+            />
           </div>
         )}
       </div>
