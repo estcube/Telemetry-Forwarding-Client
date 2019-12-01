@@ -2,7 +2,7 @@ import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 import SatelliteDataLineChart from './SatelliteDataLineChart';
-// import SatelliteDataEnumChart from './SatelliteDataEnumChart';
+import SatelliteDataEnumChart from './SatelliteDataEnumChart';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -39,7 +39,7 @@ class SatelliteDataCharts extends React.Component<SatelliteDataChartsProps> {
             telemetryConfiguration={telemetryConfiguration}
           />
         );
-      } /* else if (graphs[i].type === 'enum') {
+      } else if (graphs[i].type === 'enum') {
         children.push(
           <SatelliteDataEnumChart
             key={i}
@@ -48,7 +48,7 @@ class SatelliteDataCharts extends React.Component<SatelliteDataChartsProps> {
             telemetryConfiguration={telemetryConfiguration}
           />
         );
-      } */
+      }
     }
     if (children.length === 0) {
       children.push(<></>);
