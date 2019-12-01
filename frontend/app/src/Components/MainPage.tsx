@@ -80,7 +80,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
       content = <CircularProgress />;
     } else if (!loading && dataFetchErrored) {
       content = (
-        <Typography variant="h6">Something went wrong. Sorry :( Try re-launching your client to fix this.</Typography>
+        <Typography variant="h6">Could not connect to the client. Try re-launching your client to fix this.</Typography>
       );
     } else if (telemetryConfLoaded && packetsLoaded) {
       content = <Data telemetryConfiguration={telemetryConfiguration} decodedPackets={decodedPackets} />;

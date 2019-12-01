@@ -47,7 +47,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
       .finally(() => this.setState({ loading: false }));
   };
 
-  postConfValues = (event: any, data: { [key: string]: { [key: string]: any } }) => {
+  postConfValues = (event: React.MouseEvent<HTMLButtonElement>, data: { [key: string]: { [key: string]: any } }) => {
     event.preventDefault();
     this.setState({ confPostLoading: true });
     const dataObject = Object.assign(
@@ -85,7 +85,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
       content = <CircularProgress />;
     } else if (!loading && dataFetchErrored) {
       content = (
-        <Typography variant="h6">Something went wrong. Sorry :( Try re-launching your client to fix this.</Typography>
+        <Typography variant="h6">Could not connect to the client. Try re-launching your client to fix this.</Typography>
       );
     } else if (confFetched) {
       content = (

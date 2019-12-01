@@ -122,10 +122,10 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
           return dataFromOneTimestamp.label === tableTitle;
         });
         return someValues.map(someValue => {
-          if (someValue.values) {
+          if (someValue.type === 'enum') {
             return someValue.values[parseInt(someValue.value, 10)];
           }
-          return someValue.value;
+          return `${someValue.value}${someValue.unit}`;
         });
       });
     });
@@ -145,12 +145,10 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
   }
 
   /**
-   * Combines fields from configuration with fields from data. Sets paginator state.
+   * Combines fields from configuration with fields from data. Sets allTimestamps state.
    */
   makeCorrectDataForTables() {
     const { decodedPackets } = this.props;
-    // console.log(decodedPackets);
-
     const telemetryPacketsArray = decodedPackets.packets;
     let allTimestamps: string[] = [];
     const telemetryPacketTableData: { [key: string]: any } = {};
@@ -179,7 +177,6 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
     if (allTimestamps.length > 0) {
       this.setState({
         tableData: telemetryPacketTableData,
-        // eslint-disable-next-line react/no-unused-state
         allTimestamps
       });
     }
@@ -208,7 +205,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
     }
   }
 
-  handleLimitChange(e: any) {
+  handleLimitChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.value !== '') {
       this.setState({ entriesPerTable: parseInt(e.target.value, 10) });
     } else {
@@ -217,37 +214,52 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
   }
 
   renderTable() {
-    const { verticalTableHeaders, combinedVerticalTableData } = this.state;
+    const { verticalTableHeaders, combinedVerticalTableData, fromDate, toDate, entriesPerTable } = this.state;
     const { classes } = this.props;
-    return verticalTableHeaders.map(header => {
-      if (header !== 'id' && header !== 'type') {
-        return (
-          <TableRow key={header}>
-            <TableCell className={classes.tableCellHeader} variant="head">
-              <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                {header}
-              </Typography>
-            </TableCell>
-            {combinedVerticalTableData[header] &&
-              combinedVerticalTableData[header].map((element, index) => {
-                if (header === 'Timestamp') {
+    if (
+      verticalTableHeaders.includes('Timestamp') &&
+      combinedVerticalTableData.Timestamp &&
+      combinedVerticalTableData.Timestamp.length > 0
+    ) {
+      return verticalTableHeaders.map(header => {
+        if (header !== 'id' && header !== 'type') {
+          return (
+            <TableRow key={header}>
+              <TableCell className={classes.tableCellHeader} variant="head">
+                <Typography variant="body2" style={{ fontWeight: 'bold' }}>
+                  {header}
+                </Typography>
+              </TableCell>
+              {combinedVerticalTableData[header] &&
+                combinedVerticalTableData[header].map((element, index) => {
+                  if (header === 'Timestamp') {
+                    return (
+                      <TableCell className={classes.tableCell} key={index}>
+                        <Typography variant="body2">{element.replace('T', '\n')}</Typography>
+                      </TableCell>
+                    );
+                  }
                   return (
                     <TableCell className={classes.tableCell} key={index}>
-                      <Typography variant="body2">{element.replace('T', '\n')}</Typography>
+                      <Typography variant="body2">{element}</Typography>
                     </TableCell>
                   );
-                }
-                return (
-                  <TableCell className={classes.tableCell} key={index}>
-                    <Typography variant="body2">{element}</Typography>
-                  </TableCell>
-                );
-              })}
-          </TableRow>
-        );
-      }
-      return null;
-    });
+                })}
+            </TableRow>
+          );
+        }
+        return null;
+      });
+    }
+    return (
+      <TableRow>
+        <TableCell className={classes.tableCellHeader}>
+          <Typography variant="body1">
+            No data available from {fromDate} to {toDate} with limit of {entriesPerTable}
+          </Typography>
+        </TableCell>
+      </TableRow>
+    );
   }
 
   renderDateTimePicker() {
@@ -267,7 +279,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
           confElemName="Limit"
           confElemType="int"
           confElemDescription=""
-          textChangeHandler={(event: any) => this.handleLimitChange(event)}
+          textChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => this.handleLimitChange(event)}
         />
       </>
     );

@@ -1,7 +1,7 @@
 import 'date-fns';
 import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
-import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DateTimePicker as SomePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 interface DateTimePickerProps {
   defaultValue: string;
@@ -39,7 +39,7 @@ class DateTimePicker extends React.Component<DateTimePickerProps, DateTimePicker
     return (
       <>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDateTimePicker
+          <SomePicker
             variant="inline"
             ampm={false}
             value={date}
