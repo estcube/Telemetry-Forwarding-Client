@@ -31,7 +31,7 @@ type SatelliteDataEnumChartState = {
   toDate: string;
   fromDate: string;
   maxEntriesPerGraph: number;
-  timelineChartData: any[][];
+  timelineChartData: string[][] | { [key: string]: any }[];
   allEnumValues: { [key: string]: string[] };
   enumIdToLabelMapping: { [key: string]: string };
 };
@@ -57,6 +57,20 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
 
   componentDidMount(): void {
     this.makeTimelineFields();
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<SatelliteDataEnumChartProps>,
+    prevState: Readonly<SatelliteDataEnumChartState>
+  ): void {
+    const { toDate, fromDate, maxEntriesPerGraph } = this.state;
+    if (
+      toDate !== prevState.toDate ||
+      fromDate !== prevState.fromDate ||
+      maxEntriesPerGraph !== prevState.maxEntriesPerGraph
+    ) {
+      this.makeTimelineFields();
+    }
   }
 
   getEnumsForLabel(label: string) {
@@ -88,13 +102,16 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
   }
 
   makeTimelineData(dataArray: any[][]) {
-    const { allEnumValues, enumIdToLabelMapping } = this.state;
+    const { allEnumValues, enumIdToLabelMapping, toDate, fromDate } = this.state;
     const { decodedPackets } = this.props;
-    const copyOfDecodedPackets = decodedPackets.packets.sort((a, b) => {
+    let copyOfDecodedPackets = decodedPackets.packets.sort((a, b) => {
       if (a.packet_timestamp < b.packet_timestamp) return -1;
       if (a.packet_timestamp > b.packet_timestamp) return 1;
       return 0;
     });
+    copyOfDecodedPackets = copyOfDecodedPackets.filter(
+      elem => elem.packet_timestamp >= fromDate && elem.packet_timestamp <= toDate
+    );
     let previousTimestamp: string;
     copyOfDecodedPackets.forEach(packet => {
       const { fields } = packet;
@@ -157,14 +174,15 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
 
   render() {
     const { classes, graphInfo } = this.props;
-    const { timelineChartData, maxEntriesPerGraph, toDate, fromDate } = this.state;
+    const { timelineChartData, maxEntriesPerGraph } = this.state;
     const copyOfFirstElement = timelineChartData[0];
-    let modifiedTimelineData = timelineChartData.slice(1, timelineChartData.length - 2).reverse();
-    // @ts-ignore
-    modifiedTimelineData = modifiedTimelineData.filter(element => element.Start >= fromDate && element.Stop <= toDate);
+    let modifiedTimelineData = timelineChartData.slice(
+      timelineChartData.length - maxEntriesPerGraph,
+      timelineChartData.length
+    );
     modifiedTimelineData.unshift(copyOfFirstElement);
     if (maxEntriesPerGraph > 0) {
-      modifiedTimelineData = timelineChartData.slice(0, maxEntriesPerGraph + 1);
+      modifiedTimelineData = timelineChartData.slice(0, maxEntriesPerGraph + 2);
     } else {
       modifiedTimelineData = [];
     }
