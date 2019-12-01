@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
 import 'typeface-roboto';
 import './styles.scss';
+import Footer from './Components/Footer';
 import Header from './Components/Header';
 import MainPage from './Components/MainPage';
 import ConfigurationPage from './Components/ConfigurationPage';
@@ -28,6 +29,7 @@ export default class App extends React.Component {
             <PageNotFound />
           </Route>
         </Switch>
+        <Footer />
       </BrowserRouter>
     );
   }
