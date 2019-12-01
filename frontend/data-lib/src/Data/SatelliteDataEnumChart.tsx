@@ -3,6 +3,7 @@ import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Typography } from '@material-ui/core';
 import DateTimePicker from './DateTimePicker';
@@ -24,29 +25,26 @@ const styles = (theme: Theme) =>
     tooltipBox: { backgroundColor: '#fff', boxShadow: '1px 1px grey' }
   });
 
-interface SatelliteDataChartProps extends WithStyles<typeof styles> {
+interface SatelliteDataEnumChartProps extends WithStyles<typeof styles> {
   decodedPackets: { [key: string]: { [key: string]: any }[] };
   telemetryConfiguration: { [key: string]: { [key: string]: any }[] };
   graphInfo: { [key: string]: string | number | [] };
 }
 
-type SatelliteDataChartState = {
+type SatelliteDataEnumChartState = {
   yAxis: any;
   chartData: { [key: string]: any }[];
-  chartLineNames: string[];
-  chartDomain: number;
-  lineVisibility: { [key: string]: any }[];
-  highlightedLine: string | null;
   toDate: string;
   fromDate: string;
   maxEntriesPerGraph: number;
+  enumValues: string[];
 };
 
 /**
  * Component for drawing data graphs. Gets graph info and data as props.
  */
-class SatelliteDataChart extends React.Component<SatelliteDataChartProps, SatelliteDataChartState> {
-  constructor(props: SatelliteDataChartProps) {
+class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps, SatelliteDataEnumChartState> {
+  constructor(props: SatelliteDataEnumChartProps) {
     super(props);
     const { graphInfo } = this.props;
     const { yAxis } = graphInfo;
@@ -54,15 +52,12 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     const anotherDate = new Date();
     const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
     this.state = {
-      lineVisibility: [],
       yAxis,
       chartData: [],
-      chartLineNames: [],
-      chartDomain: 300,
-      highlightedLine: null,
       toDate: now.toISOString(),
       fromDate: oneDayAgo.toISOString(),
-      maxEntriesPerGraph: 100
+      maxEntriesPerGraph: 100,
+      enumValues: []
     };
   }
 
@@ -71,31 +66,45 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
   }
 
   setChartDataWhenMounted() {
+    const months: { [key: number]: string } = {
+      1: 'Jan',
+      2: 'Feb',
+      3: 'Mar',
+      4: 'Apr',
+      5: 'May',
+      6: 'Jun',
+      7: 'Jul',
+      8: 'Aug',
+      9: 'Sep',
+      10: 'Oct',
+      11: 'Nov',
+      12: 'Dec'
+    };
     const { decodedPackets, telemetryConfiguration } = this.props;
     let localChartData: { [key: string]: any }[] = [];
     const { yAxis } = this.state;
-    const lineNames: string[] = [];
     let chartYaxisName = '';
-    let bestDomain = 0;
     decodedPackets.packets.forEach(packet => {
       const tempObject: { [key: string]: any } = {};
-      tempObject.name = packet.packet_timestamp.replace('T', ' ').substr(11, 8);
+      const time = packet.packet_timestamp;
+      const month = new Date(time).getMonth();
+      tempObject.name = `${time.substr(8, 2)}${months[month]}-${time.substr(11, 5)}`;
       tempObject.timestamp = packet.packet_timestamp;
       yAxis.forEach((yAxisValue: string) => {
         const telemetryFields: { [key: number]: any } = telemetryConfiguration.fields;
         let realValueName = '';
         Object.keys(telemetryFields).forEach((field: any) => {
+          if (telemetryFields[field].type === 'enum') {
+            this.setState({ enumValues: telemetryFields[field].values });
+          }
           if (telemetryFields[field].id === yAxisValue) {
             chartYaxisName = telemetryFields[field].unit;
-            realValueName = telemetryFields[field].label;
-            if (!lineNames.includes(realValueName)) {
-              lineNames.push(realValueName);
-            }
+            realValueName = telemetryFields[field].id;
           }
         });
+
         tempObject[realValueName] = packet.fields[yAxisValue];
-        const value = parseInt(packet.fields[yAxisValue], 10);
-        if (value > bestDomain) bestDomain = value;
+
         tempObject.unit = chartYaxisName;
       });
       localChartData.push(tempObject);
@@ -105,14 +114,9 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
       if (a.timestamp > b.timestamp) return 1;
       return 0;
     });
-    const visibilityTempObject = lineNames.map(lineName => {
-      return { lineName, visibility: true };
-    });
+
     this.setState({
-      lineVisibility: visibilityTempObject,
-      chartData: localChartData,
-      chartLineNames: lineNames,
-      chartDomain: bestDomain
+      chartData: localChartData
     });
   }
 
@@ -145,53 +149,14 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
 
   getSelectedDataInWindow() {
     const { fromDate, toDate, chartData } = this.state;
-    return chartData.filter(dataElement => dataElement.timestamp <= toDate && dataElement.timestamp >= fromDate);
-  }
-
-  hideOtherLines(e: any) {
-    const { lineVisibility, highlightedLine } = this.state;
-    let newVisibility: { [key: string]: any }[];
-    if (!highlightedLine) {
-      newVisibility = lineVisibility.map(line => {
-        if (line.lineName !== e.dataKey) {
-          return {
-            lineName: line.lineName,
-            visibility: !line.visibility
-          };
-        }
-        return line;
-      });
-      this.setState({ highlightedLine: e.dataKey });
-    } else if (highlightedLine === e.dataKey) {
-      newVisibility = this.restoreVisibility();
-      this.setState({ highlightedLine: null });
-    } else {
-      newVisibility = lineVisibility.map(line => {
-        if (line.lineName !== e.dataKey) {
-          return {
-            lineName: line.lineName,
-            visibility: false
-          };
-        }
-        return {
-          lineName: line.lineName,
-          visibility: true
-        };
-      });
-      this.setState({ highlightedLine: e.dataKey });
-    }
-    this.setState({ lineVisibility: newVisibility });
-  }
-
-  restoreVisibility() {
-    const { lineVisibility } = this.state;
-    const newVisibility: { [key: string]: any }[] = lineVisibility.map(line => {
-      return {
-        lineName: line.lineName,
-        visibility: true
-      };
+    const filtered = chartData.filter(
+      dataElement => dataElement.timestamp <= toDate && dataElement.timestamp >= fromDate
+    );
+    return filtered.sort((a, b) => {
+      if (a.timestamp < b.timestamp) return -1;
+      if (a.timestamp > b.timestamp) return 1;
+      return 0;
     });
-    return newVisibility;
   }
 
   customHandle(e: any, version: string) {
@@ -233,34 +198,7 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
     );
   }
 
-  renderLines() {
-    const { chartLineNames, lineVisibility } = this.state;
-    const children: any[] = [];
-    chartLineNames.forEach((lineName: string, index: number) => {
-      let show = false;
-      lineVisibility.forEach(line => {
-        if (line.lineName === lineName) {
-          show = line.visibility;
-        }
-      });
-      children.push(
-        <Line
-          key={lineName}
-          name={lineName}
-          type="monotone"
-          dataKey={lineName}
-          stroke={SatelliteDataChart.getColor(index)}
-          strokeWidth={2}
-          activeDot={{ r: 8 }}
-          ref={lineName}
-          opacity={show ? 1 : 0}
-        />
-      );
-    });
-    return children;
-  }
-
-  renderCustomTooltip(current: any) {
+  renderCustomTooltip(current: { [key: string]: any }) {
     const { active, payload } = current;
     const { classes } = this.props;
     if (active && payload) {
@@ -284,51 +222,27 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
 
   renderChart() {
     const { graphInfo, classes } = this.props;
-    const { chartDomain, maxEntriesPerGraph } = this.state;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { maxEntriesPerGraph, enumValues, yAxis } = this.state;
     let modifiedChartData = this.getSelectedDataInWindow();
     const modifiedDataLength = modifiedChartData.length;
     if (modifiedDataLength > maxEntriesPerGraph) {
       modifiedChartData = modifiedChartData.slice(modifiedDataLength - maxEntriesPerGraph, modifiedDataLength);
     }
-    if (graphInfo.type === 'line') {
-      return (
-        <>
-          <Typography className={classes.chartTitle} variant="h6">
-            {graphInfo.title}
-            <br />
-            {this.renderChartDateSelection()}
-          </Typography>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={modifiedChartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5
-              }}
-            >
-              <CartesianGrid />
-              <XAxis dataKey="name" angle={-15} textAnchor="end" scaleToFit height={50}>
-                <Label value={graphInfo.xAxis} position="top" />
-              </XAxis>
-              <YAxis domain={[0, chartDomain]}>
-                <Label
-                  value={modifiedChartData.length > 0 && modifiedChartData[0] ? modifiedChartData[0].unit : ''}
-                  angle={-90}
-                  offset={0}
-                  position="left"
-                />
-              </YAxis>
-              <Tooltip content={(current: any) => this.renderCustomTooltip(current)} />
-              <Legend onClick={(event: any) => this.hideOtherLines(event)} />
-              {this.renderLines()}
-            </LineChart>
-          </ResponsiveContainer>
-        </>
-      );
-    }
-    return <></>;
+    return (
+      <div>
+        <Typography className={classes.chartTitle} variant="h6">
+          {graphInfo.title}
+          <br />
+          {this.renderChartDateSelection()}
+        </Typography>
+        <p>
+          {modifiedChartData.map(dataObject => {
+            return enumValues[dataObject[yAxis[0]]];
+          })}
+        </p>
+      </div>
+    );
   }
 
   render() {
@@ -337,4 +251,4 @@ class SatelliteDataChart extends React.Component<SatelliteDataChartProps, Satell
   }
 }
 
-export default withStyles(styles)(SatelliteDataChart);
+export default withStyles(styles)(SatelliteDataEnumChart);

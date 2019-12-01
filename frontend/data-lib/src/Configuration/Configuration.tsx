@@ -72,7 +72,12 @@ class Configuration extends React.Component<ConfigurationProps, ConfigurationSta
     });
   }
 
-  handleFormChange(event: any, confElemName: string, sectionName: string, inputType: string) {
+  handleFormChange(
+    event: React.ChangeEvent<HTMLInputElement>,
+    confElemName: string,
+    sectionName: string,
+    inputType: string
+  ) {
     const { confValues } = this.state;
     const copyOfConfValues = JSON.parse(JSON.stringify(confValues));
     if (inputType === 'text') {
