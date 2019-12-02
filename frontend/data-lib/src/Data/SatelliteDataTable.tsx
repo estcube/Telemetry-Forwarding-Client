@@ -246,7 +246,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
             <TableRow key={header}>
               <TableCell className={classes.tableCellHeader} variant="head">
                 <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                  {headersWithUnits[header] ? `${header}-${headersWithUnits[header]}` : header}
+                  {headersWithUnits[header] ? `${header} (${headersWithUnits[header]})` : header}
                 </Typography>
               </TableCell>
               {combinedVerticalTableData[header] &&
