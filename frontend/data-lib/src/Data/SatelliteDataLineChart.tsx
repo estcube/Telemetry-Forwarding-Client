@@ -53,9 +53,7 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     super(props);
     const { graphInfo } = this.props;
     const now = new Date();
-    now.setHours(now.getHours() - now.getUTCDate());
     const fromTime = new Date();
-    fromTime.setHours(fromTime.getHours() - fromTime.getUTCDate());
     fromTime.setDate(fromTime.getDate() - 1);
     this.state = {
       lineVisibility: [],

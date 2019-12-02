@@ -61,9 +61,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
   constructor(props: SatelliteDataTableProps) {
     super(props);
     const now = new Date();
-    now.setHours(now.getHours() - now.getUTCDate());
     const anotherDate = new Date();
-    anotherDate.setHours(anotherDate.getHours() - anotherDate.getUTCDate());
     anotherDate.setDate(anotherDate.getDate() - 1);
     this.state = {
       combinedVerticalTableData: {},
