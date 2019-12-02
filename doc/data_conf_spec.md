@@ -21,10 +21,21 @@ The configuration structure will be as follows:
   },
   "fields": [
     {
-      "id": "str",
-      "type": "str",
-      "unit": "str (not needed for timestamp types)",
-      "label": "str (not needed for isMsgTimestamp == True field"
+      "id": "bat_a_temp",
+      "type": "int",
+      "unit": "V (not needed for timestamp types)",
+      "label": "Battery A Temperature"
+    },
+    {
+      "id": "sat_mission_phase",
+      "type": "enum",
+      "label": "Satellite mission phase",
+      "values": [
+        "Detumbling",
+        "Nadir pointing",
+        "Tether deployment",
+        "E-sail force measurement"
+      ]
     }
   ],
   "graphs": [
@@ -54,6 +65,15 @@ sent to the server in ISO format.
 
 Other fields will define their type, unit and label, which will be used for displaying them to the
 user.
+
+#### Supported types for fields are:
+* int
+* float
+* enum
+
+#### Enum type
+The `enum` type will map unsigned integer values (0, 1, 2...) to the strings provided in the `values` 
+array of the field by the array index.
 
 Example: [/client/spec/telemetry.json](../client/spec/telemetry.json)
 
