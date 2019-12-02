@@ -18,6 +18,9 @@ const styles = (theme: Theme) =>
     },
     limit: {
       maxWidth: 100
+    },
+    noDataAvailable: {
+      textAlign: 'center'
     }
   });
 
@@ -43,11 +46,13 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
   constructor(props: SatelliteDataEnumChartProps) {
     super(props);
     const now = new Date();
+    now.setHours(now.getHours() - now.getUTCDate());
     const anotherDate = new Date();
-    const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
+    anotherDate.setHours(anotherDate.getHours() - anotherDate.getUTCDate());
+    anotherDate.setDate(anotherDate.getDate() - 1);
     this.state = {
       toDate: now.toISOString(),
-      fromDate: oneDayAgo.toISOString(),
+      fromDate: anotherDate.toISOString(),
       maxEntriesPerGraph: 50,
       timelineChartData: [],
       allEnumValues: {},
@@ -130,6 +135,13 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
       });
       previousTimestamp = packet.packet_timestamp;
     });
+    if (dataArray.length >= 2) {
+      const newFromDate = new Date(dataArray[dataArray.length - 1][3]);
+      newFromDate.setDate(newFromDate.getDate() - 1);
+      this.setState({
+        fromDate: newFromDate.toISOString()
+      });
+    }
     this.setState({ timelineChartData: dataArray });
   }
 
@@ -174,7 +186,7 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
 
   render() {
     const { classes, graphInfo } = this.props;
-    const { timelineChartData, maxEntriesPerGraph } = this.state;
+    const { timelineChartData, maxEntriesPerGraph, fromDate, toDate } = this.state;
     const copyOfFirstElement = timelineChartData[0];
     let modifiedTimelineData = timelineChartData.slice(
       timelineChartData.length - maxEntriesPerGraph,
@@ -193,18 +205,24 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
           <br />
           {this.renderChartDateSelection()}
         </Typography>
-        <div>
-          <Chart
-            width="100%"
-            height="150px"
-            chartType="Timeline"
-            loader={<div>Loading Chart</div>}
-            data={modifiedTimelineData}
-            options={{
-              avoidOverlappingGridLines: false
-            }}
-          />
-        </div>
+        {modifiedTimelineData.length > 1 ? (
+          <div>
+            <Chart
+              width="100%"
+              height="150px"
+              chartType="Timeline"
+              loader={<div>Loading Chart</div>}
+              data={modifiedTimelineData}
+              options={{
+                avoidOverlappingGridLines: false
+              }}
+            />
+          </div>
+        ) : (
+          <Typography variant="body1" className={classes.noDataAvailable}>
+            No data available from {fromDate} to {toDate} with limit of {maxEntriesPerGraph}
+          </Typography>
+        )}
       </div>
     );
   }

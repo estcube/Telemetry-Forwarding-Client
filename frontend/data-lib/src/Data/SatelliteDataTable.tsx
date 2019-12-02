@@ -61,15 +61,17 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
   constructor(props: SatelliteDataTableProps) {
     super(props);
     const now = new Date();
+    now.setHours(now.getHours() - now.getUTCDate());
     const anotherDate = new Date();
-    const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
+    anotherDate.setHours(anotherDate.getHours() - anotherDate.getUTCDate());
+    anotherDate.setDate(anotherDate.getDate() - 1);
     this.state = {
       combinedVerticalTableData: {},
       allTimestamps: [],
       tableData: {},
       verticalTableHeaders: [],
       toDate: now.toISOString(),
-      fromDate: oneDayAgo.toISOString(),
+      fromDate: anotherDate.toISOString(),
       entriesPerTable: 20
     };
   }
@@ -178,6 +180,14 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
       this.setState({
         tableData: telemetryPacketTableData,
         allTimestamps
+      });
+    }
+    const keys = Object.keys(telemetryPacketTableData);
+    if (keys.length > 0) {
+      const fromDate = new Date(keys[keys.length - 1]);
+      fromDate.setDate(fromDate.getDate() - 1);
+      this.setState({
+        fromDate: fromDate.toISOString()
       });
     }
   }
