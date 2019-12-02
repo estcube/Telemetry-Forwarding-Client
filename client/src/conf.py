@@ -10,35 +10,41 @@ CONSTRAINTS = {
     "Mission Control": {
         "relay-enabled": {
             "type": "bool",
-            "label": "Relay enabled"
+            "label": "Relay enabled",
+            "value": "False"
         },
         "mcs-relay-url": {
             "type": "url",
-            "label": "MCS relay URL"
+            "label": "MCS relay URL",
+            "value": "http://staging.estcube.eu:8029/ax25"
         },
 
         "receiver-callsign": {
             "type": "str",
             "label": "Receiver callsign",
-            "max_len": 6
+            "max_len": 6,
+            "value": "String"
         },
         "norad-id": {
             "type": "int",
             "label": "Satellite Norad ID",
             "min": 1,
-            "max": 99999
+            "max": 99999,
+            "value": "2"
         },
         "longitude": {
             "type": "float",
             "label": "Receiver longitude",
             "min": -180,
-            "max": 180
+            "max": 180,
+            "value": "58.377974"
         },
         "latitude": {
             "type": "float",
             "label": "Receiver latitude",
             "min": -180,
-            "max": 180
+            "max": 180,
+            "value": "26.729019"
         }
     },
 
@@ -48,24 +54,28 @@ CONSTRAINTS = {
             "requiresRestart": True,
             "options": ["KISS"],
             "disabledOptions": ["AGW"],
-            "label": "TNC protocol type"
+            "label": "TNC protocol type",
+            "value": "kiss"
         },
         "tnc-connection-type": {
             "type": "select",
             "requiresRestart": True,
             "options": ["TCP/IP"],
             "disabledOptions": ["RS232"],
-            "label": "TNC connection type"
+            "label": "TNC connection type",
+            "value": "TCP/IP"
         },
         "tnc-ip": {
             "type": "str",
             "requiresRestart": True,
-            "label": "TNC IP"
+            "label": "TNC IP",
+            "value": "localhost"
         },
         "tnc-device": {
             "type": "str",
             "requiresRestart": True,
-            "label": "TNC device"
+            "label": "TNC device",
+            "value": " "
         },
         "max-connection-attempts": {
             "type": "int",
@@ -73,7 +83,8 @@ CONSTRAINTS = {
             "label": "Max connection attempts",
             "hidden": True,
             "min": 1,
-            "max": 10000
+            "max": 10000,
+            "value": "20"
         },
         "connection-retry-time": {
             "type": "int",
@@ -81,7 +92,8 @@ CONSTRAINTS = {
             "label": "Connection retry time",
             "hidden": True,
             "min": 1,
-            "max": 600
+            "max": 600,
+            "value": "5"
         }
     },
 
@@ -91,7 +103,8 @@ CONSTRAINTS = {
             "description": "Path to the database file. Relative to executable file.",
             "requiresRestart": True,
             "label": "Database path",
-            "hidden": True
+            "hidden": True,
+            "value": "../telemetry.db"
         },
         "static-files-path": {
             "type": "str",
@@ -99,7 +112,8 @@ CONSTRAINTS = {
             "debug": True,
             "requiresRestart": True,
             "label": "Static files path",
-            "hidden": True
+            "hidden": True,
+            "value": "../static"
         },
         "frontend-port": {
             "type": "int",
@@ -107,24 +121,28 @@ CONSTRAINTS = {
             "requiresRestart": True,
             "label": "Frontend port",
             "min": 1024,
-            "max": 65535
+            "max": 65535,
+            "value": "5000"
         },
         "telemetry-configuration-url": {
             "type": "url",
             "description": "URL of the latest telemetry configuration endpoint.",
             "requireRestart": False,
-            "label": "Telemetry configuration URL"
+            "label": "Telemetry configuration URL",
+            "value": "https://staging.estcube.eu:8029/telemetry"
         },
         "kaitai-compiler-path": {
             "type": "str",
             "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
             "requireRestart": False,
-            "hidden": True
+            "hidden": True,
+            "value": "../../kaitai/bin/kaitai-struct-compiler"
         },
         "packet-structure-url": {
             "type": "url",
             "description": "URL of the latest packet structure (kaitai) endpoint.",
-            "label": "Packet structure URL"
+            "label": "Packet structure URL",
+            "value": "https://staging.estcube.eu:8029/icp"
         }
     }
 }
@@ -151,7 +169,15 @@ class Configuration(object):
         example: getConf("Mission Control", "relay-enabled")
         """
         with self.lock.read_lock:
-            return self.config.get(section, element)
+            try:
+                conf_value = self.config.get(section, element)
+                if not conf_value:
+                    raise Exception("Missing conf value")
+            except:
+                conf_value = CONSTRAINTS[section][element]["value"]
+
+
+            return conf_value
 
     def get_constraints(self):
         """ Returns all of the constraints for the configuration. """
@@ -240,11 +266,11 @@ class Configuration(object):
             constraints = deepcopy(CONSTRAINTS)
             config = self.get_all_conf()
 
-            for i in constraints:
-                for j in constraints[i]:
-                    val = None
-                    if i in config and j in config[i]:
-                        val = (config[i][j])
-                    constraints[i][j].update({"value": val})
+            for i in config:
+                for j in config[i]:
+                    try:
+                        constraints[i][j]["value"] = config[i][j]
+                    except:
+                        pass
 
             return constraints
