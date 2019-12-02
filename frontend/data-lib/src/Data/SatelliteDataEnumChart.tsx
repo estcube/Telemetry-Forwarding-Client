@@ -46,10 +46,11 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
   constructor(props: SatelliteDataEnumChartProps) {
     super(props);
     const now = new Date();
-    const anotherDate = new Date();
+    const fromTime = new Date();
+    fromTime.setDate(fromTime.getDate() - 1);
     this.state = {
       toDate: now.toISOString(),
-      fromDate: anotherDate.toISOString(),
+      fromDate: fromTime.toISOString(),
       maxEntriesPerGraph: 50,
       timelineChartData: [],
       allEnumValues: {},

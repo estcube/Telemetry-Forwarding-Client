@@ -33,7 +33,7 @@ const styles = (theme: Theme) =>
       borderLeft: '1px solid',
       borderBottom: '1px solid',
       padding: theme.spacing(1),
-      textAlign: 'center',
+      textAlign: 'right',
       maxWidth: '120px'
     }
   });
@@ -51,6 +51,7 @@ type SatelliteDataTableState = {
   toDate: string;
   fromDate: string;
   entriesPerTable: number;
+  headersWithUnits: { [key: string]: string };
 };
 
 /**
@@ -70,7 +71,8 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
       verticalTableHeaders: [],
       toDate: now.toISOString(),
       fromDate: anotherDate.toISOString(),
-      entriesPerTable: 20
+      entriesPerTable: 20,
+      headersWithUnits: {}
     };
   }
 
@@ -98,11 +100,13 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
 
   getVerticalHeaders() {
     const { telemetryConfiguration } = this.props;
+    const units: { [key: string]: string } = {};
     const headers = telemetryConfiguration.fields.map(field => {
+      units[field.label] = field.unit;
       return field.label;
     });
     headers.unshift('Timestamp');
-    this.setState({ verticalTableHeaders: headers });
+    this.setState({ verticalTableHeaders: headers, headersWithUnits: units });
     return headers;
   }
 
@@ -125,7 +129,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
           if (someValue.type === 'enum') {
             return someValue.values[parseInt(someValue.value, 10)];
           }
-          return `${someValue.value}${someValue.unit}`;
+          return someValue.value;
         });
       });
     });
@@ -222,7 +226,14 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
   }
 
   renderTable() {
-    const { verticalTableHeaders, combinedVerticalTableData, fromDate, toDate, entriesPerTable } = this.state;
+    const {
+      headersWithUnits,
+      verticalTableHeaders,
+      combinedVerticalTableData,
+      fromDate,
+      toDate,
+      entriesPerTable
+    } = this.state;
     const { classes } = this.props;
     if (
       verticalTableHeaders.includes('Timestamp') &&
@@ -235,7 +246,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
             <TableRow key={header}>
               <TableCell className={classes.tableCellHeader} variant="head">
                 <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                  {header}
+                  {headersWithUnits[header] ? `${header}-${headersWithUnits[header]}` : header}
                 </Typography>
               </TableCell>
               {combinedVerticalTableData[header] &&
