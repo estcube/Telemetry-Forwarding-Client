@@ -29,7 +29,6 @@ const styles = (theme: Theme) =>
       textAlign: 'center'
     },
     tableCell: {
-      whiteSpace: 'pre-line',
       borderLeft: '1px solid',
       borderBottom: '1px solid',
       padding: theme.spacing(1),
@@ -309,7 +308,7 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
     return (
       <div className={classes.root}>
         <Typography className={classes.tableTitle} variant="h6">
-          Decoded data table
+          Decoded Data
           <br />
           {this.renderDateTimePicker()}
         </Typography>
