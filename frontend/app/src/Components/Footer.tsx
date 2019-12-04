@@ -40,7 +40,9 @@ class Footer extends React.Component<WithStyles<typeof styles>> {
           </Typography>
         </div>
         <div className={classes.imageDiv}>
-          <img src="./images/estcube.png" alt="logo" className={classes.logo} />
+          <a href="https://www.estcube.eu/">
+            <img src="./images/estcube.png" alt="logo" className={classes.logo} />
+          </a>
         </div>
       </div>
     );
