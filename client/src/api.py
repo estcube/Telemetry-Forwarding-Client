@@ -28,7 +28,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
 
     log = logging.getLogger(__name__)
 
-    db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))
+    db_loc = os.path.join(util.get_root(), config.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
 
     static_folder = os.path.join(util.get_root(), config.get_conf("Client", "static-files-path"))
@@ -48,6 +48,8 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
     )
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
     # end swagger specific
+
+
 
     @app.route("/api/sids/status", methods=["GET"])
     def get_sids_status():
