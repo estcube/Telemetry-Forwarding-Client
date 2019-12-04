@@ -41,6 +41,7 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-ignore": "off",
         "react/no-array-index-key": "off",
+        "react/jsx-curly-newline": "off",
         "jsx-a11y/label-has-associated-control": [
             "error",
             {

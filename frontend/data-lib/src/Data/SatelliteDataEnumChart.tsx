@@ -3,8 +3,7 @@ import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
 import { Chart } from 'react-google-charts';
-import DateTimePicker from './DateTimePicker';
-import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
+import CustomChartDataSelector from './SatelliteDataSelectionComponents/CustomChartDataSelector';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -143,43 +142,8 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
     this.setState({ timelineChartData: dataArray });
   }
 
-  customHandle(e: any, version: string) {
-    if (version === 'to') {
-      this.setState({ toDate: new Date(e).toISOString() });
-    } else {
-      this.setState({ fromDate: new Date(e).toISOString() });
-    }
-  }
-
-  handleLimitChange(e: any) {
-    if (e.target.value !== '') {
-      this.setState({ maxEntriesPerGraph: parseInt(e.target.value, 10) });
-    } else {
-      this.setState({ maxEntriesPerGraph: 0 });
-    }
-  }
-
-  renderChartDateSelection() {
-    const { toDate, fromDate, maxEntriesPerGraph } = this.state;
-    return (
-      <>
-        <DateTimePicker
-          defaultValue={fromDate}
-          label="From"
-          dateChangeHandler={(e: any) => this.customHandle(e, 'from')}
-        />
-        <DateTimePicker defaultValue={toDate} label="To" dateChangeHandler={(e: any) => this.customHandle(e, 'to')} />
-        <ConfigurationFormTextField
-          diferentWidth
-          confElemRequiresRestart={false}
-          confElemValue={maxEntriesPerGraph.toString()}
-          confElemName="Limit"
-          confElemType="int"
-          confElemDescription=""
-          textChangeHandler={event => this.handleLimitChange(event)}
-        />
-      </>
-    );
+  handleDataSelectionChange(toDate: string, fromDate: string, maxSelection: number) {
+    this.setState({ toDate, fromDate, maxEntriesPerGraph: maxSelection });
   }
 
   render() {
@@ -201,7 +165,14 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
         <Typography className={classes.chartTitle} variant="h6">
           {graphInfo.title}
           <br />
-          {this.renderChartDateSelection()}
+          <CustomChartDataSelector
+            changeHandler={(toDates: string, fromDates: string, maxSelections: number) =>
+              this.handleDataSelectionChange(toDates, fromDates, maxSelections)
+            }
+            fromDate={fromDate}
+            toDate={toDate}
+            maxEntriesPerGraph={maxEntriesPerGraph}
+          />
         </Typography>
         {modifiedTimelineData.length > 1 ? (
           <div>

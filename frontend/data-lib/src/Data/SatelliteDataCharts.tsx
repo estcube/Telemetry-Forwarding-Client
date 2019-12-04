@@ -25,43 +25,37 @@ interface SatelliteDataChartsProps extends WithStyles<typeof styles> {
  * Component for showing data charts. Gets data and configuration as props
  */
 class SatelliteDataCharts extends React.Component<SatelliteDataChartsProps> {
-  renderDataCharts() {
-    const children = [];
-    const { decodedPackets, telemetryConfiguration } = this.props;
-    const { graphs } = telemetryConfiguration;
-    for (let i = 0; i < graphs.length; i += 1) {
-      if (graphs[i].type === 'line') {
-        children.push(
-          <SatelliteDataLineChart
-            key={i}
-            graphInfo={graphs[i]}
-            decodedPackets={decodedPackets}
-            telemetryConfiguration={telemetryConfiguration}
-          />
-        );
-      } else if (graphs[i].type === 'enum') {
-        children.push(
-          <SatelliteDataEnumChart
-            key={i}
-            graphInfo={graphs[i]}
-            decodedPackets={decodedPackets}
-            telemetryConfiguration={telemetryConfiguration}
-          />
-        );
-      }
-    }
-    if (children.length === 0) {
-      children.push(<></>);
-    }
-    return children;
-  }
-
   render() {
-    const { classes } = this.props;
+    const { classes, decodedPackets, telemetryConfiguration } = this.props;
+    const { graphs } = telemetryConfiguration;
 
     return (
       <div className={classes.root}>
-        <div className={classes.paper}>{this.renderDataCharts()}</div>
+        <div className={classes.paper}>
+          {graphs.map((graph: any, index: number) => {
+            if (graph.type === 'line') {
+              return (
+                <SatelliteDataLineChart
+                  key={index}
+                  graphInfo={graph}
+                  decodedPackets={decodedPackets}
+                  telemetryConfiguration={telemetryConfiguration}
+                />
+              );
+            }
+            if (graph.type === 'enum') {
+              return (
+                <SatelliteDataEnumChart
+                  key={index}
+                  graphInfo={graphs[index]}
+                  decodedPackets={decodedPackets}
+                  telemetryConfiguration={telemetryConfiguration}
+                />
+              );
+            }
+            return null;
+          })}
+        </div>
       </div>
     );
   }

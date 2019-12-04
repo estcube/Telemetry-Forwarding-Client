@@ -5,8 +5,9 @@ import { WithStyles } from '@material-ui/styles';
 // @ts-ignore
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Typography } from '@material-ui/core';
-import DateTimePicker from './DateTimePicker';
-import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
+import CustomLineChartLegend from './LineChartComponents/CustomLineChartLegend';
+import CustomLineChartTooltip from './LineChartComponents/CustomLineChartTooltip';
+import CustomChartDataSelector from './SatelliteDataSelectionComponents/CustomChartDataSelector';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -21,7 +22,6 @@ const styles = (theme: Theme) =>
     limit: {
       maxWidth: 100
     },
-    tooltipBox: { backgroundColor: '#fff', boxShadow: '1px 1px grey' },
     noDataAvailable: {
       textAlign: 'center'
     }
@@ -226,23 +226,7 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     return newVisibility;
   }
 
-  handleToFromChange(e: any, version: string) {
-    if (version === 'to') {
-      this.setState({ toDate: new Date(e).toISOString() });
-    } else {
-      this.setState({ fromDate: new Date(e).toISOString() });
-    }
-  }
-
-  handleLimitChange(e: any) {
-    if (e.target.value !== '') {
-      this.setState({ maxEntriesPerGraph: parseInt(e.target.value, 10) });
-    } else {
-      this.setState({ maxEntriesPerGraph: 0 });
-    }
-  }
-
-  lineIsVisible(lineName: string) {
+  isLineVisible(lineName: string) {
     const { lineVisibility } = this.state;
     let isVisible = false;
     lineVisibility.forEach(line => {
@@ -253,104 +237,31 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     return isVisible;
   }
 
-  renderLines() {
-    const { chartLineNames, lineVisibility } = this.state;
-    const children: any[] = [];
-    chartLineNames.forEach((lineName: string, index: number) => {
-      let show = false;
-      lineVisibility.forEach(line => {
-        if (line.lineName === lineName) {
-          show = line.visibility;
-        }
-      });
-      children.push(
-        <Line
-          key={lineName}
-          name={lineName}
-          type="monotone"
-          dataKey={lineName}
-          stroke={SatelliteDataLineChart.getColor(index)}
-          strokeWidth={2}
-          activeDot={this.lineIsVisible(lineName) ? { r: 8 } : false}
-          ref={lineName}
-          opacity={show ? 1 : 0}
-        />
-      );
-    });
-    return children;
+  handleDataSelectionChange(toDate: string, fromDate: string, maxSelection: number) {
+    this.setState({ toDate, fromDate, maxEntriesPerGraph: maxSelection });
   }
 
-  renderChartDateSelection() {
-    const { toDate, fromDate, maxEntriesPerGraph } = this.state;
-    return (
-      <>
-        <DateTimePicker
-          defaultValue={fromDate}
-          label="From"
-          dateChangeHandler={(e: any) => this.handleToFromChange(e, 'from')}
-        />
-        <DateTimePicker
-          defaultValue={toDate}
-          label="To"
-          dateChangeHandler={(e: any) => this.handleToFromChange(e, 'to')}
-        />
-        <ConfigurationFormTextField
-          diferentWidth
-          confElemRequiresRestart={false}
-          confElemValue={maxEntriesPerGraph.toString()}
-          confElemName="Limit"
-          confElemType="int"
-          confElemDescription=""
-          textChangeHandler={event => this.handleLimitChange(event)}
-        />
-      </>
-    );
-  }
-
-  renderCustomTooltip(current: { [key: string]: any }) {
-    const { active, payload } = current;
-    const { classes } = this.props;
-    if (active && payload) {
-      return (
-        <div className={classes.tooltipBox}>
-          <Typography variant="body2" style={{ margin: '0', fontWeight: 'bold' }}>
-            {payload[0].payload.timestamp}
-          </Typography>
-          {payload.map((payloadElem: any, index: number) => {
-            if (this.lineIsVisible(payloadElem.name)) {
-              return (
-                <Typography variant="body2" key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
-                  {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
-                </Typography>
-              );
-            }
-            return null;
-          })}
-        </div>
-      );
-    }
-    return null;
-  }
-
-  renderCustomLegend(value: any, entry: any) {
-    const opacity = this.lineIsVisible(value) ? '1' : '0.2';
-    return <span style={{ color: entry.color, opacity }}>{value}</span>;
-  }
-
-  renderChart() {
+  render() {
     const { graphInfo, classes } = this.props;
-    const { chartDomain, maxEntriesPerGraph, fromDate, toDate } = this.state;
+    const { chartDomain, maxEntriesPerGraph, fromDate, toDate, lineVisibility, chartLineNames } = this.state;
     let modifiedChartData = this.getSelectedDataInWindow();
     const modifiedDataLength = modifiedChartData.length;
     if (modifiedDataLength > maxEntriesPerGraph) {
       modifiedChartData = modifiedChartData.slice(modifiedDataLength - maxEntriesPerGraph, modifiedDataLength);
     }
     return (
-      <>
+      <div className={classes.root}>
         <Typography className={classes.chartTitle} variant="h6">
           {graphInfo.title}
           <br />
-          {this.renderChartDateSelection()}
+          <CustomChartDataSelector
+            changeHandler={(toDates: string, fromDates: string, maxSelections: number) =>
+              this.handleDataSelectionChange(toDates, fromDates, maxSelections)
+            }
+            fromDate={fromDate}
+            toDate={toDate}
+            maxEntriesPerGraph={maxEntriesPerGraph}
+          />
         </Typography>
         {modifiedChartData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -375,12 +286,38 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
                   position="left"
                 />
               </YAxis>
-              <Tooltip content={(current: { [key: string]: any }) => this.renderCustomTooltip(current)} />
+              <Tooltip
+                content={(current: { [key: string]: any }) => (
+                  <CustomLineChartTooltip current={current} lineVisibility={lineVisibility} />
+                )}
+              />
               <Legend
                 onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.hideOtherLines(event)}
-                formatter={(value: any, entry: any) => this.renderCustomLegend(value, entry)}
+                formatter={(value: string, entry: { [key: string]: any }) => (
+                  <CustomLineChartLegend value={value} entry={entry} lineVisibility={lineVisibility} />
+                )}
               />
-              {this.renderLines()}
+              {chartLineNames.map((lineName: string, index: number) => {
+                let show = false;
+                lineVisibility.forEach(line => {
+                  if (line.lineName === lineName) {
+                    show = line.visibility;
+                  }
+                });
+                return (
+                  <Line
+                    key={lineName}
+                    name={lineName}
+                    type="monotone"
+                    dataKey={lineName}
+                    stroke={SatelliteDataLineChart.getColor(index)}
+                    strokeWidth={2}
+                    activeDot={this.isLineVisible(lineName) ? { r: 8 } : false}
+                    ref={lineName}
+                    opacity={show ? 1 : 0}
+                  />
+                );
+              })}
             </LineChart>
           </ResponsiveContainer>
         ) : (
@@ -388,13 +325,8 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
             No data available from {fromDate} to {toDate} with limit of {maxEntriesPerGraph}
           </Typography>
         )}
-      </>
+      </div>
     );
-  }
-
-  render() {
-    const { classes } = this.props;
-    return <div className={classes.root}>{this.renderChart()}</div>;
   }
 }
 

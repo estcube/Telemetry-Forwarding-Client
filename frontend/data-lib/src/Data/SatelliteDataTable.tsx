@@ -1,9 +1,9 @@
 import React from 'react';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import { Paper, Table, TableCell, TableRow, TableBody, Typography } from '@material-ui/core';
+import { Paper, Table, TableBody, Typography } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
-import DateTimePicker from './DateTimePicker';
-import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
+import CustomChartDataSelector from './SatelliteDataSelectionComponents/CustomChartDataSelector';
+import SatelliteDataTableRows from './SatelliteDataTableComponents/SatelliteDataTableRows';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -22,18 +22,6 @@ const styles = (theme: Theme) =>
     },
     table: {
       width: '100%'
-    },
-    tableCellHeader: {
-      borderRight: '1px solid',
-      borderBottom: '1px solid',
-      textAlign: 'center'
-    },
-    tableCell: {
-      borderLeft: '1px solid',
-      borderBottom: '1px solid',
-      padding: theme.spacing(1),
-      textAlign: 'right',
-      maxWidth: '120px'
     }
   });
 
@@ -208,23 +196,12 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
     return correctField || {};
   }
 
-  customHandle(e: any, version: string) {
-    if (version === 'to') {
-      this.setState({ toDate: new Date(e).toISOString() });
-    } else {
-      this.setState({ fromDate: new Date(e).toISOString() });
-    }
+  handleDataSelectionChange(toDate: string, fromDate: string, maxSelection: number) {
+    this.setState({ toDate, fromDate, entriesPerTable: maxSelection });
   }
 
-  handleLimitChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.value !== '') {
-      this.setState({ entriesPerTable: parseInt(e.target.value, 10) });
-    } else {
-      this.setState({ entriesPerTable: 0 });
-    }
-  }
-
-  renderTable() {
+  render() {
+    const { classes } = this.props;
     const {
       headersWithUnits,
       verticalTableHeaders,
@@ -233,88 +210,32 @@ class SatelliteDataTable extends React.Component<SatelliteDataTableProps, Satell
       toDate,
       entriesPerTable
     } = this.state;
-    const { classes } = this.props;
-    if (
-      verticalTableHeaders.includes('Timestamp') &&
-      combinedVerticalTableData.Timestamp &&
-      combinedVerticalTableData.Timestamp.length > 0
-    ) {
-      return verticalTableHeaders.map(header => {
-        if (header !== 'id' && header !== 'type') {
-          return (
-            <TableRow key={header}>
-              <TableCell className={classes.tableCellHeader} variant="head">
-                <Typography variant="body2" style={{ fontWeight: 'bold' }}>
-                  {headersWithUnits[header] ? `${header} (${headersWithUnits[header]})` : header}
-                </Typography>
-              </TableCell>
-              {combinedVerticalTableData[header] &&
-                combinedVerticalTableData[header].map((element, index) => {
-                  if (header === 'Timestamp') {
-                    return (
-                      <TableCell className={classes.tableCell} key={index}>
-                        <Typography variant="body2">{element.replace('T', '\n')}</Typography>
-                      </TableCell>
-                    );
-                  }
-                  return (
-                    <TableCell className={classes.tableCell} key={index}>
-                      <Typography variant="body2">{element}</Typography>
-                    </TableCell>
-                  );
-                })}
-            </TableRow>
-          );
-        }
-        return null;
-      });
-    }
-    return (
-      <TableRow>
-        <TableCell className={classes.tableCellHeader}>
-          <Typography variant="body1">
-            No data available from {fromDate} to {toDate} with limit of {entriesPerTable}
-          </Typography>
-        </TableCell>
-      </TableRow>
-    );
-  }
-
-  renderDateTimePicker() {
-    const { toDate, fromDate, entriesPerTable } = this.state;
-    return (
-      <>
-        <DateTimePicker
-          defaultValue={fromDate}
-          label="From"
-          dateChangeHandler={(e: any) => this.customHandle(e, 'from')}
-        />
-        <DateTimePicker defaultValue={toDate} label="To" dateChangeHandler={(e: any) => this.customHandle(e, 'to')} />
-        <ConfigurationFormTextField
-          diferentWidth
-          confElemRequiresRestart={false}
-          confElemValue={entriesPerTable.toString()}
-          confElemName="Limit"
-          confElemType="int"
-          confElemDescription=""
-          textChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => this.handleLimitChange(event)}
-        />
-      </>
-    );
-  }
-
-  render() {
-    const { classes } = this.props;
     return (
       <div className={classes.root}>
         <Typography className={classes.tableTitle} variant="h6">
           Decoded Data
           <br />
-          {this.renderDateTimePicker()}
+          <CustomChartDataSelector
+            changeHandler={(toDates: string, fromDates: string, maxSelections: number) =>
+              this.handleDataSelectionChange(toDates, fromDates, maxSelections)
+            }
+            fromDate={fromDate}
+            toDate={toDate}
+            maxEntriesPerGraph={entriesPerTable}
+          />
         </Typography>
         <Paper className={classes.paper}>
           <Table size="small" padding="none" stickyHeader>
-            <TableBody>{this.renderTable()}</TableBody>
+            <TableBody>
+              <SatelliteDataTableRows
+                entriesPerTable={entriesPerTable}
+                toDate={toDate}
+                fromDate={fromDate}
+                combinedVerticalTableData={combinedVerticalTableData}
+                verticalTableHeaders={verticalTableHeaders}
+                headersWithUnits={headersWithUnits}
+              />
+            </TableBody>
           </Table>
         </Paper>
       </div>
