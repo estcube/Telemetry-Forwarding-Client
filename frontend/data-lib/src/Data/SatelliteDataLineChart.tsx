@@ -242,6 +242,45 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     }
   }
 
+  lineIsVisible(lineName: string) {
+    const { lineVisibility } = this.state;
+    let isVisible = false;
+    lineVisibility.forEach(line => {
+      if (line.lineName === lineName && line.visibility) {
+        isVisible = true;
+      }
+    });
+    return isVisible;
+  }
+
+  renderLines() {
+    const { chartLineNames, lineVisibility } = this.state;
+    const children: any[] = [];
+    chartLineNames.forEach((lineName: string, index: number) => {
+      let show = false;
+      lineVisibility.forEach(line => {
+        if (line.lineName === lineName) {
+          show = line.visibility;
+        }
+      });
+      console.log(lineName);
+      children.push(
+        <Line
+          key={lineName}
+          name={lineName}
+          type="monotone"
+          dataKey={lineName}
+          stroke={SatelliteDataLineChart.getColor(index)}
+          strokeWidth={2}
+          activeDot={this.lineIsVisible(lineName) ? { r: 8 } : false}
+          ref={lineName}
+          opacity={show ? 1 : 0}
+        />
+      );
+    });
+    return children;
+  }
+
   renderChartDateSelection() {
     const { toDate, fromDate, maxEntriesPerGraph } = this.state;
     return (
@@ -269,33 +308,6 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     );
   }
 
-  renderLines() {
-    const { chartLineNames, lineVisibility } = this.state;
-    const children: any[] = [];
-    chartLineNames.forEach((lineName: string, index: number) => {
-      let show = false;
-      lineVisibility.forEach(line => {
-        if (line.lineName === lineName) {
-          show = line.visibility;
-        }
-      });
-      children.push(
-        <Line
-          key={lineName}
-          name={lineName}
-          type="monotone"
-          dataKey={lineName}
-          stroke={SatelliteDataLineChart.getColor(index)}
-          strokeWidth={2}
-          activeDot={{ r: 8 }}
-          ref={lineName}
-          opacity={show ? 1 : 0}
-        />
-      );
-    });
-    return children;
-  }
-
   renderCustomTooltip(current: { [key: string]: any }) {
     const { active, payload } = current;
     const { classes } = this.props;
@@ -306,11 +318,14 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
             {payload[0].payload.timestamp}
           </Typography>
           {payload.map((payloadElem: any, index: number) => {
-            return (
-              <Typography variant="body2" key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
-                {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
-              </Typography>
-            );
+            if (this.lineIsVisible(payloadElem.name)) {
+              return (
+                <Typography variant="body2" key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
+                  {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
+                </Typography>
+              );
+            }
+            return null;
           })}
         </div>
       );
