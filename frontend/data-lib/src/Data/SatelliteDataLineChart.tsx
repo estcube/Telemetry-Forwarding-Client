@@ -263,7 +263,6 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
           show = line.visibility;
         }
       });
-      console.log(lineName);
       children.push(
         <Line
           key={lineName}
@@ -333,6 +332,11 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     return null;
   }
 
+  renderCustomLegend(value: any, entry: any) {
+    const opacity = this.lineIsVisible(value) ? '1' : '0.2';
+    return <span style={{ color: entry.color, opacity }}>{value}</span>;
+  }
+
   renderChart() {
     const { graphInfo, classes } = this.props;
     const { chartDomain, maxEntriesPerGraph, fromDate, toDate } = this.state;
@@ -372,7 +376,10 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
                 />
               </YAxis>
               <Tooltip content={(current: { [key: string]: any }) => this.renderCustomTooltip(current)} />
-              <Legend onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.hideOtherLines(event)} />
+              <Legend
+                onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.hideOtherLines(event)}
+                formatter={(value: any, entry: any) => this.renderCustomLegend(value, entry)}
+              />
               {this.renderLines()}
             </LineChart>
           </ResponsiveContainer>
