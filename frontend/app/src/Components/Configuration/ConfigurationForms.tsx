@@ -10,6 +10,7 @@ import {
   Theme
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
+import { Prompt } from 'react-router';
 import ConfigurationFormTextField from './ConfigurationFormFields/ConfigurationFormTextField';
 import ConfigurationFormRadioField from './ConfigurationFormFields/ConfigurationFormRadioField';
 import ConfigurationFormDropdownField from './ConfigurationFormFields/ConfigurationFormDropdownField';
@@ -53,7 +54,7 @@ interface ConfigurationFormsProps extends WithStyles<typeof styles> {
 
 type ConfigurationFormsState = {
   confValues: { [key: string]: { [key: string]: any } };
-  allowPosting: boolean;
+  hasUnsavedChanges: boolean;
 };
 
 /**
@@ -62,7 +63,7 @@ type ConfigurationFormsState = {
 class ConfigurationForms extends React.Component<ConfigurationFormsProps, ConfigurationFormsState> {
   constructor(props: ConfigurationFormsProps) {
     super(props);
-    this.state = { allowPosting: false, confValues: {} };
+    this.state = { hasUnsavedChanges: false, confValues: {} };
   }
 
   componentDidMount(): void {
@@ -70,6 +71,25 @@ class ConfigurationForms extends React.Component<ConfigurationFormsProps, Config
     this.setState({
       confValues
     });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  componentDidUpdate(prevProps: Readonly<ConfigurationFormsProps>, prevState: Readonly<ConfigurationFormsState>): void {
+    const { hasUnsavedChanges } = this.state;
+    const { dataPosted } = this.props;
+    if (dataPosted && !prevProps.dataPosted) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ hasUnsavedChanges: false });
+    }
+    if (hasUnsavedChanges) {
+      window.onbeforeunload = () => true;
+    } else {
+      window.onbeforeunload = () => undefined;
+    }
+  }
+
+  componentWillUnmount(): void {
+    window.onbeforeunload = null;
   }
 
   handleFormChange(
@@ -89,7 +109,7 @@ class ConfigurationForms extends React.Component<ConfigurationFormsProps, Config
         copyOfConfValues[sectionName][confElemName].value = 'False';
       }
     }
-    this.setState({ confValues: copyOfConfValues, allowPosting: true });
+    this.setState({ confValues: copyOfConfValues, hasUnsavedChanges: true });
   }
 
   renderFormSections() {
@@ -183,25 +203,28 @@ class ConfigurationForms extends React.Component<ConfigurationFormsProps, Config
 
   render() {
     const { confPostLoading, classes, handleConfPost } = this.props;
-    const { confValues, allowPosting } = this.state;
+    const { confValues, hasUnsavedChanges } = this.state;
 
     return (
-      <div className="conf-form" data-testid="conf-form">
-        <div className={classes.root}>
-          <Typography variant="h4" className={classes.text}>
-            Configuration
-          </Typography>
-          <form className={classes.paperSlave}>{this.renderFormSections()}</form>
-          <ConfigurationFormUpdateButton
-            confPostLoading={confPostLoading}
-            handleClick={event => {
-              handleConfPost(event, confValues);
-            }}
-            allowPosting={allowPosting}
-            classes={classes}
-          />
+      <>
+        <Prompt message="Are you sure that you want to leave? You have unsaved changes" when={hasUnsavedChanges} />
+        <div className="conf-form" data-testid="conf-form">
+          <div className={classes.root}>
+            <Typography variant="h4" className={classes.text}>
+              Configuration
+            </Typography>
+            <form className={classes.paperSlave}>{this.renderFormSections()}</form>
+            <ConfigurationFormUpdateButton
+              confPostLoading={confPostLoading}
+              handleClick={event => {
+                handleConfPost(event, confValues);
+              }}
+              allowPosting={hasUnsavedChanges}
+              classes={classes}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
