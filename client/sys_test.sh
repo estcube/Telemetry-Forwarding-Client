@@ -33,7 +33,7 @@ max-connection-attempts=10
 connection-retry-time=5
 
 [Client]
-database=__test__/systest.db
+database=src/__test__/systest.db
 frontend-port=6666
 static-files-path=../static
 EOL
