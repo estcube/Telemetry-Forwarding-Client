@@ -46,3 +46,5 @@ kaitai-compiler-path=../../kaitai/bin/kaitai-struct-compiler
 # Localhost port to serve the frontend on.
 # Defaults to port 5000
 frontend-port=5000
+# Turns on debug logging for the client.
+debug-log = False

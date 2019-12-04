@@ -34,8 +34,6 @@ def main(argv):
     """ Main loop function. """
 
     # Initial logging configuration.
-    logging.basicConfig(level=logging.DEBUG)
-    _logger = logging.getLogger(__name__)
 
     # Parse command line options
     opts, args = getopt(argv, "vc:")
@@ -49,10 +47,17 @@ def main(argv):
 
     if conf_path is None: # Default conf path
         conf_path = os.path.join(util.get_root(), "configuration.ini")
-    _logger.info("Using configuration from: %s", conf_path)
 
     # Create the configuration object
     conf = Configuration(conf_path)
+
+    if str(conf.get_conf("Client", "debug-log")) != "True":
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.DEBUG)
+    _logger = logging.getLogger(__name__)
+
+    _logger.info("Using configuration from: %s", conf_path)
 
     # Create the database object
     db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))

@@ -36,6 +36,10 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
     CORS(app)
 
+    if str(config.get_conf("Client", "debug-log")) != "True":
+        server_log = logging.getLogger("werkzeug")
+        server_log.setLevel(logging.WARN)
+
     # swagger specific
     swagger_url = "/api/docs"
     api_url = "/api/static/swagger.yaml"
@@ -125,7 +129,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         )
         p_open = subprocess.Popen(
             args,
-            cwd=os.path.join(util.get_root()),
+            cwd=util.get_root(),
             stdout=subprocess.PIPE
         )
         exit_code = p_open.wait()

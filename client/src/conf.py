@@ -1,10 +1,10 @@
 """Provides a class for configuration parsing and modifying"""
 
+import re
 import configparser
 import logging
 from copy import deepcopy
 from rw_lock import ReadWriteLock
-import re
 
 CONSTRAINTS = {
     "Mission Control": {
@@ -71,12 +71,12 @@ CONSTRAINTS = {
             "label": "TNC IP",
             "value": "localhost"
         },
-        "tnc-device": {
-            "type": "str",
-            "requiresRestart": True,
-            "label": "TNC device",
-            "value": " "
-        },
+        # "tnc-device": {
+        #     "type": "str",
+        #     "requiresRestart": True,
+        #     "label": "TNC device",
+        #     "value": " "
+        # },
         "max-connection-attempts": {
             "type": "int",
             "requiresRestart": True,
@@ -143,6 +143,12 @@ CONSTRAINTS = {
             "description": "URL of the latest packet structure (kaitai) endpoint.",
             "label": "Packet structure URL",
             "value": "https://staging.estcube.eu:8029/icp"
+        },
+        "debug-log": {
+            "type": "bool",
+            "label": "Debug logging",
+            "value": False,
+            "description": "Turn on debug level logging"
         }
     }
 }
