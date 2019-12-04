@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { cleanup, render } from '@testing-library/react';
-import Configuration from '../../Configuration/Configuration';
+import { BrowserRouter } from 'react-router-dom';
+import ConfigurationForms from '../../../Components/Configuration/ConfigurationForms';
 
 function sampleFunc() {
   return true;
@@ -9,13 +10,15 @@ function sampleFunc() {
 function renderConfPage() {
   const props = { A: { B: 'C' } };
   return render(
-    <Configuration
-      confValues={props}
-      handleConfPost={sampleFunc}
-      dataPosted
-      confPostLoading={false}
-      errorMessage={null}
-    />
+    <BrowserRouter>
+      <ConfigurationForms
+        confValues={props}
+        handleConfPost={sampleFunc}
+        dataPosted
+        confPostLoading={false}
+        errorMessage={null}
+      />
+    </BrowserRouter>
   );
 }
 

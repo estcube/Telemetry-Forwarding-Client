@@ -39,7 +39,6 @@ type SatelliteDataLineChartState = {
   chartLineNames: string[];
   chartDomain: number;
   lineVisibility: { [key: string]: any }[];
-  highlightedLine: string | null;
   toDate: string;
   fromDate: string;
   maxEntriesPerGraph: number;
@@ -61,7 +60,6 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
       chartData: [],
       chartLineNames: [],
       chartDomain: 300,
-      highlightedLine: null,
       toDate: now.toISOString(),
       fromDate: fromTime.toISOString(),
       maxEntriesPerGraph: 100
@@ -180,50 +178,18 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     });
   }
 
-  hideOtherLines(e: any) {
-    const { lineVisibility, highlightedLine } = this.state;
-    let newVisibility: { [key: string]: any }[];
-    if (!highlightedLine) {
-      newVisibility = lineVisibility.map(line => {
-        if (line.lineName !== e.dataKey) {
-          return {
-            lineName: line.lineName,
-            visibility: !line.visibility
-          };
-        }
-        return line;
-      });
-      this.setState({ highlightedLine: e.dataKey });
-    } else if (highlightedLine === e.dataKey) {
-      newVisibility = this.restoreVisibility();
-      this.setState({ highlightedLine: null });
-    } else {
-      newVisibility = lineVisibility.map(line => {
-        if (line.lineName !== e.dataKey) {
-          return {
-            lineName: line.lineName,
-            visibility: false
-          };
-        }
+  setVisibility(e: any) {
+    const { lineVisibility } = this.state;
+    const newVisibility = lineVisibility.map(line => {
+      if (line.lineName === e.dataKey) {
         return {
           lineName: line.lineName,
-          visibility: true
+          visibility: !line.visibility
         };
-      });
-      this.setState({ highlightedLine: e.dataKey });
-    }
-    this.setState({ lineVisibility: newVisibility });
-  }
-
-  restoreVisibility() {
-    const { lineVisibility } = this.state;
-    const newVisibility: { [key: string]: any }[] = lineVisibility.map(line => {
-      return {
-        lineName: line.lineName,
-        visibility: true
-      };
+      }
+      return line;
     });
-    return newVisibility;
+    this.setState({ lineVisibility: newVisibility });
   }
 
   isLineVisible(lineName: string) {
@@ -292,7 +258,7 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
                 )}
               />
               <Legend
-                onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.hideOtherLines(event)}
+                onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.setVisibility(event)}
                 formatter={(value: string, entry: { [key: string]: any }) => (
                   <CustomLineChartLegend value={value} entry={entry} lineVisibility={lineVisibility} />
                 )}

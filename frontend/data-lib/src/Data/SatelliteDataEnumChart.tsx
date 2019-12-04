@@ -148,7 +148,7 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
 
   render() {
     const { classes, graphInfo } = this.props;
-    const { timelineChartData, maxEntriesPerGraph, fromDate, toDate } = this.state;
+    const { maxEntriesPerGraph, fromDate, toDate, timelineChartData } = this.state;
     const copyOfFirstElement = timelineChartData[0];
     let modifiedTimelineData = timelineChartData.slice(
       timelineChartData.length - maxEntriesPerGraph,
@@ -160,6 +160,7 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
     } else {
       modifiedTimelineData = [];
     }
+
     return (
       <div className={classes.root}>
         <Typography className={classes.chartTitle} variant="h6">
