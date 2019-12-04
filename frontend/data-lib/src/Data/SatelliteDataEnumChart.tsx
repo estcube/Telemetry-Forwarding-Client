@@ -36,6 +36,7 @@ type SatelliteDataEnumChartState = {
   timelineChartData: string[][] | { [key: string]: any }[];
   allEnumValues: { [key: string]: string[] };
   enumIdToLabelMapping: { [key: string]: string };
+  modifiedData: string[][] | { [key: string]: any }[];
 };
 
 /**
@@ -53,7 +54,8 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
       maxEntriesPerGraph: 50,
       timelineChartData: [],
       allEnumValues: {},
-      enumIdToLabelMapping: {}
+      enumIdToLabelMapping: {},
+      modifiedData: []
     };
   }
 
@@ -71,7 +73,7 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
       fromDate !== prevState.fromDate ||
       maxEntriesPerGraph !== prevState.maxEntriesPerGraph
     ) {
-      this.makeTimelineFields();
+      this.makeModifiedData();
     }
   }
 
@@ -85,6 +87,34 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
     copyOfAllEnumIdToLabelMapping[label] = fieldObject[0].label;
     copyOfAllEnumValues[label] = fieldObject[0].values;
     this.setState({ allEnumValues: copyOfAllEnumValues, enumIdToLabelMapping: copyOfAllEnumIdToLabelMapping });
+  }
+
+  makeModifiedData() {
+    const { timelineChartData, maxEntriesPerGraph, fromDate, toDate } = this.state;
+    const copyOfFirstElement = timelineChartData[0];
+
+    let modifiedTimelineData = timelineChartData.slice(
+      timelineChartData.length - maxEntriesPerGraph,
+      timelineChartData.length
+    );
+    if (typeof modifiedTimelineData[0][0] !== 'string') {
+      modifiedTimelineData.shift();
+    }
+    modifiedTimelineData = modifiedTimelineData.filter(
+      a => new Date(a[3]).toISOString() <= toDate && new Date(a[2]).toISOString() >= fromDate
+    );
+    modifiedTimelineData.unshift(copyOfFirstElement);
+    if (maxEntriesPerGraph > 0) {
+      modifiedTimelineData = timelineChartData.slice(0, maxEntriesPerGraph + 1);
+      if (modifiedTimelineData[1]) {
+        let firstDate = modifiedTimelineData[1][2];
+        firstDate = new Date(firstDate).setSeconds(new Date(firstDate).getSeconds() - 1);
+        modifiedTimelineData[1][2] = new Date(firstDate);
+      }
+    } else {
+      modifiedTimelineData = [];
+    }
+    this.setState({ modifiedData: modifiedTimelineData });
   }
 
   makeTimelineFields() {
@@ -104,16 +134,13 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
   }
 
   makeTimelineData(dataArray: any[][]) {
-    const { allEnumValues, enumIdToLabelMapping, toDate, fromDate } = this.state;
+    const { allEnumValues, enumIdToLabelMapping } = this.state;
     const { decodedPackets } = this.props;
-    let copyOfDecodedPackets = decodedPackets.packets.sort((a, b) => {
+    const copyOfDecodedPackets = decodedPackets.packets.sort((a, b) => {
       if (a.packet_timestamp < b.packet_timestamp) return -1;
       if (a.packet_timestamp > b.packet_timestamp) return 1;
       return 0;
     });
-    copyOfDecodedPackets = copyOfDecodedPackets.filter(
-      elem => elem.packet_timestamp >= fromDate && elem.packet_timestamp <= toDate
-    );
     let previousTimestamp: string;
     copyOfDecodedPackets.forEach(packet => {
       const { fields } = packet;
@@ -148,18 +175,7 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
 
   render() {
     const { classes, graphInfo } = this.props;
-    const { timelineChartData, maxEntriesPerGraph, fromDate, toDate } = this.state;
-    const copyOfFirstElement = timelineChartData[0];
-    let modifiedTimelineData = timelineChartData.slice(
-      timelineChartData.length - maxEntriesPerGraph,
-      timelineChartData.length
-    );
-    modifiedTimelineData.unshift(copyOfFirstElement);
-    if (maxEntriesPerGraph > 0) {
-      modifiedTimelineData = timelineChartData.slice(0, maxEntriesPerGraph + 2);
-    } else {
-      modifiedTimelineData = [];
-    }
+    const { maxEntriesPerGraph, fromDate, toDate, modifiedData } = this.state;
     return (
       <div className={classes.root}>
         <Typography className={classes.chartTitle} variant="h6">
@@ -174,14 +190,14 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
             maxEntriesPerGraph={maxEntriesPerGraph}
           />
         </Typography>
-        {modifiedTimelineData.length > 1 ? (
+        {modifiedData.length > 1 ? (
           <div>
             <Chart
               width="100%"
               height="150px"
               chartType="Timeline"
               loader={<div>Loading Chart</div>}
-              data={modifiedTimelineData}
+              data={modifiedData}
               options={{
                 avoidOverlappingGridLines: false
               }}
