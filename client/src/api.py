@@ -23,14 +23,15 @@ from sids_relay import SIDSRelay
 from conf import Configuration
 
 
-def create_app(config: Configuration, static_folder: str, tnc_pool: TNCPool,
-               sids_relay: SIDSRelay) -> Flask:
+def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) -> Flask:
     """ Creates a flask app for the api. """
 
     log = logging.getLogger(__name__)
 
     db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
+
+    static_folder = os.path.join(util.get_root(), config.get_conf("Client", "static-files-path"))
 
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
     CORS(app)
