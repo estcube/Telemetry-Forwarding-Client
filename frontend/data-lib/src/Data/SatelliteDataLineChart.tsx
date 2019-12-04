@@ -5,8 +5,9 @@ import { WithStyles } from '@material-ui/styles';
 // @ts-ignore
 import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { Typography } from '@material-ui/core';
-import DateTimePicker from './DateTimePicker';
-import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
+import CustomLineChartLegend from './LineChartComponents/CustomLineChartLegend';
+import CustomLineChartTooltip from './LineChartComponents/CustomLineChartTooltip';
+import CustomChartDataSelector from './SatelliteDataSelectionComponents/CustomChartDataSelector';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -21,7 +22,9 @@ const styles = (theme: Theme) =>
     limit: {
       maxWidth: 100
     },
-    tooltipBox: { backgroundColor: '#fff', boxShadow: '1px 1px grey' }
+    noDataAvailable: {
+      textAlign: 'center'
+    }
   });
 
 interface SatelliteDataLineChartProps extends WithStyles<typeof styles> {
@@ -49,19 +52,18 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
   constructor(props: SatelliteDataLineChartProps) {
     super(props);
     const { graphInfo } = this.props;
-    const { yAxis } = graphInfo;
     const now = new Date();
-    const anotherDate = new Date();
-    const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
+    const fromTime = new Date();
+    fromTime.setDate(fromTime.getDate() - 1);
     this.state = {
       lineVisibility: [],
-      yAxis,
+      yAxis: graphInfo.yAxis,
       chartData: [],
       chartLineNames: [],
       chartDomain: 300,
       highlightedLine: null,
       toDate: now.toISOString(),
-      fromDate: oneDayAgo.toISOString(),
+      fromDate: fromTime.toISOString(),
       maxEntriesPerGraph: 100
     };
   }
@@ -92,11 +94,11 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     let chartYaxisName = '';
     let bestDomain = 0;
     decodedPackets.packets.forEach(packet => {
-      const tempObject: { [key: string]: any } = {};
+      const tempDataPacket: { [key: string]: any } = {};
       const time = packet.packet_timestamp;
       const month = new Date(time).getMonth();
-      tempObject.name = `${time.substr(8, 2)}${months[month]}-${time.substr(11, 5)}`;
-      tempObject.timestamp = packet.packet_timestamp;
+      tempDataPacket.name = `${time.substr(8, 2)}${months[month]}-${time.substr(11, 5)}`;
+      tempDataPacket.timestamp = packet.packet_timestamp;
       yAxis.forEach((yAxisValue: string) => {
         const telemetryFields: { [key: number]: any } = telemetryConfiguration.fields;
         let realValueName = '';
@@ -109,12 +111,12 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
             }
           }
         });
-        tempObject[realValueName] = packet.fields[yAxisValue];
+        tempDataPacket[realValueName] = packet.fields[yAxisValue];
         const value = parseInt(packet.fields[yAxisValue], 10);
         if (value > bestDomain) bestDomain = value;
-        tempObject.unit = chartYaxisName;
+        tempDataPacket.unit = chartYaxisName;
       });
-      localChartData.push(tempObject);
+      localChartData.push(tempDataPacket);
     });
     localChartData = localChartData.sort((a, b) => {
       if (a.timestamp < b.timestamp) return -1;
@@ -130,6 +132,13 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
       chartLineNames: lineNames,
       chartDomain: bestDomain
     });
+    if (localChartData.length > 0) {
+      const fromDate = new Date(localChartData[localChartData.length - 1].timestamp);
+      fromDate.setDate(fromDate.getDate() - 1);
+      this.setState({
+        fromDate: fromDate.toISOString()
+      });
+    }
   }
 
   static getColor(index: number) {
@@ -217,143 +226,107 @@ class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps
     return newVisibility;
   }
 
-  customHandle(e: any, version: string) {
-    if (version === 'to') {
-      this.setState({ toDate: new Date(e).toISOString() });
-    } else {
-      this.setState({ fromDate: new Date(e).toISOString() });
-    }
-  }
-
-  handleLimitChange(e: any) {
-    if (e.target.value !== '') {
-      this.setState({ maxEntriesPerGraph: parseInt(e.target.value, 10) });
-    } else {
-      this.setState({ maxEntriesPerGraph: 0 });
-    }
-  }
-
-  renderChartDateSelection() {
-    const { toDate, fromDate, maxEntriesPerGraph } = this.state;
-    return (
-      <>
-        <DateTimePicker
-          defaultValue={fromDate}
-          label="From"
-          dateChangeHandler={(e: any) => this.customHandle(e, 'from')}
-        />
-        <DateTimePicker defaultValue={toDate} label="To" dateChangeHandler={(e: any) => this.customHandle(e, 'to')} />
-        <ConfigurationFormTextField
-          diferentWidth
-          confElemRequiresRestart={false}
-          confElemValue={maxEntriesPerGraph.toString()}
-          confElemName="Limit"
-          confElemType="int"
-          confElemDescription=""
-          textChangeHandler={event => this.handleLimitChange(event)}
-        />
-      </>
-    );
-  }
-
-  renderLines() {
-    const { chartLineNames, lineVisibility } = this.state;
-    const children: any[] = [];
-    chartLineNames.forEach((lineName: string, index: number) => {
-      let show = false;
-      lineVisibility.forEach(line => {
-        if (line.lineName === lineName) {
-          show = line.visibility;
-        }
-      });
-      children.push(
-        <Line
-          key={lineName}
-          name={lineName}
-          type="monotone"
-          dataKey={lineName}
-          stroke={SatelliteDataLineChart.getColor(index)}
-          strokeWidth={2}
-          activeDot={{ r: 8 }}
-          ref={lineName}
-          opacity={show ? 1 : 0}
-        />
-      );
+  isLineVisible(lineName: string) {
+    const { lineVisibility } = this.state;
+    let isVisible = false;
+    lineVisibility.forEach(line => {
+      if (line.lineName === lineName && line.visibility) {
+        isVisible = true;
+      }
     });
-    return children;
+    return isVisible;
   }
 
-  renderCustomTooltip(current: { [key: string]: any }) {
-    const { active, payload } = current;
-    const { classes } = this.props;
-    if (active && payload) {
-      return (
-        <div className={classes.tooltipBox}>
-          <Typography variant="body2" style={{ margin: '0', fontWeight: 'bold' }}>
-            {payload[0].payload.timestamp}
-          </Typography>
-          {payload.map((payloadElem: any, index: number) => {
-            return (
-              <Typography variant="body2" key={index} style={{ color: payloadElem.stroke, margin: '0' }}>
-                {payloadElem.name}: {payloadElem.value} {payloadElem.payload.unit || ''}
-              </Typography>
-            );
-          })}
-        </div>
-      );
-    }
-    return null;
+  handleDataSelectionChange(toDate: string, fromDate: string, maxSelection: number) {
+    this.setState({ toDate, fromDate, maxEntriesPerGraph: maxSelection });
   }
 
-  renderChart() {
+  render() {
     const { graphInfo, classes } = this.props;
-    const { chartDomain, maxEntriesPerGraph } = this.state;
+    const { chartDomain, maxEntriesPerGraph, fromDate, toDate, lineVisibility, chartLineNames } = this.state;
     let modifiedChartData = this.getSelectedDataInWindow();
     const modifiedDataLength = modifiedChartData.length;
     if (modifiedDataLength > maxEntriesPerGraph) {
       modifiedChartData = modifiedChartData.slice(modifiedDataLength - maxEntriesPerGraph, modifiedDataLength);
     }
     return (
-      <>
+      <div className={classes.root}>
         <Typography className={classes.chartTitle} variant="h6">
           {graphInfo.title}
           <br />
-          {this.renderChartDateSelection()}
+          <CustomChartDataSelector
+            changeHandler={(toDates: string, fromDates: string, maxSelections: number) =>
+              this.handleDataSelectionChange(toDates, fromDates, maxSelections)
+            }
+            fromDate={fromDate}
+            toDate={toDate}
+            maxEntriesPerGraph={maxEntriesPerGraph}
+          />
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart
-            data={modifiedChartData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}
-          >
-            <CartesianGrid />
-            <XAxis dataKey="name" angle={-15} textAnchor="end" scaleToFit height={50}>
-              <Label value={graphInfo.xAxis} position="top" />
-            </XAxis>
-            <YAxis domain={[0, chartDomain]}>
-              <Label
-                value={modifiedChartData.length > 0 && modifiedChartData[0] ? modifiedChartData[0].unit : ''}
-                angle={-90}
-                offset={0}
-                position="left"
+        {modifiedChartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={modifiedChartData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5
+              }}
+            >
+              <CartesianGrid />
+              <XAxis dataKey="name" angle={-15} textAnchor="end" scaleToFit height={50}>
+                <Label value={graphInfo.xAxis} position="top" />
+              </XAxis>
+              <YAxis domain={[0, chartDomain]}>
+                <Label
+                  value={modifiedChartData.length > 0 && modifiedChartData[0] ? modifiedChartData[0].unit : ''}
+                  angle={-90}
+                  offset={0}
+                  position="left"
+                />
+              </YAxis>
+              <Tooltip
+                content={(current: { [key: string]: any }) => (
+                  <CustomLineChartTooltip current={current} lineVisibility={lineVisibility} />
+                )}
               />
-            </YAxis>
-            <Tooltip content={(current: { [key: string]: any }) => this.renderCustomTooltip(current)} />
-            <Legend onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.hideOtherLines(event)} />
-            {this.renderLines()}
-          </LineChart>
-        </ResponsiveContainer>
-      </>
+              <Legend
+                onClick={(event: React.ChangeEvent<HTMLInputElement>) => this.hideOtherLines(event)}
+                formatter={(value: string, entry: { [key: string]: any }) => (
+                  <CustomLineChartLegend value={value} entry={entry} lineVisibility={lineVisibility} />
+                )}
+              />
+              {chartLineNames.map((lineName: string, index: number) => {
+                let show = false;
+                lineVisibility.forEach(line => {
+                  if (line.lineName === lineName) {
+                    show = line.visibility;
+                  }
+                });
+                return (
+                  <Line
+                    key={lineName}
+                    name={lineName}
+                    type="monotone"
+                    dataKey={lineName}
+                    stroke={SatelliteDataLineChart.getColor(index)}
+                    strokeWidth={2}
+                    activeDot={this.isLineVisible(lineName) ? { r: 8 } : false}
+                    ref={lineName}
+                    opacity={show ? 1 : 0}
+                  />
+                );
+              })}
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <Typography variant="body1" className={classes.noDataAvailable}>
+            No data available from {fromDate} to {toDate} with limit of {maxEntriesPerGraph}
+          </Typography>
+        )}
+      </div>
     );
-  }
-
-  render() {
-    const { classes } = this.props;
-    return <div className={classes.root}>{this.renderChart()}</div>;
   }
 }
 

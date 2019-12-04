@@ -23,6 +23,16 @@ class DateTimePicker extends React.Component<DateTimePickerProps, DateTimePicker
     this.state = { date: defaultValue };
   }
 
+  componentDidUpdate(prevProps: Readonly<DateTimePickerProps>): void {
+    const { defaultValue } = this.props;
+    if (prevProps.defaultValue !== defaultValue) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        date: defaultValue
+      });
+    }
+  }
+
   handleDateChange(e: any) {
     this.setState({ date: new Date(e).toISOString() });
   }

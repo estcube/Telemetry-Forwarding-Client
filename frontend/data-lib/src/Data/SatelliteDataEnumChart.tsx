@@ -3,8 +3,7 @@ import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
 import { Chart } from 'react-google-charts';
-import DateTimePicker from './DateTimePicker';
-import ConfigurationFormTextField from '../Configuration/ConfigurationFormFields/ConfigurationFormTextField';
+import CustomChartDataSelector from './SatelliteDataSelectionComponents/CustomChartDataSelector';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -18,6 +17,9 @@ const styles = (theme: Theme) =>
     },
     limit: {
       maxWidth: 100
+    },
+    noDataAvailable: {
+      textAlign: 'center'
     }
   });
 
@@ -43,11 +45,11 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
   constructor(props: SatelliteDataEnumChartProps) {
     super(props);
     const now = new Date();
-    const anotherDate = new Date();
-    const oneDayAgo = new Date(anotherDate.setDate(anotherDate.getDate() - 1));
+    const fromTime = new Date();
+    fromTime.setDate(fromTime.getDate() - 1);
     this.state = {
       toDate: now.toISOString(),
-      fromDate: oneDayAgo.toISOString(),
+      fromDate: fromTime.toISOString(),
       maxEntriesPerGraph: 50,
       timelineChartData: [],
       allEnumValues: {},
@@ -130,51 +132,23 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
       });
       previousTimestamp = packet.packet_timestamp;
     });
+    if (dataArray.length >= 2) {
+      const newFromDate = new Date(dataArray[dataArray.length - 1][3]);
+      newFromDate.setDate(newFromDate.getDate() - 1);
+      this.setState({
+        fromDate: newFromDate.toISOString()
+      });
+    }
     this.setState({ timelineChartData: dataArray });
   }
 
-  customHandle(e: any, version: string) {
-    if (version === 'to') {
-      this.setState({ toDate: new Date(e).toISOString() });
-    } else {
-      this.setState({ fromDate: new Date(e).toISOString() });
-    }
-  }
-
-  handleLimitChange(e: any) {
-    if (e.target.value !== '') {
-      this.setState({ maxEntriesPerGraph: parseInt(e.target.value, 10) });
-    } else {
-      this.setState({ maxEntriesPerGraph: 0 });
-    }
-  }
-
-  renderChartDateSelection() {
-    const { toDate, fromDate, maxEntriesPerGraph } = this.state;
-    return (
-      <>
-        <DateTimePicker
-          defaultValue={fromDate}
-          label="From"
-          dateChangeHandler={(e: any) => this.customHandle(e, 'from')}
-        />
-        <DateTimePicker defaultValue={toDate} label="To" dateChangeHandler={(e: any) => this.customHandle(e, 'to')} />
-        <ConfigurationFormTextField
-          diferentWidth
-          confElemRequiresRestart={false}
-          confElemValue={maxEntriesPerGraph.toString()}
-          confElemName="Limit"
-          confElemType="int"
-          confElemDescription=""
-          textChangeHandler={event => this.handleLimitChange(event)}
-        />
-      </>
-    );
+  handleDataSelectionChange(toDate: string, fromDate: string, maxSelection: number) {
+    this.setState({ toDate, fromDate, maxEntriesPerGraph: maxSelection });
   }
 
   render() {
     const { classes, graphInfo } = this.props;
-    const { timelineChartData, maxEntriesPerGraph } = this.state;
+    const { timelineChartData, maxEntriesPerGraph, fromDate, toDate } = this.state;
     const copyOfFirstElement = timelineChartData[0];
     let modifiedTimelineData = timelineChartData.slice(
       timelineChartData.length - maxEntriesPerGraph,
@@ -191,20 +165,33 @@ class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps
         <Typography className={classes.chartTitle} variant="h6">
           {graphInfo.title}
           <br />
-          {this.renderChartDateSelection()}
-        </Typography>
-        <div>
-          <Chart
-            width="100%"
-            height="150px"
-            chartType="Timeline"
-            loader={<div>Loading Chart</div>}
-            data={modifiedTimelineData}
-            options={{
-              avoidOverlappingGridLines: false
-            }}
+          <CustomChartDataSelector
+            changeHandler={(toDates: string, fromDates: string, maxSelections: number) =>
+              this.handleDataSelectionChange(toDates, fromDates, maxSelections)
+            }
+            fromDate={fromDate}
+            toDate={toDate}
+            maxEntriesPerGraph={maxEntriesPerGraph}
           />
-        </div>
+        </Typography>
+        {modifiedTimelineData.length > 1 ? (
+          <div>
+            <Chart
+              width="100%"
+              height="150px"
+              chartType="Timeline"
+              loader={<div>Loading Chart</div>}
+              data={modifiedTimelineData}
+              options={{
+                avoidOverlappingGridLines: false
+              }}
+            />
+          </div>
+        ) : (
+          <Typography variant="body1" className={classes.noDataAvailable}>
+            No data available from {fromDate} to {toDate} with limit of {maxEntriesPerGraph}
+          </Typography>
+        )}
       </div>
     );
   }
