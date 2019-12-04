@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Configuration } from '@estcube/data-components';
 import { CircularProgress, Typography } from '@material-ui/core';
+import { withSnackbar, WithSnackbarProps } from 'notistack';
+import ConfigurationForms from './Configuration/ConfigurationForms';
 
 type ConfigurationPageState = {
   confValues: { [key: string]: { [key: string]: string } };
@@ -14,8 +15,8 @@ type ConfigurationPageState = {
 /**
  * View for configuring client
  */
-class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
-  constructor(props: {}) {
+class ConfigurationPage extends React.Component<WithSnackbarProps, ConfigurationPageState> {
+  constructor(props: WithSnackbarProps) {
     super(props);
     this.state = {
       errorMessage: null,
@@ -49,6 +50,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
 
   postConfValues = (event: React.MouseEvent<HTMLButtonElement>, data: { [key: string]: { [key: string]: any } }) => {
     event.preventDefault();
+    const { enqueueSnackbar } = this.props;
     this.setState({ confPostLoading: true });
     const dataObject = Object.assign(
       {},
@@ -66,10 +68,12 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
         if (!response.ok) {
           response.json().then(body => {
             this.setState({ dataPosted: false, errorMessage: body.Error });
+            enqueueSnackbar(body.Error, { variant: 'error', autoHideDuration: 10000 });
           });
           throw Error(response.statusText);
         } else {
           this.setState({ dataPosted: true });
+          enqueueSnackbar('Configuration parameters updated.', { variant: 'success' });
         }
       })
       .finally(() => {
@@ -90,7 +94,7 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
     } else if (confFetched) {
       content = (
         <div>
-          <Configuration
+          <ConfigurationForms
             confValues={confValues}
             handleConfPost={this.postConfValues}
             dataPosted={dataPosted}
@@ -100,8 +104,8 @@ class ConfigurationPage extends React.Component<{}, ConfigurationPageState> {
         </div>
       );
     }
-    return <div data-testid="confDiv">{content}</div>;
+    return <div data-testid="conf-form">{content}</div>;
   }
 }
 
-export default ConfigurationPage;
+export default withSnackbar(ConfigurationPage);
