@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Data } from '@estcube/data-components';
+import Data from '@estcube/data-components';
 import { CircularProgress, Typography, createStyles, WithStyles, withStyles } from '@material-ui/core';
 import TNCStatus from './TNCStatus';
 
