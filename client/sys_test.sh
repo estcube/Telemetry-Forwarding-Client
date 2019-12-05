@@ -36,6 +36,7 @@ connection-retry-time=5
 database=src/__test__/systest.db
 frontend-port=6666
 static-files-path=../static
+telemetry-configuration=spec/telemetry.json
 EOL
 
 trap catch_exit SIGINT SIGHUP SIGTERM
