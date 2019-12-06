@@ -144,7 +144,7 @@ class ConfigurationForms extends React.Component<ConfigurationFormsProps, Config
       const confElemMaxValue = confElemParams.max || null;
       const confElemMaxLen = confElemParams.max_len || null;
       if (!confElemIsHidden) {
-        if (confElemType === 'str' || confElemType === 'url' || confElemType === 'int' || confElemType === 'float') {
+        if (confElemType === 'str' || confElemType === 'int' || confElemType === 'float') {
           return (
             <ConfigurationFormTextField
               confElemType={confElemType}

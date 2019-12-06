@@ -14,9 +14,10 @@ CONSTRAINTS = {
             "value": "False"
         },
         "mcs-relay-url": {
-            "type": "url",
+            "type": "str",
             "label": "MCS relay URL",
-            "value": "http://staging.estcube.eu:8029/ax25"
+            "value": "http://staging.estcube.eu:8029/ax25",
+            "regexType": "url"
         },
 
         "receiver-callsign": {
@@ -69,7 +70,8 @@ CONSTRAINTS = {
             "type": "str",
             "requiresRestart": True,
             "label": "TNC IP",
-            "value": "localhost"
+            "value": "localhost",
+            "regexType": "ip"
         },
         # "tnc-device": {
         #     "type": "str",
@@ -228,23 +230,34 @@ class Configuration(object):
                 return
             if constr["type"] == "str":
                 pass
-            elif constr["type"] == "url":
-                regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
-                is_valid = re.match(regex, value)
-                if not is_valid:
-                    raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
+            if "regexType" in constr:
+                if constr["regexType"] == "url":
+                    regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
+                    is_valid = re.match(regex, value)
+                    if not is_valid:
+                        raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
+                elif constr["regexType"] == "ip":
+                    regex = '(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$'
+                    is_valid = re.match(regex, value)
+                    if not is_valid:
+                        raise ValueError("Expected {} as {} value (got '{}')".format("ip", element, value))
             elif constr["type"] == "int":
                 try:
                     if not isinstance(value, int):
                         value = int(value)
                 except Exception as e:
                     raise type(e)("Expected {} as {} value (got '{}')".format("integer", element, value))
+                if not (int(constr["min"]) <= value <= int(constr["max"])):
+                    raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
+
             elif constr["type"] == "float":
                 try:
                     if not isinstance(value, float):
                         value = float(value)
                 except Exception as e:
                     raise type(e)("Expected {} as {} value (got '{}')".format("float", element, value))
+                if not (float(constr["min"]) <= value <= float(constr["max"])):
+                    raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
             elif constr["type"] == "bool":
                 if not isinstance(value, bool):
                     if value.lower() == "true":
