@@ -15,7 +15,10 @@ const styles = (theme: Theme) =>
       borderBottom: '1px solid',
       padding: theme.spacing(1),
       textAlign: 'right',
-      maxWidth: '120px'
+      maxWidth: '120px',
+      '&:last-child': {
+        padding: theme.spacing(1)
+      }
     }
   });
 

@@ -1,20 +1,8 @@
 import * as React from 'react';
-import {
-  WithStyles,
-  Typography,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  createStyles,
-  withStyles,
-  Theme
-} from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
+import { WithStyles, Typography, createStyles, withStyles, Theme } from '@material-ui/core';
 import { Prompt } from 'react-router';
-import ConfigurationFormTextField from './ConfigurationFormFields/ConfigurationFormTextField';
-import ConfigurationFormRadioField from './ConfigurationFormFields/ConfigurationFormRadioField';
-import ConfigurationFormDropdownField from './ConfigurationFormFields/ConfigurationFormDropdownField';
 import ConfigurationFormUpdateButton from './ConfigurationFormComponents/ConfigurationFormUpdateButton';
+import ConfigurationFormSections from './ConfigurationFormComponents/ConfigurationFormSections';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -112,95 +100,6 @@ class ConfigurationForms extends React.Component<ConfigurationFormsProps, Config
     this.setState({ confValues: copyOfConfValues, hasUnsavedChanges: true });
   }
 
-  renderFormSections() {
-    const { confValues } = this.state;
-    const { classes } = this.props;
-    return Object.keys(confValues).map(sectionName => {
-      return (
-        <ExpansionPanel key={sectionName} defaultExpanded className={classes.extensionPanel}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} aria-controls={sectionName} id={sectionName}>
-            <Typography variant="h5">{sectionName}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.section}>
-            {this.renderFormFields(sectionName)}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      );
-    });
-  }
-
-  renderFormFields(sectionName: string) {
-    const { confValues } = this.state;
-    const confSectionValues = confValues[sectionName];
-    return Object.keys(confSectionValues).map(confElemName => {
-      const confElemParams = confSectionValues[confElemName];
-      const confElemType = confElemParams.type;
-      const confElemValue = confElemParams.value || '';
-      const confElemRequiresRestart = !!confElemParams.requiresRestart;
-      const confElemLabel = confElemParams.label;
-      const confElemIsHidden = confElemParams.hidden;
-      const confElemDescription = confElemParams.description || '';
-      const confElemMinValue = confElemParams.min || null;
-      const confElemMaxValue = confElemParams.max || null;
-      const confElemMaxLen = confElemParams.max_len || null;
-      if (!confElemIsHidden) {
-        if (confElemType === 'str' || confElemType === 'int' || confElemType === 'float') {
-          return (
-            <ConfigurationFormTextField
-              confElemType={confElemType}
-              textChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
-              key={confElemName}
-              confElemName={confElemLabel}
-              confElemRequiresRestart={confElemRequiresRestart}
-              confElemValue={confElemValue}
-              confElemDescription={confElemDescription}
-              confElemMinValue={confElemMinValue}
-              confElemMaxValue={confElemMaxValue}
-              confElemMaxLen={confElemMaxLen}
-            />
-          );
-        }
-        if (confElemType === 'bool') {
-          let value = false;
-          if (confElemValue === 'True' || confElemValue === true) {
-            value = true;
-          }
-          return (
-            <ConfigurationFormRadioField
-              radioChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'radio')}
-              key={confElemName}
-              confElemName={confElemLabel}
-              confElemRequiresRestart={confElemRequiresRestart}
-              confElemValue={value}
-              confElemDescription={confElemDescription}
-            />
-          );
-        }
-        if (confElemType === 'select') {
-          const confElemOptions = confElemParams.options;
-          const confElemDisabledOptions = confElemParams.disabledOptions ? confElemParams.disabledOptions : [];
-          const allConfElemOptions = confElemOptions.concat(confElemDisabledOptions);
-          const confElemOptionsObject = allConfElemOptions.map((elem: string) => {
-            return { label: elem, value: elem };
-          });
-          return (
-            <ConfigurationFormDropdownField
-              dropdownChangeHandler={event => this.handleFormChange(event, confElemName, sectionName, 'text')}
-              key={confElemName}
-              confElemRequiresRestart={confElemRequiresRestart}
-              confElemValue={confElemValue}
-              confElemName={confElemLabel}
-              confElemOptions={confElemOptionsObject}
-              confElemDisabledOptions={confElemDisabledOptions}
-              confElemDescription={confElemDescription}
-            />
-          );
-        }
-      }
-      return <div key={confElemName} />;
-    });
-  }
-
   render() {
     const { confPostLoading, classes, handleConfPost } = this.props;
     const { confValues, hasUnsavedChanges } = this.state;
@@ -213,7 +112,18 @@ class ConfigurationForms extends React.Component<ConfigurationFormsProps, Config
             <Typography variant="h4" className={classes.text}>
               Configuration
             </Typography>
-            <form className={classes.paperSlave}>{this.renderFormSections()}</form>
+            <form className={classes.paperSlave}>
+              <ConfigurationFormSections
+                confValues={confValues}
+                classes={classes}
+                handleFormChange={(
+                  event: React.ChangeEvent<HTMLInputElement>,
+                  confElemName: string,
+                  sectionName: string,
+                  inputType: string
+                ) => this.handleFormChange(event, confElemName, sectionName, inputType)}
+              />
+            </form>
             <ConfigurationFormUpdateButton
               confPostLoading={confPostLoading}
               handleClick={event => {
