@@ -31,6 +31,8 @@ tnc-device =
 max-connection-attempts=20
 # The amount of seconds to wait before retrying the TNC connection.
 connection-retry-time=5
+# Source of AX.25 frame.
+satellite-src = ESTCUB
 
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.

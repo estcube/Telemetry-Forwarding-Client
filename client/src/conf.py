@@ -103,6 +103,12 @@ CONSTRAINTS = {
             "min": 1,
             "max": 600,
             "value": "5"
+        },
+        "satellite-src": {
+            "type": "str",
+            "label": "AX.25 frame SRC",
+            "value": "ESTCUB",
+            "max_len": 6
         }
     },
 
