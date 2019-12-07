@@ -96,7 +96,7 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
             <iframe className={classes.mapFrame} src={confValue} height="468" width="600" title="map" scrolling="no" />
           </div>
           <CardActions>
-            <Button size="small" onClick={this.toggleMap} className={classes.toggleBtn}>
+            <Button size="small" onClick={this.toggleMap} className={classes.toggleBtn} data-testid="mapToggleBtn">
               {mapOpen ? 'Close map' : 'Open map'}
             </Button>
           </CardActions>
