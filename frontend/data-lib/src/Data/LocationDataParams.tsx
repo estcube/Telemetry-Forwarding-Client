@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStyles, withStyles } from '@material-ui/core/styles';
-import { Typography } from '@material-ui/core';
 import { WithStyles } from '@material-ui/styles';
 
 const styles = () =>
@@ -17,12 +16,7 @@ const styles = () =>
 class LocationDataParams extends React.Component<WithStyles<typeof styles>> {
   render() {
     const { classes } = this.props;
-    return (
-      <div className={classes.root}>
-        <Typography variant="h6">Current azimuth: 202.5°</Typography>
-        <Typography variant="h6">Current elevation: 200000m</Typography>
-      </div>
-    );
+    return <div className={classes.root} />;
   }
 }
 export default withStyles(styles)(LocationDataParams);
