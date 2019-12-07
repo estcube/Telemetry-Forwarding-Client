@@ -1,25 +1,24 @@
 import React from 'react';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography, Card, CardActions, Button } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 
 const styles = () =>
   createStyles({
     root: {
-      // alignContent: 'center',
-      // display: 'inline-block'
+      boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
     },
     frameContainer: {
       height: 468,
-      transition: 'height 0.10s ease-out',
-      width: 604,
+      transition: 'height 0.35s ease-out',
+      width: 600,
       position: 'relative',
       overflow: 'hidden'
     },
     frameContainerClosed: {
-      height: 95,
-      transition: 'height 0.10s ease-in',
-      width: 604,
+      height: 94,
+      transition: 'height 0.40s ease-in',
+      width: 600,
       position: 'relative',
       overflow: 'hidden'
     },
@@ -27,6 +26,9 @@ const styles = () =>
       borderStyle: 'none',
       position: 'absolute',
       bottom: 0
+    },
+    toggleBtn: {
+      flexGrow: 1
     }
   });
 
@@ -89,14 +91,16 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
       );
     } else if (confFetched) {
       content = (
-        <div>
+        <Card className={classes.root}>
           <div className={mapOpen ? classes.frameContainer : classes.frameContainerClosed}>
-            <iframe className={classes.mapFrame} src={confValue} height="468" width="604" title="map" scrolling="no" />
+            <iframe className={classes.mapFrame} src={confValue} height="468" width="600" title="map" scrolling="no" />
           </div>
-          <button type="button" onClick={this.toggleMap}>
-            Open map
-          </button>
-        </div>
+          <CardActions>
+            <Button size="small" onClick={this.toggleMap} className={classes.toggleBtn}>
+              {mapOpen ? 'Close map' : 'Open map'}
+            </Button>
+          </CardActions>
+        </Card>
       );
     }
     return <div className={classes.root}>{content}</div>;
