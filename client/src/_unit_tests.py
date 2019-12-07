@@ -18,6 +18,9 @@ class UnitTest(unittest.TestCase):
 [Client]
 database=../db
 frontend-port=5000
+
+[TNC interface]
+satellite-src=ESTCUB
 """
     writtenConf = """\
 [Client]
@@ -56,7 +59,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
 
     # Tests if a packet is correctly stored in AXFrame by sending a packet and checking if current date is saved
     def test_AXListener_addresses(self):
-        listener = AXListener()
+        listener = AXListener(self.testConf)
         def assertDestAndSrc(frame: AXFrame):
             self.assertEqual(frame.dest, "ES5E  ", "Frame destination is decoded incorrectly.")
             self.assertEqual(frame.source, "ES5EC ", "Frame source is decoded incorrectly.")
@@ -64,21 +67,21 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         listener.receive(bytearray(self.axPacket))
 
     def test_AXListener_control(self):
-        listener = AXListener()
+        listener = AXListener(self.testConf)
         def assertControlByte(frame: AXFrame):
             self.assertEqual(frame.ctrl, 3)
         listener.add_callback(assertControlByte)
         listener.receive(bytearray(self.axPacket))
 
     def test_AXListener_pid(self):
-        listener = AXListener()
+        listener = AXListener(self.testConf)
         def assertPID(frame: AXFrame):
             self.assertEqual(frame.pid, 240)
         listener.add_callback(assertPID)
         listener.receive(bytearray(self.axPacket))
 
     def test_AXListener_info(self):
-        listener = AXListener()
+        listener = AXListener(self.testConf)
         def assertControlByte(frame: AXFrame):
             self.assertEqual(frame.info, self.infoArr, "\nframe: {}\ntest: {}".format(
                 frame.info, self.infoArr))
