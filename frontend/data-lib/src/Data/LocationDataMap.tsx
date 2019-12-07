@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 
@@ -17,7 +17,6 @@ const styles = () =>
   });
 
 type MapState = {
-  mapOpened: boolean;
   confValue: string;
   dataFetchErrored: boolean;
   loading: boolean;
@@ -30,7 +29,6 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
   constructor(props: WithStyles<typeof styles>) {
     super(props);
     this.state = {
-      mapOpened: false,
       confValue: '',
       dataFetchErrored: false,
       loading: false
@@ -38,12 +36,12 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
   }
 
   componentDidMount(): void {
-    this.fetchConfValuesFull();
+    this.fetchConfValues();
   }
 
-  fetchConfValuesFull = () => {
+  fetchConfValues = () => {
     this.setState({ loading: true });
-    fetch('/api/conf/full')
+    fetch('/api/conf')
       .then(response => {
         if (!response.ok) {
           throw new Error(response.statusText);
@@ -51,19 +49,14 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
         return response.json();
       })
       .then(responseJson => {
-        this.setState({ confValue: responseJson['Mission Control']['sat-location-widget'].value });
+        this.setState({ confValue: responseJson['Mission Control']['sat-location-widget'] });
       })
       .catch(() => this.setState({ dataFetchErrored: true }))
       .finally(() => this.setState({ loading: false }));
   };
 
-  changeMapShowingStatus = () => {
-    const { mapOpened } = this.state;
-    this.setState({ mapOpened: !mapOpened });
-  };
-
   render() {
-    const { mapOpened, loading, dataFetchErrored, confValue } = this.state;
+    const { loading, dataFetchErrored, confValue } = this.state;
     const { classes } = this.props;
     const confFetched = confValue !== null;
     let content;
@@ -80,19 +73,7 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
         </div>
       );
     }
-    return (
-      <div className={classes.root}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => this.changeMapShowingStatus()}
-          data-testid="mapButton"
-        >
-          {mapOpened ? 'Close map' : 'Show map'}
-        </Button>
-        {mapOpened && content}
-      </div>
-    );
+    return <div className={classes.root}>{content}</div>;
   }
 }
 
