@@ -46,6 +46,13 @@ CONSTRAINTS = {
             "min": -180,
             "max": 180,
             "value": "26.729019"
+        },
+
+        "sat-location-widget": {
+            "type": "url",
+            "description": "Path to the n2yo.com widget displaying satellite location",
+            "label": "Satellite Location Map",
+            "value": "https://www.n2yo.com/widgets/widget-tracker.php?s=43792&amp;size=medium&amp;all=1&amp;me=10&amp;map=5"
         }
     },
 

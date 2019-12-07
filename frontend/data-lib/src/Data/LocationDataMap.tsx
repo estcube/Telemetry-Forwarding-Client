@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress, Typography } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import { WithStyles } from '@material-ui/styles';
 
@@ -18,6 +18,9 @@ const styles = () =>
 
 type MapState = {
   mapOpened: boolean;
+  confValue: string;
+  dataFetchErrored: boolean;
+  loading: boolean;
 };
 
 /**
@@ -26,8 +29,33 @@ type MapState = {
 class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapState> {
   constructor(props: WithStyles<typeof styles>) {
     super(props);
-    this.state = { mapOpened: false };
+    this.state = {
+      mapOpened: false,
+      confValue: '',
+      dataFetchErrored: false,
+      loading: false
+    };
   }
+
+  componentDidMount(): void {
+    this.fetchConfValuesFull();
+  }
+
+  fetchConfValuesFull = () => {
+    this.setState({ loading: true });
+    fetch('/api/conf/full')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(responseJson => {
+        this.setState({ confValue: responseJson['Mission Control']['sat-location-widget'].value });
+      })
+      .catch(() => this.setState({ dataFetchErrored: true }))
+      .finally(() => this.setState({ loading: false }));
+  };
 
   changeMapShowingStatus = () => {
     const { mapOpened } = this.state;
@@ -35,9 +63,23 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
   };
 
   render() {
-    const { mapOpened } = this.state;
-
+    const { mapOpened, loading, dataFetchErrored, confValue } = this.state;
     const { classes } = this.props;
+    const confFetched = confValue !== null;
+    let content;
+    if (loading) {
+      content = <CircularProgress />;
+    } else if (!loading && dataFetchErrored) {
+      content = (
+        <Typography variant="h6">Could not connect to the client. Try re-launching your client to fix this.</Typography>
+      );
+    } else if (confFetched) {
+      content = (
+        <div data-testid="leafletMap">
+          <iframe src={confValue} height="500" width="600" scrolling="yes" title="map" />
+        </div>
+      );
+    }
     return (
       <div className={classes.root}>
         <Button
@@ -48,17 +90,7 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
         >
           {mapOpened ? 'Close map' : 'Show map'}
         </Button>
-        {mapOpened && (
-          <div data-testid="leafletMap">
-            <iframe
-              src="https://www.n2yo.com/widgets/widget-tracker.php?s=43792&amp;size=medium&amp;all=1&amp;me=10&amp;map=5"
-              height="500"
-              width="600"
-              scrolling="yes"
-              title="map"
-            />
-          </div>
-        )}
+        {mapOpened && content}
       </div>
     );
   }
