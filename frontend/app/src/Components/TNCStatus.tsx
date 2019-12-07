@@ -127,10 +127,15 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
   };
 
   checkTNCStatus = () => {
+    const { enqueueSnackbar } = this.props;
+
     fetch('/api/tnc/Main/status')
       .then(res => res.json() as Promise<TNCCheck>)
       .then((res: TNCCheck) => {
         this.setState({ tncStatus: res.status, tncBtnEnabled: true });
+      })
+      .catch(() => {
+        enqueueSnackbar("Couldn't connect to the api.", { variant: 'error', preventDuplicate: true });
       })
       .finally(() => {
         const tncTimeout = window.setTimeout(this.checkTNCStatus, CHECK_TIMER);
