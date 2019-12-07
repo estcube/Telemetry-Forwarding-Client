@@ -85,7 +85,9 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
 
         try:
             tel_req = requests.get(telconf_url)
-        except ConnectionError:
+        except (requests.ConnectionError, requests.ConnectTimeout) as err:
+            log.warning("Connection to telemetry configuration endpoint failed.")
+            log.warning(err)
             return jsonify({
                 "error": "Connection to telemetry configuration endpoint failed"
             }), 500
@@ -98,7 +100,9 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
 
         try:
             kaitai_req = requests.get(kaitai_url)
-        except ConnectionError:
+        except (requests.ConnectionError, requests.ConnectTimeout) as err:
+            log.warning("Connection to kaitai configuration endpoint failed.")
+            log.warning(err)
             return jsonify({
                 "error": "Connection to kaitai configuration endpoint failed."
             }), 500
