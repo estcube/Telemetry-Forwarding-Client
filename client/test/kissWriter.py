@@ -41,6 +41,7 @@ class TCPKISSServer(kiss.KISS):
 
     def stop(self):
         if self.clientSock:
+            self.clientSock.shutdown(socket.SHUT_RDWR)
             self.clientSock.close()
             self.clientSock = None
             logging.info("Closed client socket.")
@@ -55,6 +56,7 @@ class TCPKISSServer(kiss.KISS):
         Initializes the KISS device and commits configuration.
         """
         self.interface = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.interface.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.interface.bind(self.address)
         self._logger.info('Socket bound to %s', self.address)
         self.interface.listen()
