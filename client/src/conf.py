@@ -49,7 +49,8 @@ CONSTRAINTS = {
         },
 
         "sat-location-widget": {
-            "type": "url",
+            "type": "str",
+            "regexType": "url",
             "description": "Path to the n2yo.com widget displaying satellite location",
             "label": "Satellite Location Map",
             "value": "https://www.n2yo.com/widgets/widget-tracker.php?s=43792&amp;size=medium&amp;all=1&amp;me=10&amp;map=5"
@@ -90,7 +91,7 @@ CONSTRAINTS = {
             "type": "int",
             "requiresRestart": True,
             "label": "Max connection attempts",
-            "hidden": True,
+            "hidden": False,
             "min": 1,
             "max": 10000,
             "value": "20"
@@ -99,7 +100,7 @@ CONSTRAINTS = {
             "type": "int",
             "requiresRestart": True,
             "label": "Connection retry time",
-            "hidden": True,
+            "hidden": False,
             "min": 1,
             "max": 600,
             "value": "5"
@@ -140,9 +141,9 @@ CONSTRAINTS = {
             "value": "5000"
         },
         "telemetry-configuration-url": {
-            "type": "url",
+            "type": "str",
+            "regexType": "url",
             "description": "URL of the latest telemetry configuration endpoint.",
-            "requireRestart": False,
             "label": "Telemetry configuration URL",
             "value": "https://staging.estcube.eu:8029/telemetry"
         },
@@ -154,7 +155,8 @@ CONSTRAINTS = {
             "value": "../../kaitai/bin/kaitai-struct-compiler"
         },
         "packet-structure-url": {
-            "type": "url",
+            "type": "str",
+            "regexType": "url",
             "description": "URL of the latest packet structure (kaitai) endpoint.",
             "label": "Packet structure URL",
             "value": "https://staging.estcube.eu:8029/icp"

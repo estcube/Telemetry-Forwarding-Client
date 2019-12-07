@@ -217,7 +217,7 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
             {/* Do not skip heading levels. */}
             <div>
               <Typography component="h3" variant="h5">
-                Main TNC
+                TNC Connection
               </Typography>
               <Typography variant="subtitle1" color="textSecondary">
                 {/* {tncAlive ? 'Connected' : 'Not connected'} */}
