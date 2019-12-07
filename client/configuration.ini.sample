@@ -32,17 +32,17 @@ connection-retry-time=5
 
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
-database=../telemetry.db
+database=telemetry.db
 # Path to the folder containing the static frontend files. Relative to the executable.
-static-files-path=../static
+static-files-path=static/
 # Path to the file that specified the telemetry data fields.
-telemetry-configuration=../spec/telemetry.json
+telemetry-configuration=spec/telemetry.json
 # URL of the latest telemetry configuration endpoint.
 telemetry-configuration-url=https://staging.estcube.eu:8029/telemetry
 # URL of the lastest packet structure (kaitai) endpoint.
 packet-structure-url=https://staging.estcube.eu:8029/icp
 # Path to the kaitai-struct-compiler executable. Relative to client executable.
-kaitai-compiler-path=../../kaitai/bin/kaitai-struct-compiler
+kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 # Localhost port to serve the frontend on.
 # Defaults to port 5000
 frontend-port=5000
