@@ -13,8 +13,13 @@ from telemetry_listener import TelemetryListener
 
 
 class UnitTest(unittest.TestCase):
-
     
+    testConf = """\
+[Client]
+database=../db
+frontend-port=5000
+"""
+
     writtenConf = """\
 [Client]
 database=../db
@@ -25,7 +30,7 @@ static-files-path=../static
     confPath = os.path.join(os.path.dirname(__file__), "__test__", "conf.ini")
     dbPath = os.path.join(os.path.dirname(__file__), "__test__", "test.db")
     
-    testConf = Configuration(confPath)
+    testConfiguration = Configuration(confPath)
 
     axPacket = b"""~\x8a\xa6j\x8a@@`\x8a\xa6j\x8a\x86@a\x03\xf0\x00\x00\x00\x01\x00q?GmN2dzpYLYwjaf\
 RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
@@ -54,7 +59,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
 
     # Tests if a packet is correctly stored in AXFrame by sending a packet and checking if current date is saved
     def test_AXListener_addresses(self):
-        listener = AXListener(self.testConf)
+        listener = AXListener(self.testConfiguration)
         def assertDestAndSrc(frame: AXFrame):
             self.assertEqual(frame.dest, "ES5E  ", "Frame destination is decoded incorrectly.")
             self.assertEqual(frame.source, "ES5EC ", "Frame source is decoded incorrectly.")
@@ -62,21 +67,21 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         listener.receive(bytearray(self.axPacket))
 
     def test_AXListener_control(self):
-        listener = AXListener(self.testConf)
+        listener = AXListener(self.testConfiguration)
         def assertControlByte(frame: AXFrame):
             self.assertEqual(frame.ctrl, 3)
         listener.add_callback(assertControlByte)
         listener.receive(bytearray(self.axPacket))
 
     def test_AXListener_pid(self):
-        listener = AXListener(self.testConf)
+        listener = AXListener(self.testConfiguration)
         def assertPID(frame: AXFrame):
             self.assertEqual(frame.pid, 240)
         listener.add_callback(assertPID)
         listener.receive(bytearray(self.axPacket))
 
     def test_AXListener_info(self):
-        listener = AXListener(self.testConf)
+        listener = AXListener(self.testConfiguration)
         def assertControlByte(frame: AXFrame):
             self.assertEqual(frame.info, self.infoArr, "\nframe: {}\ntest: {}".format(
                 frame.info, self.infoArr))
