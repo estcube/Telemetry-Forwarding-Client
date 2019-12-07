@@ -14,14 +14,7 @@ from telemetry_listener import TelemetryListener
 
 class UnitTest(unittest.TestCase):
 
-    testConf = """\
-[Client]
-database=../db
-frontend-port=5000
-
-[TNC interface]
-satellite-src=ESTCUB
-"""
+    
     writtenConf = """\
 [Client]
 database=../db
@@ -31,6 +24,8 @@ static-files-path=../static
 
     confPath = os.path.join(os.path.dirname(__file__), "__test__", "conf.ini")
     dbPath = os.path.join(os.path.dirname(__file__), "__test__", "test.db")
+    
+    testConf = Configuration(confPath)
 
     axPacket = b"""~\x8a\xa6j\x8a@@`\x8a\xa6j\x8a\x86@a\x03\xf0\x00\x00\x00\x01\x00q?GmN2dzpYLYwjaf\
 RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
