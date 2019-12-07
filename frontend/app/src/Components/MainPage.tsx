@@ -2,6 +2,7 @@ import * as React from 'react';
 import Data from '@estcube/data-components';
 import { CircularProgress, Typography, createStyles, WithStyles, withStyles } from '@material-ui/core';
 import TNCStatus from './TNCStatus';
+import LocationDataMap from './LocationDataMap';
 
 type MainPageState = {
   decodedPackets: { [key: string]: [{ [key: string]: string | number | { [key: string]: string } }] };
@@ -14,9 +15,19 @@ type MainPageState = {
 
 const styles = () =>
   createStyles({
-    tncRow: {
+    tncConns: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
+      margin: 16
+    },
+    topRow: {
+      display: 'flex',
+      flexDirection: 'row'
+    },
+    flexFill: {
+      flexGrow: 1
+    },
+    locationMap: {
       margin: 16
     }
   });
@@ -87,8 +98,14 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
     }
     return (
       <div data-testid="confDiv">
-        <div className={classes.tncRow}>
-          <TNCStatus />
+        <div className={classes.topRow}>
+          <div className={classes.tncConns}>
+            <TNCStatus />
+          </div>
+          <div className={classes.flexFill} />
+          <div className={classes.locationMap}>
+            <LocationDataMap />
+          </div>
         </div>
         {content}
       </div>

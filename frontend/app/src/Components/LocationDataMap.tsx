@@ -6,13 +6,27 @@ import { WithStyles } from '@material-ui/styles';
 const styles = () =>
   createStyles({
     root: {
-      width: '100%',
-      alignContent: 'center',
-      display: 'inline-block'
+      // alignContent: 'center',
+      // display: 'inline-block'
     },
-    mapStyle: {
-      width: '100%',
-      height: '512px'
+    frameContainer: {
+      height: 468,
+      transition: 'height 0.10s ease-out',
+      width: 604,
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    frameContainerClosed: {
+      height: 95,
+      transition: 'height 0.10s ease-in',
+      width: 604,
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    mapFrame: {
+      borderStyle: 'none',
+      position: 'absolute',
+      bottom: 0
     }
   });
 
@@ -20,6 +34,7 @@ type MapState = {
   confValue: string;
   dataFetchErrored: boolean;
   loading: boolean;
+  mapOpen: boolean;
 };
 
 /**
@@ -31,7 +46,8 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
     this.state = {
       confValue: '',
       dataFetchErrored: false,
-      loading: false
+      loading: false,
+      mapOpen: false
     };
   }
 
@@ -55,8 +71,13 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
       .finally(() => this.setState({ loading: false }));
   };
 
+  toggleMap = () => {
+    const { mapOpen } = this.state;
+    this.setState({ mapOpen: !mapOpen });
+  };
+
   render() {
-    const { loading, dataFetchErrored, confValue } = this.state;
+    const { loading, dataFetchErrored, confValue, mapOpen } = this.state;
     const { classes } = this.props;
     const confFetched = confValue !== null;
     let content;
@@ -68,8 +89,13 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
       );
     } else if (confFetched) {
       content = (
-        <div data-testid="leafletMap">
-          <iframe src={confValue} height="500" width="600" scrolling="yes" title="map" />
+        <div>
+          <div className={mapOpen ? classes.frameContainer : classes.frameContainerClosed}>
+            <iframe className={classes.mapFrame} src={confValue} height="468" width="604" title="map" scrolling="no" />
+          </div>
+          <button type="button" onClick={this.toggleMap}>
+            Open map
+          </button>
         </div>
       );
     }
