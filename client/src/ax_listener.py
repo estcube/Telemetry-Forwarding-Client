@@ -5,6 +5,7 @@ Module containing the logic for decoding AX.25 packets.
 import logging
 from datetime import datetime
 from typing import Callable
+from conf import Configuration
 # from bitarray import bitarray
 
 class AXFrame(object):
@@ -36,9 +37,10 @@ class AXListener(object):
 
     _logger = logging.getLogger(__name__)
 
-    def __init__(self, clean_frames=False):
+    def __init__(self, config: Configuration, clean_frames=False):
         # self.interface = kiss.TCPKISS(IP, PORT, strip_df_start=True)
         # self.interface.start()
+        self.config = config
         self.callbacks = []
         self.clean_frames = clean_frames
 
@@ -73,7 +75,10 @@ class AXListener(object):
         # self._logger.debug("Source: %s\tIs last: %s", source, is_last)
 
         # TODO: Check the source is ESTCube-2.
-
+        satellite_src = self.config.get_conf("TNC interface", "satellite-src")
+        if source != str(satellite_src):
+            self._logger.warning("Packet not sent from configured SRC (Expected packet from SRC - {}, got packet from SRC - {})".format(satellite_src, source))
+            return
         # Repeater address parsing.
         i = 0
         repeaters = []

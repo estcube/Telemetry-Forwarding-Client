@@ -70,7 +70,7 @@ def main(argv):
         telemetry_conf = f.read()
 
     # Build the other components.
-    ax_listener = AXListener()
+    ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf)
     telemetry_listener = TelemetryListener(telemetry_conf, database)
 
