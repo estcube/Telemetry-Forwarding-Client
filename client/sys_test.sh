@@ -7,12 +7,9 @@ rm -r "$TESTDIR"
 mkdir "$TESTDIR"
 
 cleanup() {
-  API=$(cat $TESTDIR/api.pid)
-  echo "Sending SIGTERM to all python processes ${MAIN}, ${API} and ${SRV}."
+  echo "Sending SIGTERM to all python processes ${MAIN}, and ${SRV}."
   kill -15 $MAIN
   kill -15 $SRV
-  sleep 0.5s
-  kill -15 $API
 }
 
 catch_exit() {
@@ -41,7 +38,7 @@ EOL
 
 trap catch_exit SIGINT SIGHUP SIGTERM
 
-python3 test/kissWriter.py &
+python3 test/kissWriter.py -t 5 &
 SRV=$!
 python3 src/main.py -v -c "$TESTDIR/conf.ini" &
 MAIN=$!
