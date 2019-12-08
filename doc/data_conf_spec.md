@@ -72,7 +72,7 @@ user.
 * enum
 
 #### Enum type
-The `enum` type will map unsigned integer values (0, 1, 2...) to the strings provided in the `values` 
+The `enum` type will map unsigned integer values (0, 1, 2...) to the strings provided in the `values`
 array of the field by the array index.
 
 Example: [/client/spec/telemetry.json](../client/spec/telemetry.json)
@@ -82,3 +82,7 @@ Example: [/client/spec/telemetry.json](../client/spec/telemetry.json)
 The `graphs` array will contain a sequence of object which each describe one graph in the frontend.
 The `xAxis` field defines the *id* of one value and the `yAxis` field will define an array of *ids*
 which will be displayed in the graphs.
+
+#### The supported types for graphs are:
+* line
+* enum
