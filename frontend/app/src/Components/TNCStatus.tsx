@@ -180,7 +180,9 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
     fetch('/api/update', { method: 'POST' })
       .then((res: Response) => {
         if (res.status === 204) {
-          enqueueSnackbar('Configurations successfully updated.', { variant: 'success' });
+          enqueueSnackbar('Configurations successfully updated. Restart client for the changes to apply.', {
+            variant: 'success'
+          });
         } else {
           res
             .json()
