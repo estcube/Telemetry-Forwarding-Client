@@ -87,6 +87,26 @@ More information on the configuration files can be found in the [documentation](
 
 ### Frontend
 
+The frontend consists of the `app` React application and the `data-lib` React component library.
+
+#### data-lib
+
+The library contains reusable components for displaying the telemetry data in a dynamic way configurable through the
+[telemetry configuration](#telemetry-configuration) file.
+
+The core component there is `SatelliteData.tsx` which gets decoded telemetry packets and telemetry configuration as props.
+It renders the data charts and table.
+The supported chart types currently are `line` and `enum`, which correspond to line charts and timeline charts.
+
+#### app
+
+Contains components for configuration client, managing the tnc connection, showing current satellite location and timeframe
+of next pass. Uses the `data-lib` to display the telemetry data on the dashboard.
+
+The configuration page is rendered dynamically from the constraint values which are fetched from the client api.
+The supported field types are `int`, `float`, `str`, `bool` and `select` (dropdown selection).
+There are components for each field type available in the `ConfigurationFormFields` sub-folder.
+
 #### Requirements
 
 * yarn (latest)
