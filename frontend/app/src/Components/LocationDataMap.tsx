@@ -33,7 +33,7 @@ const styles = () =>
   });
 
 type MapState = {
-  confValue: string;
+  noradId: string;
   dataFetchErrored: boolean;
   loading: boolean;
   mapOpen: boolean;
@@ -46,7 +46,7 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
   constructor(props: WithStyles<typeof styles>) {
     super(props);
     this.state = {
-      confValue: '',
+      noradId: '',
       dataFetchErrored: false,
       loading: false,
       mapOpen: false
@@ -67,7 +67,7 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
         return response.json();
       })
       .then(responseJson => {
-        this.setState({ confValue: responseJson['Mission Control']['sat-location-widget'] });
+        this.setState({ noradId: responseJson['Mission Control']['norad-id'] });
       })
       .catch(() => this.setState({ dataFetchErrored: true }))
       .finally(() => this.setState({ loading: false }));
@@ -79,9 +79,9 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
   };
 
   render() {
-    const { loading, dataFetchErrored, confValue, mapOpen } = this.state;
+    const { loading, dataFetchErrored, noradId, mapOpen } = this.state;
     const { classes } = this.props;
-    const confFetched = confValue !== null;
+    const confFetched = noradId !== null;
     let content;
     if (loading) {
       content = <CircularProgress />;
@@ -93,7 +93,14 @@ class LocationDataMap extends React.Component<WithStyles<typeof styles>, MapStat
       content = (
         <Card className={classes.root}>
           <div className={mapOpen ? classes.frameContainer : classes.frameContainerClosed}>
-            <iframe className={classes.mapFrame} src={confValue} height="468" width="600" title="map" scrolling="no" />
+            <iframe
+              className={classes.mapFrame}
+              src={`https://www.n2yo.com/widgets/widget-tracker.php?s=${noradId}&size=medium&all=1&me=10&map=5&n=5`}
+              height="468"
+              width="600"
+              title="map"
+              scrolling="no"
+            />
           </div>
           <CardActions>
             <Button size="small" onClick={this.toggleMap} className={classes.toggleBtn} data-testid="mapToggleBtn">

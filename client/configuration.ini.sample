@@ -4,13 +4,11 @@
 relay-enabled = False
 # If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
 mcs-relay-url = http://staging.estcube.eu:8029/ax25
-# Link to Satellite position widget.
-sat-location-widget = https://www.n2yo.com/widgets/widget-tracker.php?s=43792&amp;size=medium&amp;all=1&amp;me=10&amp;map=5
 
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
 receiver-callsign = String
 # Norad ID of the spacecraft. Will be transmitted alongside the AX.25 packet.
-norad-id = 2
+norad-id = 43792
 # Longitude of the receiver. Will be transmitted alongside the AX.25 packet.
 longitude = 58.377974
 # Latitude of the receiver. Will be transmitted alongside the AX.25 packet.
