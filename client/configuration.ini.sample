@@ -37,8 +37,10 @@ satellite-src = ESTCUB
 database=telemetry.db
 # Path to the folder containing the static frontend files. Relative to the executable.
 static-files-path=static/
-# Path to the file that specified the telemetry data fields.
+# Path to the file that specifies the telemetry data fields.
 telemetry-configuration=spec/telemetry.json
+# Path to the file that specifies the ax.25 data blob structure.
+kaitai-configuration=spec/icp.ksy
 # URL of the latest telemetry configuration endpoint.
 telemetry-configuration-url=https://staging.estcube.eu:8029/telemetry
 # URL of the lastest packet structure (kaitai) endpoint.

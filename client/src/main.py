@@ -23,10 +23,6 @@ def print_frame(frame: AXFrame):
     """ Debug function that just prints the AXFrame object emitted by the AXListener. """
     print(frame)
 
-def runApi(conf, static_path, port):
-    app = api.create_app(conf, static_path)
-    app.run(port=port)
-
 def terminate_handler(_signo, _stack_frame):
     sys.exit(0)
 

@@ -1,10 +1,15 @@
 
+import sys
+import os
 import logging
 import json
 from datetime import datetime
 from enum import Enum
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
+import util
+if getattr(sys, 'frozen', False):
+    sys.path.append(os.path.join(util.get_root(), 'src'))
 from icp import Icp
 
 class TelemetryFrame():
