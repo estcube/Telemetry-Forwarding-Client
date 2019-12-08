@@ -30,6 +30,8 @@ The configuration file is `configuration.ini`. When the client is running, most 
 
 **WARNING: The configuration file itself should only be changed while the client is not running. The client will only read the values from the file during startup and may overwrite the values changed during execution.**
 
+The more detailed description of configuration parameters can be seen [here](/doc/configuration.md)
+
 A custom path for the configuration file can also be given, when the program is run with the argument `-c <file-path>`. In this case, the file path is relative to the users working directory.
 
 The sample file contains comments explaining what the parameters do.
