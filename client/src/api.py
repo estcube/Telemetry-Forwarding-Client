@@ -11,15 +11,13 @@ import json
 import subprocess
 import logging
 import requests
-import util
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
+import util
 from tnc_pool import TNCPool
 from db_interface import TelemetryDB
 from sids_relay import SIDSRelay
-
-# from db_interface import TelemetryDB
 from conf import Configuration
 
 

@@ -6,7 +6,6 @@ import logging
 from datetime import datetime
 from typing import Callable
 from conf import Configuration
-# from bitarray import bitarray
 
 class AXFrame(object):
     """ Simple data class for holding the decoded data of an AX.25 frame. """

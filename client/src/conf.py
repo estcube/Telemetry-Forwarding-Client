@@ -190,14 +190,14 @@ class Configuration(object):
         example: getConf("Mission Control", "relay-enabled")
         """
         with self.lock.read_lock:
+            conf_value = None
             try:
                 conf_value = self.config.get(section, element)
-                if not conf_value:
-                    raise Exception("Missing conf value")
-            except:
-                conf_value = CONSTRAINTS[section][element]["value"]
-
-
+            except (configparser.NoSectionError, configparser.NoOptionError):
+                if section in CONSTRAINTS:
+                    sec = CONSTRAINTS[section]
+                    if element in sec and "value" in sec[element]:
+                        conf_value = sec[element]["value"]
             return conf_value
 
     def get_constraints(self):
@@ -214,8 +214,12 @@ class Configuration(object):
             config = self.config
             for each_section in config.sections():
                 section = {}
+                section_const = CONSTRAINTS[each_section]
                 for (each_key, each_val) in config.items(each_section):
                     section[each_key] = each_val
+                for (const_key, const_obj) in section_const.items():
+                    if const_key not in section and "value" in const_obj:
+                        section[const_key] = const_obj["value"]
                 conf[each_section] = section
 
             return conf

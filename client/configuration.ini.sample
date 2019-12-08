@@ -45,7 +45,7 @@ telemetry-configuration=spec/telemetry.json
 kaitai-configuration=spec/icp.ksy
 # URL of the latest telemetry configuration endpoint.
 telemetry-configuration-url=https://staging.estcube.eu:8029/telemetry
-# URL of the lastest packet structure (kaitai) endpoint.
+# URL of the latest packet structure (kaitai) endpoint.
 packet-structure-url=https://staging.estcube.eu:8029/icp
 # Path to the kaitai-struct-compiler executable. Relative to client executable.
 kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler

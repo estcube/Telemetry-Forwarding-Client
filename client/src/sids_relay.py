@@ -3,13 +3,14 @@ Module containing the relay for sending the received packets to Mission Control 
 """
 
 import logging
-import requests
 from enum import Enum, auto
+import requests
 from conf import Configuration
 from ax_listener import AXFrame
 from rw_lock import ReadWriteLock
 
 class RelayStatus(Enum):
+    """ The different result states of the last SIDS request. """
     NO_REQUESTS = auto() # No requests have been done yet.
     TURNED_OFF = auto()
     SUCCESS = auto() # Last request went through successfully.
