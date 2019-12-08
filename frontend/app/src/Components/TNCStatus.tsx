@@ -8,7 +8,8 @@ import {
   IconButton,
   withStyles,
   Divider,
-  Switch
+  Switch,
+  Tooltip
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
@@ -231,20 +232,28 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
             </div>
             <div className={classes.rowFill} />
             {tncAlive ? (
-              <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStop}>
-                <StopIcon />
-              </IconButton>
+              <Tooltip placement="top" title="Disconnect">
+                <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStop}>
+                  <StopIcon />
+                </IconButton>
+              </Tooltip>
             ) : (
-              <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStart}>
-                <PlayCircleOutlineIcon />
-              </IconButton>
+              <Tooltip placement="top" title="Connect">
+                <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStart}>
+                  <PlayCircleOutlineIcon />
+                </IconButton>
+              </Tooltip>
             )}
-            <IconButton disabled={!updateBtnEnabled} onClick={this.handleTelConfUpdate}>
-              <SystemUpdateAltIcon />
-            </IconButton>
-            <IconButton>
-              <SettingsIcon />
-            </IconButton>
+            <Tooltip placement="top" title="Update configurations">
+              <IconButton disabled={!updateBtnEnabled} onClick={this.handleTelConfUpdate}>
+                <SystemUpdateAltIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip placement="top" title="Connection settings">
+              <IconButton>
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </CardContent>
         <Divider />
@@ -257,7 +266,12 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
               </Typography>
             </div>
             <div className={classes.rowFill} />
-            <Switch checked={sidsStatus?.lastStatus !== SIDSStatusType.TURNED_OFF} onChange={this.handleRelayToggle} />
+            <Tooltip title={sidsStatus?.lastStatus !== SIDSStatusType.TURNED_OFF ? 'Disable relay' : 'Enable relay'}>
+              <Switch
+                checked={sidsStatus?.lastStatus !== SIDSStatusType.TURNED_OFF}
+                onChange={this.handleRelayToggle}
+              />
+            </Tooltip>
           </div>
         </CardContent>
       </Card>
