@@ -25,8 +25,6 @@ tnc-connection-type = TCP/IP
 tnc-ip = localhost
 # Port of the TNC if TCP/IP is used.
 tnc-port = 3030
-# Device name of the serial port if RS232 is used. Currently unsupported.
-tnc-device =
 # If the TNC connection fails initially, the amount of times to retry connecting.
 max-connection-attempts=20
 # The amount of seconds to wait before retrying the TNC connection.
