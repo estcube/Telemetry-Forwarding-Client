@@ -11,6 +11,7 @@ import {
   Switch,
   Tooltip
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
@@ -216,6 +217,8 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
     const tncAlive = tncStatus === TNCStatusType.CONNECTED || tncStatus === TNCStatusType.CONNECTING;
     const tncBtnDisabled = !tncBtnEnabled || tncStatus === TNCStatusType.DISCONNECTING;
 
+    // Div wrappers for buttons that can be disabled, because disabled buttons don't
+    //  fire the necessary events for the tooltip.
     return (
       <Card className={classes.rootCard}>
         <CardContent className={classes.lowerPadding}>
@@ -233,26 +236,34 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
             <div className={classes.rowFill} />
             {tncAlive ? (
               <Tooltip placement="top" title="Disconnect">
-                <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStop}>
-                  <StopIcon />
-                </IconButton>
+                <div>
+                  <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStop}>
+                    <StopIcon />
+                  </IconButton>
+                </div>
               </Tooltip>
             ) : (
               <Tooltip placement="top" title="Connect">
-                <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStart}>
-                  <PlayCircleOutlineIcon />
-                </IconButton>
+                <div>
+                  <IconButton disabled={tncBtnDisabled} onClick={this.handleTncStart}>
+                    <PlayCircleOutlineIcon />
+                  </IconButton>
+                </div>
               </Tooltip>
             )}
             <Tooltip placement="top" title="Update configurations">
-              <IconButton disabled={!updateBtnEnabled} onClick={this.handleTelConfUpdate}>
-                <SystemUpdateAltIcon />
-              </IconButton>
+              <div>
+                <IconButton disabled={!updateBtnEnabled} onClick={this.handleTelConfUpdate}>
+                  <SystemUpdateAltIcon />
+                </IconButton>
+              </div>
             </Tooltip>
             <Tooltip placement="top" title="Connection settings">
-              <IconButton>
-                <SettingsIcon />
-              </IconButton>
+              <Link to="/configure">
+                <IconButton>
+                  <SettingsIcon />
+                </IconButton>
+              </Link>
             </Tooltip>
           </div>
         </CardContent>
