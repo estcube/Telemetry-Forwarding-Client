@@ -83,6 +83,8 @@ The configuration of the telemetry fields inside that structure, is specified in
 new versions of these files from the configured endpoints. Both files are then overwritten to the configured path and the kaitai
 file is compiled into the `src/icp.py` file (overwriting the old one).
 
+More information on the configuration files can be found in the [documentation](/doc/data_conf_spec.md).
+
 ### Frontend
 
 #### Requirements
@@ -115,13 +117,27 @@ Once you have installed the frontend dependencies (see previous section) you can
 In the directory `frontend/`, run `yarn build`, to build the application frontend into `frontend/app/dist/`.
 For building the frontend in production mode, use `yarn build:prod`.
 
+### Testing
+
+#### Frontend
+
+The frontend tests can be run after installing the frontend dependencies and running `yarn test` in the
+`/frontend` folder. This runs the tests in both the `app` application and `data-lib` library.
+
+#### Client
+
+The unit tests can be run with `python client/src/_unit_tests.py`.
+
+The system tests can be run on unix systems with the `client/sys_test.sh` shell script. It runs both the kissWriter and
+client for 7 seconds and then runs the checks in `client/src/_system_tests.py`.
+
 ### Packaging
 
 Once the frontend is built, the application can be packaged into a minimal distributable.
 
 #### Universal
 
-The universal package can be built, using the `client/build.sh` script. It mostly just does file copying a renaming.
+The universal package can be built, using the `client/build.sh` shell script. It mostly just does file copying a renaming.
 The end result will be put into the `dist` folder.
 
 #### Windows
