@@ -1,9 +1,7 @@
 """
 Provides a class for interfacing with the database.
 """
-# from __future__ import annotations
 
-# import sqlite3
 import logging
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -93,6 +91,16 @@ class TelemetryDB():
 
     def get_telemetry_data(self, from_ts: datetime = None, to_ts: datetime = None,
                            from_id: int = None):
+        """
+        Returns the gathered telemetry packets with a map of their fields.
+
+        If from_ts is defined, only returns packets that were sent after the given timestamp.
+        If to_ts is defined, only returns packets that were sent before the given timestamp.
+        If from_id is defined, only returns packets whose id is larger than the id given.
+
+        The filtering parameters, can be combined.
+        """
+
         query = """select id, packet_timestamp, receive_timestamp, field_name, value
             from telemetry_packet inner join telemetry_field on packet_id = id
             where 1=1 """

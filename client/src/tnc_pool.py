@@ -1,3 +1,7 @@
+"""
+Provides a pool which can handle multiple TNC Connections on threads.
+"""
+
 import logging
 import time
 from enum import Enum, auto
@@ -9,21 +13,25 @@ from conf import Configuration
 
 
 class ConnectionStatus(Enum):
+    """ Possible states of connection for a TNC Connection. """
     CONNECTING = auto(),
     CONNECTED = auto(),
     DISCONNECTING = auto(),
     DISCONNECTED = auto()
 
 class ConnectionType(Enum):
+    """ Possible connection types. RS232 is currently unsupported. """
     TCPIP = 0,
     RS232 = 1
 
 class ConnectionProtocol(Enum):
+    """ Possible connection protocols. """
     KISS = 0
 
 class ConnectionConfiguration:
+    """ Struct for a tnc connection configuration. """
     def __init__(self, conn_type: ConnectionType, protocol: ConnectionProtocol, ip: str, port: str,
-            retry_attempts: int, retry_time: int):
+                 retry_attempts: int, retry_time: int):
         self.type = conn_type
         self.protocol = protocol
         self.ip = ip
@@ -32,6 +40,7 @@ class ConnectionConfiguration:
         self.retry_time = retry_time
 
 class TNCThread(Thread):
+    """ Base thread class for a single TNC connection. """
     def __init__(self, name: str):
         Thread.__init__(self)
         self.connected = False
@@ -39,10 +48,16 @@ class TNCThread(Thread):
         self.name = name
 
     def is_connected(self) -> bool:
+        """ Returns whether the thread is connected to a tnc. """
         with self.lock:
             return self.connected
 
     def set_connected(self, val: bool):
+        """
+        Sets the value of whether the thread is connected to a tnc.
+
+        Only meant to be used by the thread itself.
+        """
         with self.lock:
             self.connected = val
 
@@ -55,6 +70,7 @@ class TNCThread(Thread):
         """ Abstract function. Returns the state of the TNC Connection. """
 
 class TCPKISSThread(TNCThread):
+    """ Implementation for running a tnc connection over tcp in a thread. """
 
     _log = logging.getLogger(__name__)
 
@@ -113,6 +129,7 @@ class TCPKISSThread(TNCThread):
 
 
 class TNCPool():
+    """ Implementation of the pool for managing tnc connections. """
 
     _log = logging.getLogger(__name__)
 
@@ -127,6 +144,10 @@ class TNCPool():
         return self.tnc_connections.get(name, None)
 
     def connect_main_tnc(self):
+        """
+        Creates a connection with the name "Main" and the configuration parameters from the conf.
+        """
+
         self.connect_tnc("Main", ConnectionConfiguration(
             ConnectionType.TCPIP,
             ConnectionProtocol.KISS,
@@ -137,6 +158,16 @@ class TNCPool():
         ), self.main_listener.receive)
 
     def connect_tnc(self, name: str, conn_conf: ConnectionConfiguration, callback: Callable):
+        """
+        Attempts to create a new tnc connection with the given name and configuration parameters.
+
+        The connection will call the callback everytime it receives a frame, giving the frame as
+        the first parameter.
+
+        If a connection with that name already exists and is running, logs the occurrence and
+        returns.
+        """
+
         if not callable(callback):
             raise ValueError("The callback has to be a callable function.")
 
@@ -154,6 +185,11 @@ class TNCPool():
                     self.tnc_connections[name] = tcp_thread
 
     def stop_tnc(self, name: str):
+        """
+        Sends a stop signal to the tnc connection. It might take some time for the connection to
+        check the stop flag and terminate.
+        """
+
         if name not in self.tnc_connections:
             raise ValueError("No TNC Connection with name {}".format(name))
 
@@ -162,6 +198,10 @@ class TNCPool():
             self.__get_conn(name).stop()
 
     def check_tnc(self, name: str) -> ConnectionStatus:
+        """
+        Gets the status of the given tnc connection.
+        """
+
         if name not in self.tnc_connections:
             raise ValueError("No TNC Connection with name {}".format(name))
 
@@ -170,6 +210,8 @@ class TNCPool():
             return self.__get_conn(name).status()
 
     def cleanup(self):
+        """ Sends a stop signal to all active tnc connections and then joins all the threads. """
+
         self._log.debug("Cleaning up all TNC Connections.")
         with self.lock:
             for _, v in self.tnc_connections.items():

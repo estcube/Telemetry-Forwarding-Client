@@ -45,7 +45,7 @@ class TelemetryListener():
             raise ValueError("The telemetry configuration does not include the 'fields' field")
         if "msgTimestamp" not in self.conf:
             raise ValueError(
-                    "The telemetry configuration does not include the 'msgTimestamp' field")
+                "The telemetry configuration does not include the 'msgTimestamp' field")
 
         self.prefix = self.conf["prefix"].split(".")
 

@@ -2,20 +2,18 @@
 
 import os
 import logging
-import time
 import sys
 import signal
 import platform
 from getopt import getopt
 from threading import Thread
-import kiss
 import util
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
 from db_interface import TelemetryDB
 from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
-from tnc_pool import TNCPool, ConnectionConfiguration, ConnectionType, ConnectionProtocol
+from tnc_pool import TNCPool
 import api
 
 
@@ -24,12 +22,15 @@ def print_frame(frame: AXFrame):
     print(frame)
 
 def terminate_handler(_signo, _stack_frame):
+    """
+    Attempt to exit more cleanly on receiving a SIGTERM signal.
+
+    Raises a SystemExit exception, upon receiving SIGTERM. Registered in the main function.
+    """
     sys.exit(0)
 
 def main(argv):
     """ Main loop function. """
-
-    # Initial logging configuration.
 
     # Parse command line options
     opts, args = getopt(argv, "vc:")
@@ -61,8 +62,8 @@ def main(argv):
     database.init_db()
 
     # Read the json configuration of telemetry fields.
-    with open(os.path.join(util.get_root(), conf.get_conf("Client", "telemetry-configuration")), "r",
-        encoding="utf-8") as f:
+    with open(os.path.join(util.get_root(), conf.get_conf("Client", "telemetry-configuration")),
+              "r", encoding="utf-8") as f:
         telemetry_conf = f.read()
 
     # Build the other components.
@@ -96,6 +97,7 @@ def main(argv):
     api_thread.start()
 
     try:
+        # On windows, the KeyboardInterrupt doesn't break the join.
         if platform.system() == "Windows":
             while api_thread.isAlive:
                 api_thread.join(2)
