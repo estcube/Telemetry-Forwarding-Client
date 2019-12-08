@@ -12,16 +12,16 @@ frontend for browsers, which handles the displaying of data.
 
 The downloads for the package of latest release can be found [here](https://github.com/estcube/Telemetry-Forwarding-Client/releases).
 
-**WARNING: The client serves a frontend GUI to `localhost`, on a configured port (default 5000). This should not be opened to the** 
+**WARNING: The client serves a frontend GUI to `localhost`, on a configured port (default 5000). This should not be opened to the**
 **public through the firewall, for the application is intended to only be run in a local environment and thus has no security guards implemented.**
 
-The windows package includes an `.exe` file with all the required dependencies. 
+The windows package includes an `.exe` file with all the required dependencies.
 The executable file will run the client and serve the frontend on the configured port.
 
 The universal package includes the python source files, which have to be run with a Python 3 runtime that has the [dependencies](#dependencies) installed.
 To run the client, run the `src/main.py` file with Python 3 (e.g. `python3 src/main.py`).
 
-When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000` 
+When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000`
 (if port 5000 was not changed in `configuration.ini`) to view the web frontend.
 
 ### Configuration file
@@ -35,6 +35,11 @@ The more detailed description of configuration parameters can be seen [here](/do
 A custom path for the configuration file can also be given, when the program is run with the argument `-c <file-path>`. In this case, the file path is relative to the users working directory.
 
 The sample file contains comments explaining what the parameters do.
+
+### Kaitai compiler
+
+For updating the telemetry configuration files to work, the [kaitai-struct-compiler](http://kaitai.io/) must be downloaded.
+The `kaitai-compiler-path` configuration parameter in the client configuration must point to the executable file.
 
 ## Dependencies
 
@@ -70,6 +75,14 @@ python3 client/test/kissWriter.py
 
 This will set up a simple mocked tnc that will listen for connections on `localhost:3030` and continuously transmit randomly generated beacon data packets through KISS to a connected interface.
 
+#### Telemetry configuration
+
+The configuration of the AX.25 payload structure is specified in a [kaitai](http://kaitai.io/#what-is-it) file (`.ksy`).
+
+The configuration of the telemetry fields inside that structure, is specified in a json file. The client is able to download
+new versions of these files from the configured endpoints. Both files are then overwritten to the configured path and the kaitai
+file is compiled into the `src/icp.py` file (overwriting the old one).
+
 ### Frontend
 
 #### Requirements
@@ -101,3 +114,21 @@ To install Node.js, head to [Node.js download page](https://nodejs.org/en/) and 
 Once you have installed the frontend dependencies (see previous section) you can build the frontend.
 In the directory `frontend/`, run `yarn build`, to build the application frontend into `frontend/app/dist/`.
 For building the frontend in production mode, use `yarn build:prod`.
+
+### Packaging
+
+Once the frontend is built, the application can be packaged into a minimal distributable.
+
+#### Universal
+
+The universal package can be built, using the `client/build.sh` script. It mostly just does file copying a renaming.
+The end result will be put into the `dist` folder.
+
+#### Windows
+
+The windows specific packaging is done using `pyinstaller`. The source is packaged into an `.exe` file along with
+all the dependencies and the python 3 runtime.
+
+When running `pyinstaller`, the `csv` module has to be marked as a hidden import alongside all the modules that
+`src/icp.py` imports. The `icp` module needs to be excluded from the package and copied independently into the `src/`
+folder of the distributable, since this file is overwritten by the configuration updater.
