@@ -19,6 +19,12 @@ CONSTRAINTS = {
             "value": "http://staging.estcube.eu:8029/ax25",
             "regexType": "url"
         },
+        "relay-request-type": {
+            "type": "select",
+            "options": ["GET", "POST"],
+            "label": "Relay request type",
+            "value": "GET"
+        },
 
         "receiver-callsign": {
             "type": "str",

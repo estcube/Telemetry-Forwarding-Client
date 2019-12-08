@@ -41,7 +41,7 @@ class SIDSRelay(object):
         params = {
             "noradID": self.config.get_conf("Mission Control", "norad-id"),
             "source": self.config.get_conf("Mission Control", "receiver-callsign"),
-            "timestamp": frame.recv_time,
+            "timestamp": frame.recv_time.isoformat(),
             "frame": frame.frame.hex(),
             "locator": "longLat",
             "longitude": self.config.get_conf("Mission Control", "longitude"),
@@ -50,9 +50,14 @@ class SIDSRelay(object):
 
         url = self.config.get_conf("Mission Control", "mcs-relay-url")
         self._logger.debug("Sending SIDS request to %s", url)
+        type = self.config.get_conf("Mission Control", "relay-request-type")
         with self.lock.write_lock:
             try:
-                response = requests.get(url, params=params)
+                response = None
+                if type == "POST":
+                    response = requests.post(url, json=params)
+                else:
+                    response = requests.get(url, params=params)
                 self._logger.debug("SIDS response (%s): %s", response.status_code, response.text)
                 if response.status_code >= 200 and response.status_code < 300:
                     self.request_counter += 1

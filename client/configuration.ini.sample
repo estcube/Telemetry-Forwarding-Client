@@ -4,6 +4,8 @@
 relay-enabled = False
 # If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
 mcs-relay-url = http://staging.estcube.eu:8029/ax25
+# Type of the SIDS relay request. Possible values are GET and POST.
+relay-request-type = GET
 
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
 receiver-callsign = String
