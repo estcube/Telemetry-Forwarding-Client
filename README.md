@@ -8,7 +8,33 @@ from Estonia. This is important, because the fly-over times of the satellite are
 The system will be a cross-platform console application that interfaces with a TNC and serves a
 frontend for browsers, which handles the displaying of data.
 
-## Requirements
+## Running
+
+The downloads for the package of latest release can be found [here](https://github.com/estcube/Telemetry-Forwarding-Client/releases).
+
+**WARNING: The client serves a frontend GUI to `localhost`, on a configured port (default 5000). This should not be opened to the** 
+**public through the firewall, for the application is intended to only be run in a local environment and thus has no security guards implemented.**
+
+The windows package includes an `.exe` file with all the required dependencies. 
+The executable file will run the client and serve the frontend on the configured port.
+
+The universal package includes the python source files, which have to be run with a Python 3 runtime that has the [dependencies](#dependencies) installed.
+To run the client, run the `src/main.py` file with Python 3 (e.g. `python3 src/main.py`).
+
+When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000` 
+(if port 5000 was not changed in `configuration.ini`) to view the web frontend.
+
+### Configuration file
+
+The configuration file is `configuration.ini`. When the client is running, most configuration parameters can be modified through the frontend as well.
+
+**WARNING: The configuration file itself should only be changed while the client is not running. The client will only read the values from the file during startup and may overwrite the values changed during execution.**
+
+A custom path for the configuration file can also be given, when the program is run with the argument `-c <file-path>`. In this case, the file path is relative to the users working directory.
+
+The sample file contains comments explaining what the parameters do.
+
+## Dependencies
 
 * Python 3
 * requests
@@ -16,35 +42,12 @@ frontend for browsers, which handles the displaying of data.
 * flask-cors
 * flask-swagger-ui
 * kaitaistruct
-<!-- * bitarray ([Github](https://github.com/ilanschnell/bitarray)) -->
 * kiss ([Use this repository](https://github.com/estcube/kiss))
 * apsw ([Github](https://github.com/rogerbinns/apsw)) ([Do not install from PyPI!](https://rogerbinns.github.io/apsw/download.html#easy-install-pip-pypi))
 
-The libraries can be installed with pip (except `apsw`, see the link in list for installation instructions.) (`pip install --user flask kaitaistruct flask-cors flask-swagger-ui`)
+The libraries can be installed with pip (except `apsw`, see the link in list for installation instructions): `pip install --user -r requirements.txt`
 
 For installing kiss, use the forked repository: `pip install --user git+https://github.com/estcube/kiss`
-
-## Running
-
-The packaged version of the client can be downloaded from the downloads section of the repository, the artifact is named `build-client`. This contains the client python source files, the configuration file and the built static frontend files ready for use.
-
-### Configuration file
-
-The configuration file is `configuration.ini`.
-
-A custom path for the configuration file can also be given, when the program is run with the argument `-c <file-path>`. In this case, the file path is relative to the users working directory.
-
-The sample file contains comments explaining what the parameters do.
-
-### Running the client
-
-The file to execute is `src/main.py` inside the downloaded `build-client` folder, not in the repository folder. This can be done from the command line, if the Python 3 executable is mapped to python:
-
-```
-python3 src/main.py
-```
-
-When client is running, you can open your browser, which has to have JavaScript enabled, and go to `localhost:5000` (if port 5000 was not changed in `configuration.ini`) to view the web frontend.
 
 ## Developing
 
@@ -54,7 +57,7 @@ The repository contains a sample configuration file `client/configuration.ini.sa
 
 To run the client, execute `python3 client/src/main.py`.
 
-If you have built the frontend, you can configure the backend to serve the built files (this will not allow hot-reloading).
+If you have built the frontend, you can configure the backend to serve the built files (client is not capable of hot-reloading, so if you are working on the frontend you might still want to use `yarn serve`).
 In `configuration.ini`, set the `static-files-path` field to point to the built files relative to the `client/src/main.py` file (default location for dev build is `../../frontend/app/dist/).
 
 #### Mocking the TNC
@@ -65,11 +68,7 @@ python3 client/test/kissWriter.py
 
 This will set up a simple mocked tnc that will listen for connections on `localhost:3030` and continuously transmit randomly generated beacon data packets through KISS to a connected interface.
 
-When using this, the client programs (`main.py`) should be exited before the mock server (`kissWriter.py`) because when done otherwise, the port the kissWriter uses (3030 by default) might stay unavailable for a few minutes after terminating both programs. (*Known bug with the mock server*)
-
 ### Frontend
-
-The frontend currently serves only static pages with sample data displayed.
 
 #### Requirements
 
