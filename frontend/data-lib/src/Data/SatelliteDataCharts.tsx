@@ -22,7 +22,7 @@ interface SatelliteDataChartsProps extends WithStyles<typeof styles> {
 }
 
 /**
- * Component for showing data charts. Gets data and configuration as props
+ * Component for rendering data charts. Gets data and configuration as props
  */
 class SatelliteDataCharts extends React.Component<SatelliteDataChartsProps> {
   render() {

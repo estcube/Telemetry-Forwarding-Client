@@ -7,7 +7,7 @@ interface CustomLineChartLegendProps {
 }
 
 /**
- * Component for drawing custom legend when legend is toggled.
+ * Component for drawing custom legend when legend is toggled for line chart.
  */
 class CustomLineChartLegend extends React.Component<CustomLineChartLegendProps> {
   lineIsVisible(lineName: string) {

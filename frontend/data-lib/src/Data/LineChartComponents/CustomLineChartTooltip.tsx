@@ -14,7 +14,7 @@ interface CustomLineChartTooltipProps extends WithStyles<typeof styles> {
 }
 
 /**
- * Component for drawing custom tooltip.
+ * Component for rendering custom tooltip for line chart.
  */
 class CustomLineChartTooltip extends React.Component<CustomLineChartTooltipProps> {
   lineIsVisible(lineName: string) {

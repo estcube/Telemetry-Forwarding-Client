@@ -30,7 +30,7 @@ interface SatelliteDataProps extends WithStyles<typeof styles> {
 }
 
 /**
- * Component for displaying tables and charts
+ * Component for rendering tables and charts
  */
 class SatelliteData extends React.Component<SatelliteDataProps> {
   render() {

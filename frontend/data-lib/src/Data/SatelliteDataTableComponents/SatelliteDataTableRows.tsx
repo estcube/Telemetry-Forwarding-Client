@@ -32,7 +32,7 @@ interface SatelliteDataTableRowsProps extends WithStyles<typeof styles> {
 }
 
 /**
- * Component for drawing custom legend when legend is toggled.
+ * Component for rendering table rows
  */
 class SatelliteDataTableRows extends React.Component<SatelliteDataTableRowsProps> {
   render() {

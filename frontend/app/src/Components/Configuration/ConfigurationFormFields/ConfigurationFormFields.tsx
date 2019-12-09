@@ -15,7 +15,7 @@ interface ConfigurationFormFieldsProps {
 }
 
 /**
- * Component for drawing custom legend when legend is toggled.
+ * Component for rendering 3 diferent types of inputs.
  */
 class ConfigurationFormFields extends React.Component<ConfigurationFormFieldsProps> {
   render() {

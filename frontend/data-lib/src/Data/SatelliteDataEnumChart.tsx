@@ -39,7 +39,7 @@ type SatelliteDataEnumChartState = {
 };
 
 /**
- * Component for drawing enum charts. Gets graph info and data as props.
+ * Component for rendering enum charts. Gets graph info and data as props.
  */
 class SatelliteDataEnumChart extends React.Component<SatelliteDataEnumChartProps, SatelliteDataEnumChartState> {
   constructor(props: SatelliteDataEnumChartProps) {

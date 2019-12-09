@@ -9,7 +9,7 @@ interface ConfigurationFormUpdateButtonProps {
 }
 
 /**
- * Component for drawing custom legend when legend is toggled.
+ * Component for rendering update button on configuration page.
  */
 class ConfigurationFormUpdateButton extends React.Component<ConfigurationFormUpdateButtonProps> {
   render() {

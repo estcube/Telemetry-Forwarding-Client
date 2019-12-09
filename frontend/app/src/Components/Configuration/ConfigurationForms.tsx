@@ -46,7 +46,7 @@ type ConfigurationFormsState = {
 };
 
 /**
- * Component for configuring the backend client
+ * Component for rendering the forms which configure the backend client
  */
 class ConfigurationForms extends React.Component<ConfigurationFormsProps, ConfigurationFormsState> {
   constructor(props: ConfigurationFormsProps) {

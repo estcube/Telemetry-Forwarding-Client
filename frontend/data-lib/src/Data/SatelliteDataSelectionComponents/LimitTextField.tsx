@@ -16,7 +16,7 @@ type LimitTextFieldProps = {
   textChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 /**
- * Text field for configuration form
+ * Text field for choosing data limit
  * @param fieldValue string
  * @param textChangeHandler callback function
  * @constructor

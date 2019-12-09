@@ -15,7 +15,7 @@ interface ConfigurationFormSectionsProps {
 }
 
 /**
- * Component for drawing custom legend when legend is toggled.
+ * Component for rendering sections on configuration page
  */
 class ConfigurationFormSections extends React.Component<ConfigurationFormSectionsProps> {
   render() {

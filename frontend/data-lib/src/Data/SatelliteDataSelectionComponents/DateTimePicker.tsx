@@ -14,7 +14,7 @@ type DateTimePickerState = {
 };
 
 /**
- * Component for drawing data graphs. Gets graph info and data as props.
+ * Component for rendering datetime picker
  */
 class DateTimePicker extends React.Component<DateTimePickerProps, DateTimePickerState> {
   constructor(props: DateTimePickerProps) {

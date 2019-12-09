@@ -10,7 +10,7 @@ interface CustomChartDataSelectorProps {
 }
 
 /**
- * Component for drawing custom legend when legend is toggled.
+ * Component for rendering from and to date picker with limit text field.
  */
 class CustomChartDataSelector extends React.Component<CustomChartDataSelectorProps> {
   handleToFromChange(e: any, version: string) {

@@ -45,7 +45,7 @@ type SatelliteDataLineChartState = {
 };
 
 /**
- * Component for drawing data graphs. Gets graph info and data as props.
+ * Component for rendering line charts. Gets graph info and data as props.
  */
 class SatelliteDataLineChart extends React.Component<SatelliteDataLineChartProps, SatelliteDataLineChartState> {
   constructor(props: SatelliteDataLineChartProps) {
