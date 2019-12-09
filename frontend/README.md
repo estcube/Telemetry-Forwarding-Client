@@ -41,5 +41,3 @@ When run from the app directory `frontend/app/`, the avialable scripts are:
 * ```yarn lint``` will run the linter on `app` sub-project.
 * ```yarn lint:fix``` will run the linter on `app` sub-projects with the auto-fixer on.
  
-
-TODO: Add available commands for `data-lib`
