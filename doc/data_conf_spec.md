@@ -99,7 +99,7 @@ which will be displayed in the graphs.
 ### Adding a telemetry field
 
 Lets use the [ICP Structure Configuration](../client/spec/icp.ksy) and the example configuration
-structure in [Telemetry fields](telemetry-fields) as a baseline.
+structure in [Telemetry fields](#telemetry-fields) as a baseline.
 
 Lets say that we want to add the Crash Counter field to the frontend table. For this we find the
 field in the Kaitai file and get the path to it.
