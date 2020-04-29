@@ -1,15 +1,15 @@
-# These currently are not used.
 [Mission Control]
-# Whether the relay is enabled or not.
+# Whether to relay received data to remote servers or not.
 relay-enabled = False
 # If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
 mcs-relay-url = http://staging.estcube.eu:8029/ax25
 # Type of the SIDS relay request. Possible values are GET and POST.
-relay-request-type = GET
+relay-request-type = POST
 
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
-receiver-callsign = String
-# Norad ID of the spacecraft. Will be transmitted alongside the AX.25 packet.
+# The callsign is made up of upper-case alpha and numeric ASCII characters only.
+receiver-callsign = CHANGEME
+# Norad ID of the spacecraft that you're listening to. Will be transmitted alongside the AX.25 packet.
 norad-id = 43792
 # Longitude of the receiver. Will be transmitted alongside the AX.25 packet.
 longitude = 58.377974
@@ -23,8 +23,9 @@ tnc-protocol-type = KISS
 tnc-connection-type = TCP/IP
 # IP of the TNC if TCP/IP is used.
 tnc-ip = localhost
-# Port of the TNC if TCP/IP is used.
-tnc-port = 3030
+# Port of the TNC if TCP/IP is used. 
+# The default value is configured to work with UZ7HO soundmodem
+tnc-port = 8100
 # If the TNC connection fails initially, the amount of times to retry connecting.
 max-connection-attempts=20
 # The amount of seconds to wait before retrying the TNC connection.
