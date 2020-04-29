@@ -7,7 +7,7 @@ mcs-relay-url = http://staging.estcube.eu:8029/ax25
 relay-request-type = POST
 
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
-# The callsign is made up of upper-case alpha and numeric ASCII characters only.
+# The callsign is made up of upper-case alpha and numeric ASCII characters only with a maximum length of 6.
 receiver-callsign = CHANGEME
 # Norad ID of the spacecraft that you're listening to. Will be transmitted alongside the AX.25 packet.
 norad-id = 43792
