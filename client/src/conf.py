@@ -16,7 +16,7 @@ CONSTRAINTS = {
         "mcs-relay-url": {
             "type": "str",
             "label": "MCS relay URL",
-            "value": "http://staging.estcube.eu:8029/ax25",
+            "value": "http://staging.estcube.eu:8029/v1.1/ax25",
             "regexType": "url"
         },
         "relay-request-type": {
@@ -143,7 +143,7 @@ CONSTRAINTS = {
             "regexType": "url",
             "description": "URL of the latest telemetry configuration endpoint.",
             "label": "Telemetry configuration URL",
-            "value": "https://staging.estcube.eu:8029/telemetry"
+            "value": "http://staging.estcube.eu:8029/v1.1/icp/telemetry"
         },
         "kaitai-compiler-path": {
             "type": "str",
@@ -157,7 +157,7 @@ CONSTRAINTS = {
             "regexType": "url",
             "description": "URL of the latest packet structure (kaitai) endpoint.",
             "label": "Packet structure URL",
-            "value": "https://staging.estcube.eu:8029/icp"
+            "value": "http://staging.estcube.eu:8029/v1.1/icp/config"
         },
         "debug-log": {
             "type": "bool",
