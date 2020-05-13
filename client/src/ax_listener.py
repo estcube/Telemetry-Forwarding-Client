@@ -10,22 +10,21 @@ from conf import Configuration
 class AXFrame(object):
     """ Simple data class for holding the decoded data of an AX.25 frame. """
     def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int,
-                 info: bytearray, fcs: bytearray, frame: bytearray, recv_time: datetime):
+                 info: bytearray, frame: bytearray, recv_time: datetime):
         self.dest = dest
         self.source = source
         self.repeaters = repeaters
         self.ctrl = ctrl
         self.pid = pid
         self.info = info
-        self.fcs = fcs
         self.frame = frame
         self.recv_time = recv_time
 
     def __repr__(self):
-        return (("Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {}; "
-                 + "FCS: {};").format(self.dest, self.source,
+        return (("Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {};"
+                    ).format(self.dest, self.source,
                                       ", ".join([x[0] for x in self.repeaters]),
-                                      self.ctrl, self.pid, self.info.hex(), self.fcs.hex()
+                                      self.ctrl, self.pid, self.info.hex()
                                       ))
 
 class AXListener(object):
@@ -100,12 +99,8 @@ class AXListener(object):
         # Info
         info_bytes = frame[byte_pointer:]
 
-        # FCS Control
-        # TODO: KISS TCP/IP doesn't forward it to the user. We need to calculate it ourselves
-        fcs = bytearray(0)
-
         # Send Frame obj to callbacks.
-        ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, fcs, frame,
+        ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, frame,
                            recv_time)
         # self._logger.debug(ax_frame)
 
