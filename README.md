@@ -8,4 +8,5 @@ When allowed, it relays the received packets to ESTCube Mission Control in Tartu
 This allows the ESTCube team to receive telemetry data, even when the satellite isn't accessible over Estonia.
 This is vital as the fly-over times of the satellite are relatively brief.
 
+You can find the latest release from our releases tab [here](https://github.com/estcube/Telemetry-Forwarding-Client/releases).
 For more information be sure to visit our [wiki](https://github.com/estcube/Telemetry-Forwarding-Client/wiki)!
