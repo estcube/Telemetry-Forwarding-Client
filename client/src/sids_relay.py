@@ -21,7 +21,9 @@ class RelayStatus(Enum):
     UNKNOWN_EXCEPTION = auto()
 
 class SIDSRelay(object):
-    """ Class that contains the function for sending the packets. """
+    """ Class that contains the function for sending the packets.
+        https://github.com/daniestevez/gr-satellites/blob/master/docs/Dombrovski%2C%20Simple%20Downlink%20Share%20Convention.pdf
+    """
 
     _logger = logging.getLogger(__name__)
 
@@ -46,7 +48,12 @@ class SIDSRelay(object):
             "frame": frame.frame.hex(),
             "locator": "longLat",
             "longitude": self.config.get_conf("Mission Control", "longitude"),
-            "latitude": self.config.get_conf("Mission Control", "latitude")
+            "latitude": self.config.get_conf("Mission Control", "latitude"),
+            #TODO: Implement optional functionality?
+            "tncPort": 0,
+            "azimuth": 0,
+            "elevation": 0,
+            "fDown": 0
         }
 
         url = self.config.get_conf("Mission Control", "mcs-relay-url")
