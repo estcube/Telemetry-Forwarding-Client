@@ -2,7 +2,7 @@
 # Whether to relay received data to remote servers or not.
 relay-enabled = False
 # If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
-mcs-relay-url = http://staging.estcube.eu:8029/v1.1/ax25
+mcs-relay-url = http://staging.estcube.eu:8029/ax25
 # Type of the SIDS relay request. Possible values are GET and POST.
 # (Currently only POST is supported by ESTCube servers).
 relay-request-type = POST
@@ -45,9 +45,9 @@ telemetry-configuration=spec/telemetry.json
 # Path to the file that specifies the ax.25 data blob structure.
 kaitai-configuration=spec/icp.ksy
 # URL of the latest telemetry configuration endpoint.
-telemetry-configuration-url=http://staging.estcube.eu:8029/v1.1/icp/telemetry
+telemetry-configuration-url=http://staging.estcube.eu:8029/icp/telemetry
 # URL of the latest packet structure (kaitai) endpoint.
-packet-structure-url=http://staging.estcube.eu:8029/v1.1/icp/config
+packet-structure-url=http://staging.estcube.eu:8029/icp/config
 # Path to the kaitai-struct-compiler executable. Relative to client executable.
 kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 # Localhost port to serve the frontend on.
