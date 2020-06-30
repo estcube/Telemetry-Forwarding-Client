@@ -53,6 +53,7 @@ class SIDSRelay(object):
             "tncPort": 0,
             "azimuth": 0,
             "elevation": 0,
+            "fUp": 0,
             "fDown": 0
         }
 
