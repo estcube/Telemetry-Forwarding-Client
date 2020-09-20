@@ -145,6 +145,11 @@ CONSTRAINTS = {
             "label": "Telemetry configuration URL",
             "value": "http://staging.estcube.eu:8029/icp/telemetry"
         },
+        "telemetry-configuration": {
+            "type": "str",
+            "description": "Path to the file that specifies the telemetry data fields",
+            "value": "spec/telemetry.json"
+        },
         "kaitai-compiler-path": {
             "type": "str",
             "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
