@@ -102,7 +102,7 @@ def main(argv):
     logging.basicConfig(format="%(asctime)s : %(message)s", level=logging.INFO)
 
     gen = BeaconGenerator("ESTCUB", "MICTRL")
-    ki = TCPKISSServer(host="localhost", port=3030)
+    ki = TCPKISSServer(host="localhost", port=8100)
     try:
         ki.start()
 
