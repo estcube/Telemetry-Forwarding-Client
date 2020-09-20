@@ -79,12 +79,14 @@ CONSTRAINTS = {
             "value": "localhost",
             "regexType": "ip"
         },
-        # "tnc-device": {
-        #     "type": "str",
-        #     "requiresRestart": True,
-        #     "label": "TNC device",
-        #     "value": " "
-        # },
+         "tnc-port": {
+             "type": "str",
+             "requiresRestart": True,
+             "label": "TNC port",
+             "value": "8100",
+            "min": 1024,
+            "max": 65535
+         },
         "max-connection-attempts": {
             "type": "int",
             "requiresRestart": True,
@@ -144,6 +146,11 @@ CONSTRAINTS = {
             "description": "URL of the latest telemetry configuration endpoint.",
             "label": "Telemetry configuration URL",
             "value": "http://staging.estcube.eu:8029/icp/telemetry"
+        },
+        "telemetry-configuration": {
+            "type": "str",
+            "description": "Path to the file that specifies the telemetry data fields",
+            "value": "spec/telemetry.json"
         },
         "kaitai-compiler-path": {
             "type": "str",
