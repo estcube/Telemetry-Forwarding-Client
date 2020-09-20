@@ -32,7 +32,7 @@ class FrameBuilder(object):
 
     def build(self):
         f = bytearray()
-        f.append(0x7E)
+        #f.append(0x7E)
         for b in self.dest:
             f.append(b << 1)
         # f.append(0x00)
