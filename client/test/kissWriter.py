@@ -106,12 +106,10 @@ def main(argv):
     try:
         ki.start()
 
-        i = 0
         while True:
-            # ki.write(packets[i % len(packets)])
-            ki.write(gen.generate_ax())
-            logging.info("Sent message: {}".format(packets[i % len(packets)]))
-            i += 1
+            packet = gen.generate_ax()
+            ki.write(packet)
+            logging.info("Sent message: {}".format(packet))
             time.sleep(sleep_time)
 
     except KeyboardInterrupt:
