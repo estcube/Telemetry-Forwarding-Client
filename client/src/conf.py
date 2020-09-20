@@ -79,12 +79,14 @@ CONSTRAINTS = {
             "value": "localhost",
             "regexType": "ip"
         },
-        # "tnc-device": {
-        #     "type": "str",
-        #     "requiresRestart": True,
-        #     "label": "TNC device",
-        #     "value": " "
-        # },
+         "tnc-port": {
+             "type": "str",
+             "requiresRestart": True,
+             "label": "TNC port",
+             "value": "8100",
+            "min": 1024,
+            "max": 65535
+         },
         "max-connection-attempts": {
             "type": "int",
             "requiresRestart": True,
