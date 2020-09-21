@@ -32,7 +32,7 @@ class FrameBuilder(object):
 
     def build(self):
         f = bytearray()
-        f.append(0x7E)
+        #f.append(0x7E)
         for b in self.dest:
             f.append(b << 1)
         # f.append(0x00)
@@ -44,7 +44,7 @@ class FrameBuilder(object):
         f.append(0x03)
         f.append(0xF0)
         f += self.info
-        print("FCS: {}".format(self.calc_crc(f)))
+        #print("FCS: {}".format(self.calc_crc(f)))
         f += self.calc_crc(f)
         f.append(0x7E)
 
