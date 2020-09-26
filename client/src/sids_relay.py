@@ -8,6 +8,7 @@ import requests
 from conf import Configuration
 from ax_listener import AXFrame
 from rw_lock import ReadWriteLock
+from db_interface import TelemetryDB
 
 class RelayStatus(Enum):
     """ The different result states of the last SIDS request. """
@@ -27,11 +28,20 @@ class SIDSRelay(object):
 
     _logger = logging.getLogger(__name__)
 
-    def __init__(self, config: Configuration):
+    def __init__(self, config: Configuration, database: TelemetryDB):
         self.config = config
+        self.db = database
         self.lock = ReadWriteLock()
         self.last_status = RelayStatus.NO_REQUESTS
         self.request_counter = 0
+        if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
+            self.relay_unrelayed_packets()
+
+    def relay_unrelayed_packets(self):
+        frames = self.db.get_unrelayed_frames()
+
+        for frame in frames:
+            self.relay(frame)
 
     def relay(self, frame: AXFrame):
         """ If relaying is enabled, sends the frame to the configured SIDS server. """
@@ -44,7 +54,7 @@ class SIDSRelay(object):
         params = {
             "noradID": self.config.get_conf("Mission Control", "norad-id"),
             "source": self.config.get_conf("Mission Control", "receiver-callsign"),
-            "timestamp": frame.recv_time.isoformat(),
+            "recvTime": frame.recv_time.isoformat(),
             "frame": frame.frame.hex(),
             "locator": "longLat",
             "longitude": self.config.get_conf("Mission Control", "longitude"),
@@ -67,14 +77,17 @@ class SIDSRelay(object):
                     response = requests.post(url, json=params)
                 else:
                     response = requests.get(url, params=params)
-                self._logger.debug("SIDS response (%s): %s", response.status_code, response.text)
+                self._logger.info("SIDS response (%s): %s", response.status_code, response.text)
                 if response.status_code >= 200 and response.status_code < 300:
                     self.request_counter += 1
                     self.last_status = RelayStatus.SUCCESS
+
                 elif response.status_code == 404:
                     self.last_status = RelayStatus.NOT_FOUND
                 else:
                     self.last_status = RelayStatus.UNKNOWN_EXCEPTION
+                if frame.needs_relay:
+                    self.db.mark_as_relayed(frame)
             except requests.ConnectionError:
                 self._logger.warning("Connection failed to SIDS endpoint %s", url)
                 self.last_status = RelayStatus.CONNECTION_ERROR

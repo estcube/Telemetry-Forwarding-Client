@@ -10,7 +10,7 @@ from conf import Configuration
 class AXFrame(object):
     """ Simple data class for holding the decoded data of an AX.25 frame. """
     def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int,
-                 info: bytearray, frame: bytearray, recv_time: datetime):
+                 info: bytearray, frame: bytearray, recv_time: datetime, needs_relay=False):
         self.dest = dest
         self.source = source
         self.repeaters = repeaters
@@ -19,6 +19,7 @@ class AXFrame(object):
         self.info = info
         self.frame = frame
         self.recv_time = recv_time
+        self.needs_relay = needs_relay
 
     def __repr__(self):
         return (("Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {};"
@@ -99,9 +100,11 @@ class AXListener(object):
         # Info
         info_bytes = frame[byte_pointer:]
 
+        needs_relay = bool(self.config.get_conf("Mission Control", "save-unrelayed-packets"))
+
         # Send Frame obj to callbacks.
         ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, frame,
-                           recv_time)
+                           recv_time, needs_relay)
         # self._logger.debug(ax_frame)
 
         for callback in self.callbacks:

@@ -6,6 +6,8 @@ mcs-relay-url = http://staging.estcube.eu:8029/ax.25
 # Type of the SIDS relay request. Possible values are GET and POST.
 # (Currently only POST is supported by ESTCube servers).
 relay-request-type = POST
+#
+save-unrelayed-packets = True
 
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.

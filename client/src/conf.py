@@ -8,6 +8,11 @@ from rw_lock import ReadWriteLock
 
 CONSTRAINTS = {
     "Mission Control": {
+        "save-unrelayed-packets": {
+            "type": "bool",
+            "label": "Save unrelayed packets for relay when connection is restored",
+            "value": "True"
+        },
         "relay-enabled": {
             "type": "bool",
             "label": "Relay enabled",

@@ -68,7 +68,7 @@ def main(argv):
 
     # Build the other components.
     ax_listener = AXListener(conf)
-    sids_relay = SIDSRelay(conf)
+    sids_relay = SIDSRelay(conf, database)
     # telemetry_listener = TelemetryListener(telemetry_conf, database)
 
     # Create the flask app and start it in a forked process.
