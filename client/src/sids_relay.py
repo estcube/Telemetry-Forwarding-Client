@@ -72,12 +72,11 @@ class SIDSRelay(object):
         type = self.config.get_conf("Mission Control", "relay-request-type")
         with self.lock.write_lock:
             try:
-                response = None
                 if type == "POST":
                     response = requests.post(url, json=params)
                 else:
                     response = requests.get(url, params=params)
-                self._logger.info("SIDS response (%s): %s", response.status_code, response.text)
+                self._logger.debug("SIDS response (%s): %s", response.status_code, response.text)
                 if response.status_code >= 200 and response.status_code < 300:
                     self.request_counter += 1
                     self.last_status = RelayStatus.SUCCESS
