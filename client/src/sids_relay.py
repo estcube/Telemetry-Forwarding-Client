@@ -80,13 +80,13 @@ class SIDSRelay(object):
                 if response.status_code >= 200 and response.status_code < 300:
                     self.request_counter += 1
                     self.last_status = RelayStatus.SUCCESS
+                    if frame.needs_relay:
+                        self.db.mark_as_relayed(frame)
 
                 elif response.status_code == 404:
                     self.last_status = RelayStatus.NOT_FOUND
                 else:
                     self.last_status = RelayStatus.UNKNOWN_EXCEPTION
-                if frame.needs_relay:
-                    self.db.mark_as_relayed(frame)
             except requests.ConnectionError:
                 self._logger.warning("Connection failed to SIDS endpoint %s", url)
                 self.last_status = RelayStatus.CONNECTION_ERROR
