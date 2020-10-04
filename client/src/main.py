@@ -14,6 +14,7 @@ from db_interface import TelemetryDB
 from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
 from tnc_pool import TNCPool
+from file_logger import FileLogger
 import api
 
 
@@ -69,6 +70,8 @@ def main(argv):
     # Build the other components.
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
+    file_logger = FileLogger('../packets.log')
+
     # telemetry_listener = TelemetryListener(telemetry_conf, database)
 
     # Create the flask app and start it in a forked process.
@@ -85,6 +88,7 @@ def main(argv):
     # ax_listener.add_callback(print_frame)
     ax_listener.add_callback(database.insert_ax_frame)
     ax_listener.add_callback(sids_relay.relay)
+    ax_listener.add_callback(file_logger.log_ax_frame)
     # ax_listener.add_callback(telemetry_listener.receive)
 
     tnc_pool = TNCPool(conf, ax_listener)

@@ -21,8 +21,8 @@ class AXFrame(object):
         self.recv_time = recv_time
 
     def __repr__(self):
-        return (("Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {};"
-                    ).format(self.dest, self.source,
+        return (("Receive Time: {}; Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {};"
+                    ).format(self.recv_time, self.dest, self.source,
                                       ", ".join([x[0] for x in self.repeaters]),
                                       self.ctrl, self.pid, self.info.hex()
                                       ))
