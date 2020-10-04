@@ -61,7 +61,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
     def toggle_relay():
         response_json = request.get_json()
         current_relay_status = response_json['Mission Control']['relay-enabled']
-        config.set_conf(section='Mission Control', element='relay-enabled', value=value)
+        config.set_conf(section='Mission Control', element='relay-enabled', value=current_relay_status)
         if current_relay_status:
             sids_relay.relay_unrelayed_packets()
         return response_json, 200

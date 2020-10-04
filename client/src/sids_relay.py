@@ -54,7 +54,7 @@ class SIDSRelay(object):
         params = {
             "noradID": self.config.get_conf("Mission Control", "norad-id"),
             "source": self.config.get_conf("Mission Control", "receiver-callsign"),
-            "recvTime": frame.recv_time.isoformat(),
+            "timestamp": frame.recv_time.isoformat(),
             "frame": frame.frame.hex(),
             "locator": "longLat",
             "longitude": self.config.get_conf("Mission Control", "longitude"),

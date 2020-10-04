@@ -37,7 +37,7 @@ class TelemetryDB():
         self._logger.info("Initializing database at %s", self.conn_str)
         conn = apsw.Connection(self.conn_str)
         cur = conn.cursor()
-        cur.execute("create table if not exists ax_frame (time text, data blob, needsRelay bit);")
+        cur.execute("create table if not exists ax_frame (time text, data blob, needs_relay bit);")
         cur.execute("""
                 create table if not exists telemetry_packet (
                     id integer primary key autoincrement,
@@ -66,7 +66,7 @@ class TelemetryDB():
         conn.close()
 
     def get_unrelayed_frames(self):
-        query = """select * from ax_frame where needsRelay = TRUE"""
+        query = """select * from ax_frame where needs_relay = TRUE"""
         conn = apsw.Connection(self.conn_str)
         conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
@@ -89,7 +89,7 @@ class TelemetryDB():
         conn = apsw.Connection(self.conn_str)
         conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
-        cur.execute("UPDATE ax_frame SET needsRelay = FALSE WHERE time = ? AND data = ?;", (frame.recv_time.isoformat(), frame.frame))
+        cur.execute("UPDATE ax_frame SET needs_relay = FALSE WHERE time = ? AND data = ?;", (frame.recv_time.isoformat(), frame.frame))
         conn.close()
 
     def add_telemetry_frame(self, frame: "TelemetryFrame"):
