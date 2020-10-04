@@ -62,7 +62,7 @@ class TelemetryDB():
         conn = apsw.Connection(self.conn_str)
         conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
-        cur.execute("insert into ax_frame values (?, ?, ?);", (frame.recv_time.isoformat(), frame.frame, frame.needs_relay))
+        cur.execute("insert into ax_frame values (?, ?, ?);", (frame.recv_time.isoformat(), frame.frame, True))
         conn.close()
 
     def get_unrelayed_frames(self):
@@ -77,7 +77,7 @@ class TelemetryDB():
         for recv_time, frame, x in res:
 
             frames.append(
-                AXFrame(None, None, None, None, None, None, frame, datetime.strptime(recv_time, "%Y-%m-%dT%H:%M:%S.%f"), True)
+                AXFrame(None, None, None, None, None, None, frame, datetime.strptime(recv_time, "%Y-%m-%dT%H:%M:%S.%f"))
             )
 
         conn.close()
