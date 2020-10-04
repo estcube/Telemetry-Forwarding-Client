@@ -37,7 +37,7 @@ class TelemetryDB():
         self._logger.info("Initializing database at %s", self.conn_str)
         conn = apsw.Connection(self.conn_str)
         cur = conn.cursor()
-        cur.execute("create table if not exists ax_frame (time text, data blob);")
+        cur.execute("create table if not exists ax_frame (time text, data blob, needs_relay bit);")
         cur.execute("""
                 create table if not exists telemetry_packet (
                     id integer primary key autoincrement,
@@ -53,6 +53,7 @@ class TelemetryDB():
             """)
         conn.close()
 
+
     def insert_ax_frame(self, frame: AXFrame):
         """
         Insert a single ax.25 frame into the database log.
@@ -61,7 +62,34 @@ class TelemetryDB():
         conn = apsw.Connection(self.conn_str)
         conn.setbusytimeout(CONN_TIMEOUT)
         cur = conn.cursor()
-        cur.execute("insert into ax_frame values (?, ?);", (frame.recv_time.isoformat(), frame.frame))
+        cur.execute("insert into ax_frame values (?, ?, ?);", (frame.recv_time.isoformat(), frame.frame, True))
+        conn.close()
+
+    def get_unrelayed_frames(self):
+        query = """select * from ax_frame where needs_relay = TRUE"""
+        conn = apsw.Connection(self.conn_str)
+        conn.setbusytimeout(CONN_TIMEOUT)
+        cur = conn.cursor()
+        res = cur.execute(query)
+
+        frames = []
+
+        for recv_time, frame, x in res:
+
+            frames.append(
+                AXFrame(None, None, None, None, None, None, frame, datetime.strptime(recv_time, "%Y-%m-%dT%H:%M:%S.%f"))
+            )
+
+        conn.close()
+
+        return frames
+
+
+    def mark_as_relayed(self, frame: AXFrame):
+        conn = apsw.Connection(self.conn_str)
+        conn.setbusytimeout(CONN_TIMEOUT)
+        cur = conn.cursor()
+        cur.execute("UPDATE ax_frame SET needs_relay = FALSE WHERE time = ? AND data = ?;", (frame.recv_time.isoformat(), frame.frame))
         conn.close()
 
     def add_telemetry_frame(self, frame: "TelemetryFrame"):
