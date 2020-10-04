@@ -21,6 +21,11 @@ class TelemetryFrame():
         self.recv_timestamp = recv_timestamp
         self.fields = fields
 
+    def __repr__(self):
+        return (("Timestamp: {}; recv_timestamp: {}; fields: {}"
+                 ).format(self.timestamp, self.recv_timestamp,
+                          self.fields))
+
 class TimestampType(Enum):
     """ Enum of the supported timestamp types. """
     unix = 'unix_timestamp'
