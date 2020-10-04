@@ -59,12 +59,12 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
 
     @app.route("/api/sids/toggle", methods=["POST"])
     def toggle_relay():
-        some_json = request.get_json()
-        value = some_json['Mission Control']['relay-enabled']
+        response_json = request.get_json()
+        current_relay_status = response_json['Mission Control']['relay-enabled']
         config.set_conf(section='Mission Control', element='relay-enabled', value=value)
-        if value:
+        if current_relay_status:
             sids_relay.relay_unrelayed_packets()
-        return some_json, 200
+        return response_json, 200
 
     @app.route("/api/telemetry/packets", methods=["GET"])
     def get_packets():
