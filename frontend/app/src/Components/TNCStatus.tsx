@@ -147,7 +147,7 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
 
   handleRelayToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
-    fetch('/api/conf', {
+    fetch('/api/sids/toggle', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

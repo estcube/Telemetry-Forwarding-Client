@@ -1,6 +1,5 @@
 import logging
 from ax_listener import AXFrame
-from telemetry_listener import TelemetryFrame
 
 
 class FileLogger():
@@ -12,7 +11,4 @@ class FileLogger():
     """ Log received package to a .log file"""
 
     def log_ax_frame(self, frame: AXFrame):
-        self.file_logger.handle(self._logger.makeRecord(None, logging.DEBUG, None, None, str(frame), None, None))
-
-    def log_telemetry(self, frame: TelemetryFrame):
         self.file_logger.handle(self._logger.makeRecord(None, logging.DEBUG, None, None, str(frame), None, None))
