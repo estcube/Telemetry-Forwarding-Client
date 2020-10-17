@@ -73,9 +73,8 @@ def main(argv):
     # Build the other components.
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
-    mission_name = "estcube"
-    file_logger = FileLogger('../logs/{}_packets.log'.format(mission_name))
     telemetry_listener = TelemetryListener(telemetry_conf, database)
+    file_logger = FileLogger(conf, '../logs/', "log")
 
     # Create the flask app and start it in a forked process.
     port = None
