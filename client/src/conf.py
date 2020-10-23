@@ -171,6 +171,13 @@ CONSTRAINTS = {
             "label": "Debug logging",
             "value": False,
             "description": "Turn on debug level logging"
+        },
+        "tle-url": {
+            "type": "str",
+            "regexTyoe": "url",
+            "description": "URL of the tle",
+            "label": "TLE URL",
+            "value": "http://staging.estcube.eu:8029/tle"
         }
     }
 }
