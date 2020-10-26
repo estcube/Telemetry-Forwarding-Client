@@ -51,8 +51,6 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
     # end swagger specific
 
-
-
     @app.route("/api/sids/status", methods=["GET"])
     def get_sids_status():
         return jsonify(sids_relay.get_status()), 200
@@ -65,10 +63,6 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         if current_relay_status:
             sids_relay.relay_unrelayed_packets()
         return response_json, 200
-
-    @app.route("/api/telemetry/packets", methods=["GET"])
-    def get_packets():
-        return {"packets": database.get_telemetry_data()}
 
     @app.route("/api/telemetry/configuration", methods=["GET"])
     def get_telemetry_configuration():
