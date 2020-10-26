@@ -107,7 +107,7 @@ class TelemetryDB():
             new_id = cur.execute("select frame_id from ax_frame where frame_id = (select max(frame_id) from ax_frame);").fetchone()[0]
             cur.execute("""
                 insert into telemetry_packet values (?, ?, ?, ?);""",
-                        (None, "JSON here", new_id, frame.recv_timestamp.timestamp()))
+                        (None, frame.fields, new_id, frame.timestamp))
         except Exception as exception:
             raise exception
         finally:
