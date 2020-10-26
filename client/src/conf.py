@@ -174,10 +174,10 @@ CONSTRAINTS = {
         },
         "tle-url": {
             "type": "str",
-            "regexTyoe": "url",
+            "regexType": "url",
             "description": "URL of the tle",
             "label": "TLE URL",
-            "value": "http://staging.estcube.eu:8029/tle"
+            "value": "http://staging.estcube.eu/sids/tle"
         }
     }
 }

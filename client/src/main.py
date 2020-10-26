@@ -16,7 +16,6 @@ from sids_relay import SIDSRelay
 from tnc_pool import TNCPool
 from file_logger import FileLogger
 import api
-from file_logger import FileLogger
 
 
 def print_frame(frame: AXFrame):

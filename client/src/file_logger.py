@@ -21,9 +21,8 @@ class FileLogger():
         logfile = "{}{}_packets.log".format(path, mission_name)
         self.file_logger = logging.FileHandler(logfile)
 
-    """ Log received package to a .log file"""
-
     def log_ax_frame(self, frame: AXFrame):
+        """ Log received package to a .log file"""
         log = "Timestamp: {}; DST: {}; SRC: {}; Control field: {}; Info field: {};".format(frame.recv_time, frame.dest,
                                                                                            frame.source, frame.ctrl,
                                                                                            frame.info.hex())
