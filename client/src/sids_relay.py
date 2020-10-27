@@ -3,6 +3,8 @@ Module containing the relay for sending the received packets to Mission Control 
 """
 
 import logging
+import threading
+import time
 from enum import Enum, auto
 import requests
 from conf import Configuration
@@ -34,14 +36,29 @@ class SIDSRelay(object):
         self.lock = ReadWriteLock()
         self.last_status = RelayStatus.NO_REQUESTS
         self.request_counter = 0
-        if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
-            self.relay_unrelayed_packets()
+        threading.Thread(target=self.relay_unrelayed_packets_every_hour).start()
 
     def relay_unrelayed_packets(self):
-        frames = self.db.get_unrelayed_frames()
+        while True:
+            frames = self.db.get_unrelayed_frames(100)
+            for frame in frames:
+                self.relay(frame)
+            if len(frames) < 100:
+                break
 
+    def relay_unrelayed_packets_every_hour(self):
+        while True:
+            if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
+                if self.checkConnection():
+                    self.relay_unrelayed_packets()
+            time.sleep(3600)
+
+    def checkConnection(self):
+        frames = self.db.get_unrelayed_frames(10)
         for frame in frames:
-            self.relay(frame)
+            if self.relay(frame):
+                return True
+        return False
 
     def relay(self, frame: AXFrame):
         """ If relaying is enabled, sends the frame to the configured SIDS server. """
@@ -99,6 +116,7 @@ class SIDSRelay(object):
                 self.last_status = RelayStatus.UNKNOWN_EXCEPTION
                 raise exc
         self._logger.debug(self.request_counter)
+        return self.last_status == RelayStatus.SUCCESS
 
     def get_status(self):
         """ Returns the status of the last SIDS request and the number of successful requests. """
