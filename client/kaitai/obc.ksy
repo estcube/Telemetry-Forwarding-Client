@@ -133,7 +133,7 @@ seq:
   - id: err_oscillator
     type: b1	
 # TEMPERATURE
-  - id: fmc_mram_temp_value
+  - id: fmc_mram_temp
     type: u1
   - id: qspi_fram_temp
     type: u1

@@ -1,4 +1,3 @@
-from hk_common import *
 from hk_sp import *
 from client.kaitai.sp import *
 
@@ -13,4 +12,4 @@ for byte in hk_packet:
 print()
 
 target = Sp.from_bytes(hk_packet)
-print({target.reserved1})
+print({target.mppt_curr})

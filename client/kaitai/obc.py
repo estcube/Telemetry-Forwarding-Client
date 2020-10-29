@@ -80,7 +80,7 @@ class Obc(KaitaiStruct):
         self.err_reaction3 = self._io.read_bits_int(1) != 0
         self.err_oscillator = self._io.read_bits_int(1) != 0
         self._io.align_to_byte()
-        self.fmc_mram_temp_value = self._io.read_u1()
+        self.fmc_mram_temp = self._io.read_u1()
         self.qspi_fram_temp = self._io.read_u1()
         self.io_expander_temp = self._io.read_u1()
 

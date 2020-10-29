@@ -1,4 +1,4 @@
-def hk_sp_enabled(bits: list) -> bytes:
+def hk_st_enabled(bits: list) -> bytes:
 
     """
     First bit should be on the left, bitfield is read from left to right
@@ -12,7 +12,7 @@ def hk_sp_enabled(bits: list) -> bytes:
     return enabled_bits.to_bytes(2, byteorder='big')
 
 
-def hk_sp_errors(bits: list) -> bytes:
+def hk_st_errors(bits: list) -> bytes:
 
     """
     First bit should be on the left, bitfield is read from left to right
@@ -26,11 +26,9 @@ def hk_sp_errors(bits: list) -> bytes:
     return error_bits.to_bytes(2, byteorder='big')
 
 
-def hk_sp_temp_current(temp: int) -> bytes:
-    return temp.to_bytes(1, byteorder='little')
+def hk_st_fpga_temp(temp: int) -> bytes:
+    return temp.to_bytes(2, byteorder='little')
 
-def hk_sp_mppt_current(mppt: int) -> bytes:
+def hk_st_sensor_temp(mppt: int) -> bytes:
     return mppt.to_bytes(2, byteorder='little')
 
-def hk_sp_coil_current(coil: int) -> bytes:
-    return coil.to_bytes(2, byteorder='little')

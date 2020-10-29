@@ -1,5 +1,5 @@
 meta:
-  id: main_kaitai
+  id: main
   endian: le
   imports:
     - common
