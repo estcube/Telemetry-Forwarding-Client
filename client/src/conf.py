@@ -122,6 +122,14 @@ CONSTRAINTS = {
             "hidden": True,
             "value": "../telemetry.db"
         },
+        "logs": {
+            "type": "str",
+            "description": "Path to the log file. Relative to executable file.",
+            "requiresRestart": True,
+            "label": "Logfile path",
+            "hidden": True,
+            "value": "../packets.log"
+        },
         "static-files-path": {
             "type": "str",
             "description": "Path to the root directory of static frontend files",

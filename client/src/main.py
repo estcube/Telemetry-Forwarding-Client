@@ -70,7 +70,7 @@ def main(argv):
     # Build the other components.
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
-    file_logger = FileLogger('../packets.log')
+    file_logger = FileLogger(conf.get_conf("Client", "logs"))
 
     telemetry_listener = TelemetryListener(telemetry_conf, database)
 
