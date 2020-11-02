@@ -4,7 +4,7 @@ These are meant to be run by the sys_test.py script.
 """
 
 import unittest
-import sqlite3
+import apsw
 import os
 
 class SysTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class SysTest(unittest.TestCase):
     axPacket = b'\xa8\x8a\x98\x8a\x9a@`\x8a\xa6j\x8a\x86@w\x03\xf0\x04\x01\x1a\xf7\xab\xca\xbc\x00N]\xce\xe4\xf7\xbb\xcc\xdd\xee\xff\xbb\xaa\xbb\xaa\xbb\xaa\xbb\xac\xab\xac\xab\xac\xab\xaa\xbb\xaa\x8d\xc1i\t'
 
     def test_checkDBEntry(self):
-        conn = sqlite3.connect(self.dbPath)
+        conn = apsw.Connection(self.dbPath)
         cur = conn.cursor()
         cur.execute("select count(*) from ax_frame;")
         data = cur.fetchone()[0]

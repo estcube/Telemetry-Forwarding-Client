@@ -2,7 +2,7 @@
 
 import unittest
 import os
-import sqlite3
+import apsw
 import logging
 import sys
 from datetime import datetime
@@ -38,8 +38,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
                 33062593b424a3a4b2f4a794f5575317456716b63685c544e3e""".replace(" ", ""))
 
     beaconDataICPFrame = b'\x04\x01\x1a\xf7\xab\xca\xbc\x00N]\xce\xe4\xf7\xbb\xcc\xdd\xee\xff\xbb\xaa\xbb\xaa\xbb\xaa\xbb\xac\xab\xac\xab\xac\xab\xaa\xbb\xaa\x8d\xc1'
-    telemetryAXFrame = AXFrame(None, None, None, None, None, beaconDataICPFrame, None, None,
-        datetime(2019, 11, 21))
+    telemetryAXFrame = AXFrame(None, None, None, None, None, beaconDataICPFrame, None, datetime(2019, 11, 21))
 
     def test_telemetry_decoder(self):
         f = open(os.path.join(os.path.dirname(__file__), "..", "spec", "telemetry.json"), "r",
@@ -122,18 +121,20 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         database.init_db()
 
         ts = datetime.now()
-        frame = AXFrame(None, None, None, None, None, None, None, bytearray(self.axPacket), ts)
+        frame = AXFrame(None, None, None, None, None, None, bytearray(self.axPacket), ts)
 
         database.insert_ax_frame(frame)
 
         # Placeholder assert since querying DB is not implemented
-        conn = sqlite3.connect(self.dbPath)
+        conn = apsw.Connection(self.dbPath)
         cur = conn.cursor()
         cur.execute("select time, data from ax_frame order by time desc limit 1")
         time, data = cur.fetchone()
 
         self.assertEqual(time, ts.isoformat())
         self.assertEqual(data, self.axPacket)
+        
+        conn.close()
 
         os.remove(self.dbPath)
 

@@ -1,8 +1,27 @@
 name: CI
 on: [push]
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: test-frontend
+      run: |
+        cd frontend
+        yarn install
+        yarn test
+    - name: test-client
+      run: |
+        cd client
+        sudo apt-get install python3-setuptools
+        pip3 install -r requirements.txt
+        python3 src/_unit_tests.py
+    - name: systest-client
+      run: |
+        cd client
+        sh sys_test.sh
+  build:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
     - name: Build the frontend.
@@ -13,7 +32,13 @@ jobs:
     - name: Package the client
       run: |
         cd client
+        pip3 install -r requirements.txt
+        pip3 install pyinstaller
         sh build.sh
+        cd src
+        pyinstaller main.py --onefile --hidden-import csv
+        cd dist
+        COPY "main.exe" "../../../dist"
     - name: Archive the production artifact.
       uses: actions/upload-artifact@v1
       with:
