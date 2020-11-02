@@ -34,13 +34,10 @@ jobs:
         cd client
         pip3 install -r requirements.txt
         pip3 install pyinstaller
-        sh build.sh
-        cd src
-        pyinstaller main.py --onefile --hidden-import csv
-        cd dist
-        COPY "main.exe" "../../../dist"
+        pyinstaller src/main.py --onefile --hidden-import csv
+        sh build_windows_exe.sh
     - name: Archive the production artifact.
       uses: actions/upload-artifact@v1
       with:
-        name: telemetry-forwarding-client
+        name: telemetry-forwarding-client-windows
         path: dist
