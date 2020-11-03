@@ -36,9 +36,19 @@ class SIDSRelay(object):
         self.lock = ReadWriteLock()
         self.last_status = RelayStatus.NO_REQUESTS
         self.request_counter = 0
-        threading.Thread(target=self.relay_unrelayed_packets_every_hour).start()
+        self.failed_in_a_row = 0
+        threading.Thread(target=self.relay_unrelayed_packets_every_interval).start()
+
+
+    def ping_connection(self):
+        url = self.config.get_conf("Mission Control", "mcs-relay-url")
+        response = requests.get(url)
+        if 200 <= response.status_code < 300:
+            return True
+        return False
 
     def relay_unrelayed_packets(self):
+        self.failed_in_a_row = 0
         while True:
             frames = self.db.get_unrelayed_frames(100)
             for frame in frames:
@@ -46,26 +56,28 @@ class SIDSRelay(object):
             if len(frames) < 100:
                 break
 
-    def relay_unrelayed_packets_every_hour(self):
+    def start_pinger(self):
+        while True:
+            if self.ping_connection():
+                self.failed_in_a_row = 0
+                self.relay_unrelayed_packets()
+                break
+            time.sleep(int(self.config.get_conf("Client", "ping-interval")))
+
+    def relay_unrelayed_packets_every_interval(self):
         while True:
             if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
-                if self.checkConnection():
+                if self.ping_connection():
                     self.relay_unrelayed_packets()
-            time.sleep(3600)
+            time.sleep(int(self.config.get_conf("Client", "relay-interval")))
 
-    def checkConnection(self):
-        frames = self.db.get_unrelayed_frames(10)
-        for frame in frames:
-            if self.relay(frame):
-                return True
-        return False
 
     def relay(self, frame: AXFrame):
         """ If relaying is enabled, sends the frame to the configured SIDS server. """
         self._logger.debug("Received frame.")
 
         # FIXME: Conf can return both str and bool.
-        if str(self.config.get_conf("Mission Control", "relay-enabled")) != "True":
+        if str(self.config.get_conf("Mission Control", "relay-enabled")) != "True" or self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
             return
 
         params = {
@@ -93,11 +105,13 @@ class SIDSRelay(object):
                     response = requests.post(url, json=params)
                 else:
                     response = requests.get(url, params=params)
+
                 self._logger.debug("SIDS response (%s): %s", response.status_code, response.text)
                 if response.status_code >= 200 and response.status_code < 300:
                     self.request_counter += 1
                     self.last_status = RelayStatus.SUCCESS
                     self.db.mark_as_relayed(frame)
+                    self.failed_in_a_row = 0
 
                 elif response.status_code == 404:
                     self.last_status = RelayStatus.NOT_FOUND
@@ -116,7 +130,13 @@ class SIDSRelay(object):
                 self.last_status = RelayStatus.UNKNOWN_EXCEPTION
                 raise exc
         self._logger.debug(self.request_counter)
-        return self.last_status == RelayStatus.SUCCESS
+
+        if self.last_status != RelayStatus.SUCCESS:
+            self.failed_in_a_row += 1
+            if self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
+                self.start_pinger()
+
+
 
     def get_status(self):
         """ Returns the status of the last SIDS request and the number of successful requests. """
