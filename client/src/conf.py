@@ -203,6 +203,14 @@ CONSTRAINTS = {
             "label": "Lost packet count",
             "min": 1,
             "value": "10"
+        },
+        "tle-url": {
+            "type": "str",
+            "regexType": "url",
+            "description": "URL of the tle",
+            "label": "TLE URL",
+            "value": "http://staging.estcube.eu/sids/tle"
+
         }
 
     }
