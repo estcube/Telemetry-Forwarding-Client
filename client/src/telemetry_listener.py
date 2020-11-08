@@ -95,7 +95,6 @@ class TelemetryListener():
                 fields.append((elem, getattr(spec, elem)))
         print("")
 
-        # TODO: CRC control
         print("crc", getattr(icp, "crc"))
         fields.append(("crc", getattr(icp, "crc")))
 

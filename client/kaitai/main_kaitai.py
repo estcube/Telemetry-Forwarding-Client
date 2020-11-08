@@ -19,9 +19,8 @@ from client.kaitai.aocs import Aocs
 
 class Main(KaitaiStruct):
 
-    """    class Command(Enum):
-        beacon_data = 247"""
-
+    class Command(Enum):
+        beacon_data = 247
 
     class BeaconMode(Enum):
         normal = 78
@@ -36,7 +35,8 @@ class Main(KaitaiStruct):
         self.dst = self._io.read_u1()
         self.src = self._io.read_u1()
         self.len = self._io.read_u1()
-        self.cmd = self._io.read_u1()
+        self.cmd = self._root.Command(self._io.read_u1())
+
         self.uuid = self._io.read_bytes(3)
         self.mode = self._io.read_u1()
         self.common_data = Common(self._io)

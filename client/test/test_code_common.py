@@ -27,4 +27,6 @@ for byte in hk_packet:
 print()
 
 target = Common.from_bytes(hk_packet)
-print({target.info_validity})
+
+print({target.firm2})
+

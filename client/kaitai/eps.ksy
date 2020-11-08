@@ -98,13 +98,13 @@ seq:
     type: u2
   - id: bat_curr_d
     type: u2
-  - id: bat_voltage_a
+  - id: bat_volt_a
     type: u2
-  - id: bat_voltage_b
+  - id: bat_volt_b
     type: u2
-  - id: bat_voltage_c
+  - id: bat_volt_c
     type: u2
-  - id: bat_voltage_d
+  - id: bat_volt_d
     type: u2
   - id: bat_temp_a
     type: u2

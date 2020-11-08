@@ -23,12 +23,13 @@ class Aocs(KaitaiStruct):
         self._read()
 
     def _read(self):
-        self.bmg160_gyro_x = self._io.read_bytes(2)
-        self.bmg160_gyro_y = self._io.read_bytes(2)
-        self.bmg160_gyro_z = self._io.read_bytes(2)
-        self.lis3mdl_magnet_x = self._io.read_bytes(2)
-        self.lis3mdl_magnet_y = self._io.read_bytes(2)
-        self.lis3mdl_magnet_z = self._io.read_bytes(2)
+
+        self.bmg160_gyro_x = self._io.read_s2le()
+        self.bmg160_gyro_y = self._io.read_s2le()
+        self.bmg160_gyro_z = self._io.read_s2le()
+        self.lis3mdl_magnet_x = self._io.read_s2le()
+        self.lis3mdl_magnet_y = self._io.read_s2le()
+        self.lis3mdl_magnet_z = self._io.read_s2le()
         self.sun_x_intensity1 = self._io.read_u2le()
         self.sun_x_intensity2 = self._io.read_u2le()
         self.sun_x_intensity3 = self._io.read_u2le()
@@ -64,8 +65,8 @@ class Aocs(KaitaiStruct):
         self.low_precision = self._io.read_bits_int(1) != 0
         self.high_precision = self._io.read_bits_int(1) != 0
         self._io.align_to_byte()
-        self.reaction_wheel1 = self._io.read_bytes(2)
-        self.reaction_wheel2 = self._io.read_bytes(2)
-        self.reaction_wheel3 = self._io.read_bytes(2)
+        self.reaction_wheel1 = self._io.read_s2le()
+        self.reaction_wheel2 = self._io.read_s2le()
+        self.reaction_wheel3 = self._io.read_s2le()
 
 

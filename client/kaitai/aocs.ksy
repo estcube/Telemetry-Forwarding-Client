@@ -4,18 +4,18 @@ meta:
 seq:
 # ANGULAR VELOCITY
   - id: bmg160_gyro_x
-    size: 2
+    type: s2
   - id: bmg160_gyro_y
-    size: 2
+    type: s2
   - id: bmg160_gyro_z
-    size: 2	
+    type: s2
 # MAGNETIC FIELD
   - id: lis3mdl_magnet_x
-    size: 2
+    type: s2
   - id: lis3mdl_magnet_y
-    size: 2
+    type: s2
   - id: lis3mdl_magnet_z
-    size: 2	
+    type: s2
 # SUN DIRECTION
   - id: sun_x_intensity1
     type: u2
@@ -88,11 +88,12 @@ seq:
     type: b1	
 # ROTATIONS
   - id: reaction_wheel1
-    size: 2
+    type: s2
   - id: reaction_wheel2
-    size: 2
+    type: s2
   - id: reaction_wheel3
-    size: 2	
+    type: s2
+
 enums:
   command:
     247: beacon_data
