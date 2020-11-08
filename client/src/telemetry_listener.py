@@ -94,32 +94,32 @@ class TelemetryListener():
         fields = []
 
         for elem in vars(icp):
-            if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith("sp") and not elem.startswith("cr"):
-                print(elem, getattr(icp, elem))
+            if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith(
+                    "sp") and not elem.startswith("cr"):
                 fields.append((elem, getattr(icp, elem)))
-        print(" ")
+
         for elem in vars(common):
             if not elem.startswith("_"):
-                print(elem, getattr(common, elem))
                 fields.append((elem, getattr(common, elem)))
-        print(" ")
+
         for elem in vars(spec):
             if not elem.startswith("_"):
-                print(elem, getattr(spec, elem))
                 fields.append((elem, getattr(spec, elem)))
-        print("")
 
-        print("crc", getattr(icp, "crc"))
         fields.append(("crc", getattr(icp, "crc")))
 
         tmp = dict(fields)
+
         tmp.pop("uuid")
+        tmp.pop("cmd")
+
+
         fields_json = json.dumps(tmp)
 
         self.database.add_telemetry_frame(TelemetryFrame(common.unix_time, fields_json))
 
         for callback in self.callbacks:
-            callback(TelemetryFrame(ts_datetime, ax_frame.recv_time, fields))
+            callback(TelemetryFrame(tmp.get("unix_time"), fields_json))
 
     def extract_fields(self, obj, name_stack, fields, msg_ts_id):
         """
