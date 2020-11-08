@@ -1,0 +1,28 @@
+version: "3.6"
+
+services:
+  grafana:
+    image: grafana/grafana:7.0.6
+    volumes:
+      - "./grafana_config/data.db:/app/data.db"
+      - "./grafana_config/grafana.ini:/etc/grafana/grafana.ini"
+      - "./grafana_config/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml"
+      - "./grafana_config/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml"
+      - "./grafana_config/dashboard.json:/app/dashboards/dashboard.json"
+      - "./dist:/var/lib/grafana/plugins/sqlite-datasource"
+    ports:
+      - 3000:3000
+  selenium:
+    image: selenium/standalone-chrome:84.0
+    shm_size: 2gb
+    ports:
+      - 4444:4444
+      - 5900:5900
+    environment:
+      VNC_NO_PASSWORD: "1"
+  start-setup:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - grafana
+      - selenium
+    command: grafana:3000 selenium:4444

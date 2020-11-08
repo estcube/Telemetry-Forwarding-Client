@@ -34,7 +34,7 @@ jobs:
         cd client
         pip3 install -r requirements.txt
         pip3 install pyinstaller
-        pyinstaller src/main.py --onefile --hidden-import csv
+        pyinstaller src/main.py --onefile --hidden-import csv --runtime-hook src/grafana_launcher.py
         sh build_windows_exe.sh
     - name: Archive the production artifact.
       uses: actions/upload-artifact@v1

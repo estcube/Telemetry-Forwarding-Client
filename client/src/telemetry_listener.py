@@ -1,4 +1,3 @@
-
 import sys
 import os
 import logging
@@ -7,22 +6,25 @@ from datetime import datetime
 from enum import Enum
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
+from client.kaitai.main_kaitai import *
 import util
+
 if getattr(sys, 'frozen', False):
     sys.path.append(os.path.join(util.get_root(), 'src'))
-from icp import Icp
+
 
 class TelemetryFrame():
     """ Data structure for the output of the telemetry listener that is sent to the repository. """
 
-    def __init__(self, packet_timestamp: datetime, recv_timestamp: datetime, fields):
+    def __init__(self, packet_timestamp: datetime, fields):
         self.timestamp = packet_timestamp
-        self.recv_timestamp = recv_timestamp
         self.fields = fields
+
 
 class TimestampType(Enum):
     """ Enum of the supported timestamp types. """
     unix = 'unix_timestamp'
+
 
 class TelemetryListener():
     """
@@ -57,44 +59,51 @@ class TelemetryListener():
 
     def receive(self, ax_frame: AXFrame):
         """
-        Main function that receives an AXFrame and processes its payload.
+        Main function that receives an AXFrame and processes its data.
 
         After processing, calls the database repository function to add the data to the database.
         """
 
         icp = None
         try:
-            icp = Icp.from_bytes(ax_frame.info)
+            icp = Main.from_bytes(ax_frame.info)
         except ValueError as error:
             self._logger.debug(error)
             self._logger.info("Failed to parse payload.")
             return
 
-        self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.data.mode)
-        self._logger.debug("Payload: %s", icp.data.payload)
+        self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.mode)
+        self._logger.debug("Payload: %s", icp.common_data)
 
-        obj = icp
-        for prefix_part in self.prefix:
-            # self._logger.debug("prefix_part: %s, obj: %s", prefix_part, obj)
-            if prefix_part not in dir(obj):
-                self._logger.debug("Didn't find the prefix part '%s'.", prefix_part)
-                return
-            obj = getattr(obj, prefix_part)
 
+        common = icp.common_data
+        spec = icp.spec_data
         fields = []
-        timestamp = self.extract_fields(obj, [], fields, self.msg_ts_id)
-        if timestamp is None:
-            self._logger.debug("Didn't find the configured msg timestamp from the fields")
-
-        ts_datetime = None
-
-        if self.msg_ts_type == TimestampType.unix:
-            ts_datetime = datetime.fromtimestamp(timestamp)
+        for elem in vars(icp):
+            if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith("sp") and not elem.startswith("cr"):
+                print(elem, getattr(icp, elem))
+                fields.append((elem, getattr(icp, elem)))
+        print(" ")
+        for elem in vars(common):
+            if not elem.startswith("_"):
+                print(elem, getattr(common, elem))
+                fields.append((elem, getattr(common, elem)))
+        print(" ")
+        for elem in vars(spec):
+            if not elem.startswith("_"):
+                print(elem, getattr(spec, elem))
+                fields.append((elem, getattr(spec, elem)))
+        print("")
 
         # TODO: CRC control
+        print("crc", getattr(icp, "crc"))
+        fields.append(("crc", getattr(icp, "crc")))
 
-        self.database.add_telemetry_frame(TelemetryFrame(ts_datetime, ax_frame.recv_time, fields))
+        tmp = dict(fields)
+        tmp.pop("uuid")
+        fields_json = json.dumps(tmp)
 
+        self.database.add_telemetry_frame(TelemetryFrame(common.unix_time, fields_json))
 
     def extract_fields(self, obj, name_stack, fields, msg_ts_id):
         """

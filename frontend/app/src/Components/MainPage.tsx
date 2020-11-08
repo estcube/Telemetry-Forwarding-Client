@@ -8,7 +8,6 @@ type MainPageState = {
   decodedPackets: { [key: string]: [{ [key: string]: string | number | { [key: string]: string } }] };
   telemetryConfiguration: { [key: string]: [{ [key: string]: any }] };
   dataFetchErrored: boolean;
-  packetsLoaded: boolean;
   telemetryConfLoaded: boolean;
   loading: boolean;
 };
@@ -42,7 +41,6 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
       telemetryConfiguration: {},
       decodedPackets: {},
       dataFetchErrored: false,
-      packetsLoaded: false,
       telemetryConfLoaded: false,
       loading: false
     };
@@ -50,18 +48,6 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
 
   componentDidMount(): void {
     this.setState({ loading: true });
-    fetch('/api/telemetry/packets')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then(responseJson => {
-        this.setState({ decodedPackets: responseJson });
-      })
-      .catch(() => this.setState({ dataFetchErrored: true }))
-      .finally(() => this.setState({ packetsLoaded: true }));
     fetch('/api/telemetry/configuration')
       .then(response => {
         if (!response.ok) {
@@ -78,14 +64,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
 
   render() {
     const { classes } = this.props;
-    const {
-      loading,
-      decodedPackets,
-      dataFetchErrored,
-      packetsLoaded,
-      telemetryConfLoaded,
-      telemetryConfiguration
-    } = this.state;
+    const { loading, decodedPackets, dataFetchErrored, telemetryConfLoaded, telemetryConfiguration } = this.state;
     let content;
     if (loading) {
       content = <CircularProgress />;
@@ -93,7 +72,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
       content = (
         <Typography variant="h6">Could not connect to the client. Try re-launching your client to fix this.</Typography>
       );
-    } else if (telemetryConfLoaded && packetsLoaded) {
+    } else if (telemetryConfLoaded) {
       content = <Data telemetryConfiguration={telemetryConfiguration} decodedPackets={decodedPackets} />;
     }
     return (

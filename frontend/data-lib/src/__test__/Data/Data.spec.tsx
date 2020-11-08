@@ -121,11 +121,11 @@ function renderDataPage() {
   return render(<Data decodedPackets={packetMock} telemetryConfiguration={telemetryConfMock} />);
 }
 
-describe('Find satellite-data class', () => {
+describe('Find grafana iframe', () => {
   afterEach(cleanup);
-  it('should find satellite-data class', async () => {
+  it('Find grafana iframe', async () => {
     const dataPage = renderDataPage();
-    const satelliteDataInDocument = await dataPage.findByTestId('satellite-data');
+    const satelliteDataInDocument = await dataPage.findByTitle('grafana');
     expect(satelliteDataInDocument).toBeInTheDocument();
   });
 });

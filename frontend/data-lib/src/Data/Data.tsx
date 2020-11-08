@@ -1,5 +1,4 @@
 import * as React from 'react';
-import SatelliteData from './SatelliteData';
 
 interface DataProps {
   decodedPackets: { [key: string]: { [key: string]: any }[] };
@@ -11,12 +10,14 @@ interface DataProps {
  */
 export default class Data extends React.Component<DataProps> {
   render() {
-    const { decodedPackets, telemetryConfiguration } = this.props;
     return (
       <div>
-        <div className="satellite-data" data-testid="satellite-data">
-          <SatelliteData decodedPackets={decodedPackets} telemetryConfiguration={telemetryConfiguration} />
-        </div>
+        <iframe
+          title="grafana"
+          src="http://localhost:3000/d-solo/P3JF_FpMz/sqllite-copy?orgId=2&theme=light&panelId=2"
+          width="450"
+          height="200"
+        />
       </div>
     );
   }

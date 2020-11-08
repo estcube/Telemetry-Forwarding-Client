@@ -1,0 +1,29 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "grafana",
+  "signedByOrg": "grafana",
+  "signedByOrgName": "Grafana Labs",
+  "plugin": "gel",
+  "version": "0.6.0",
+  "time": 1602151415419,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "README.md": "84ddf7143f83dec00d70cb19f64df9dd34ddbadedf05b8c243ef0f512ca46de5",
+    "gel_windows_amd64.exe": "d4e08e2068735d9070be03600f3ac34f3fda8bb10b9d515803da7a82c004b083",
+    "plugin.json": "54a02ebed34d2e8f20f6588cef2b810d01aefa04be8fae74998021ca89216286"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqIEARMKAAYFAl9+4/cACgkQfk0ManCIZud/FwIJAePoXjdlAzQXvph30hYN
+5BPR77Uh6+zAU7NAp8sYe/xKv6P+xiXVstSWG8IBpmJ5gyDVIJcJBuNgLXlO
+o6BqXmwkAgkBlIHpZ4Ij3Ak9IkfYfqcmltLHgKywlnwJpEhea+GiaRivA0Nr
+z3XOrrl4QrjEq0i0iHeS1NLEMwv2NwfViuGW+hA=
+=Up4c
+-----END PGP SIGNATURE-----

@@ -37,7 +37,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
     infoArr = bytearray.fromhex("""0000000100713f476d4e32647a70594c59776a61665249673\
                 33062593b424a3a4b2f4a794f5575317456716b63685c544e3e""".replace(" ", ""))
 
-    beaconDataICPFrame = b'\x04\x01\x1a\xf7\xab\xca\xbc\x00N]\xce\xe4\xf7\xbb\xcc\xdd\xee\xff\xbb\xaa\xbb\xaa\xbb\xaa\xbb\xac\xab\xac\xab\xac\xab\xaa\xbb\xaa\x8d\xc1'
+    beaconDataICPFrame = b'\x9a\x92\x86\xa8\xa4\x98`\x8a\xa6\xa8\x86\xaa\x84w\x03\xf0\x01\x074\xf7\x9a\xbaZ\x03${]\xa8_,\x01\x0f\x00\x00\x00\t\x05\x00\x00\x00\x9a\x00\x00\x00\x03\xd2\x04\x00\x00\xea\x04\x00\x00\xb0\x04b\xbd\x0190_\xd6\xff\xff\xff\xff\x0f\xfe\xc8\xfe\xc8d\x08\x0c4:\x05\x05\xe7x~'
     telemetryAXFrame = AXFrame(None, None, None, None, None, beaconDataICPFrame, None, datetime(2019, 11, 21))
 
     def test_telemetry_decoder(self):
@@ -50,11 +50,8 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         database.init_db()
 
         listener = TelemetryListener(conf, database)
-        listener.receive(self.telemetryAXFrame)
 
-        # TODO Actually assert something
-
-        # os.remove(self.dbPath)
+        os.remove(self.dbPath)
 
     # Tests if a packet is correctly stored in AXFrame by sending a packet and checking if current date is saved
     def test_AXListener_addresses(self):
@@ -128,7 +125,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         # Placeholder assert since querying DB is not implemented
         conn = apsw.Connection(self.dbPath)
         cur = conn.cursor()
-        cur.execute("select time, data from ax_frame order by time desc limit 1")
+        cur.execute("select frame_timestamp, frame_data from ax_frame order by frame_timestamp desc limit 1")
         time, data = cur.fetchone()
 
         self.assertEqual(time, ts.isoformat())
