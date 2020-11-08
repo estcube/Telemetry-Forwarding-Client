@@ -179,7 +179,32 @@ CONSTRAINTS = {
             "label": "Debug logging",
             "value": False,
             "description": "Turn on debug level logging"
+        },
+        "relay-interval": {
+            "type": "int",
+            "description": "Interval between relaying all unrelayed packets in seconds.",
+            "requiresRestart": True,
+            "label": "Relay interval",
+            "min": 0,
+            "value": "3600"
+        },
+        "ping-interval": {
+            "type": "int",
+            "description": "Interval between pings to check relay endpoint connection in seconds.",
+            "requiresRestart": True,
+            "label": "Ping interval",
+            "min": 0,
+            "value": "300"
+        },
+        "lost-packet-count": {
+            "type": "int",
+            "description": "Number of packets lost in a row to stop relay.",
+            "requiresRestart": True,
+            "label": "Lost packet count",
+            "min": 1,
+            "value": "10"
         }
+
     }
 }
 
