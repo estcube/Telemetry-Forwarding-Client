@@ -37,9 +37,10 @@ class SIDSRelay(object):
         self.last_status = RelayStatus.NO_REQUESTS
         self.request_counter = 0
         self.failed_in_a_row = 0
+        #Start thread to relay packets every set interval
         threading.Thread(target=self.relay_unrelayed_packets_every_interval).start()
 
-
+    #Function to check if endpoint is online
     def ping_connection(self):
         url = self.config.get_conf("Mission Control", "mcs-relay-url")
         response = requests.get(url)
@@ -47,6 +48,7 @@ class SIDSRelay(object):
             return True
         return False
 
+    #Function that tries to relay all frames from database that are marked as unrelayed
     def relay_unrelayed_packets(self):
         self.failed_in_a_row = 0
         while True:
@@ -56,6 +58,7 @@ class SIDSRelay(object):
             if len(frames) < 100:
                 break
 
+    #Function that pings the endpoint every set interval to check if it has come back online
     def start_pinger(self):
         while True:
             if self.ping_connection():
@@ -64,6 +67,7 @@ class SIDSRelay(object):
                 break
             time.sleep(int(self.config.get_conf("Client", "ping-interval")))
 
+    #Function that relays all packets every interval
     def relay_unrelayed_packets_every_interval(self):
         while True:
             if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
@@ -76,7 +80,7 @@ class SIDSRelay(object):
         """ If relaying is enabled, sends the frame to the configured SIDS server. """
         self._logger.debug("Received frame.")
 
-        # FIXME: Conf can return both str and bool.
+        #If relay is turned off or endpoint offline
         if str(self.config.get_conf("Mission Control", "relay-enabled")) != "True" or self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
             return
 
@@ -133,8 +137,10 @@ class SIDSRelay(object):
 
         if self.last_status != RelayStatus.SUCCESS:
             self.failed_in_a_row += 1
+
+            #If set amount of packets have been unsuccessfully relayed in a row, start thread to ping connection to see when it comes back online
             if self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
-                self.start_pinger()
+                threading.Thread(target=self.start_pinger).start()
 
 
 
