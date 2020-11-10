@@ -34,12 +34,7 @@ connection-retry-time=5
 # Source of AX.25 frame that the client will accept and forward
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 satellite-src = CHANGE_ME
-# Interval between relaying all unrelayed packets in seconds
-relay-interval = 3600
-# Interval between pings to check relay endpoint connection in seconds
-ping-interval = 300
-# Number of packets lost in a row to stop relay
-lost-packet-count = 10
+
 
 
 [Client]
@@ -62,3 +57,9 @@ kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 frontend-port=5000
 # Turns on debug logging for the client.
 debug-log = False
+# Interval between relaying all unrelayed packets in seconds
+relay-interval = 3600
+# Interval between pings to check relay endpoint connection in seconds
+ping-interval = 300
+# Number of packets lost in a row to stop relay
+lost-packet-count = 10
