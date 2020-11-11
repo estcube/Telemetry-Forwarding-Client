@@ -1,5 +1,5 @@
 meta:
-  id: main
+  id: main_kaitai
   endian: le
   imports:
     - common
@@ -20,7 +20,7 @@ seq:
     type: u1
   - id: cmd
     type: u1
-    enum: command
+#enum: command
   - id: uuid
     size: 3
   - id: mode

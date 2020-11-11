@@ -68,3 +68,4 @@ def hk_pcom_temp_curr_2(temp: int) -> bytes:
     return temp.to_bytes(1, byteorder='little')
 
 
+

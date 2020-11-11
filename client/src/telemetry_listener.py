@@ -6,7 +6,7 @@ from datetime import datetime
 from enum import Enum
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
-from client.kaitai.main_kaitai import *
+from main_kaitai import MainKaitai
 import util
 
 if getattr(sys, 'frozen', False):
@@ -66,7 +66,7 @@ class TelemetryListener():
 
         icp = None
         try:
-            icp = Main.from_bytes(ax_frame.info)
+            icp = MainKaitai.from_bytes(ax_frame.info)
         except ValueError as error:
             self._logger.debug(error)
             self._logger.info("Failed to parse payload.")
@@ -75,26 +75,60 @@ class TelemetryListener():
         self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.mode)
         self._logger.debug("Payload: %s", icp.common_data)
 
-
         common = icp.common_data
         spec = icp.spec_data
         fields = []
+
+        """Parses the icp header"""
         for elem in vars(icp):
-            if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith("sp") and not elem.startswith("cr"):
-                print(elem, getattr(icp, elem))
+            if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith(
+                    "sp") and not elem.startswith("cr"):
+                if elem == "uuid":
+                    print(elem, int.from_bytes(getattr(icp, elem), "big"))
+                else:
+                    print(elem, getattr(icp, elem))
                 fields.append((elem, getattr(icp, elem)))
         print(" ")
+
+        """Parses the common data"""
         for elem in vars(common):
             if not elem.startswith("_"):
                 print(elem, getattr(common, elem))
                 fields.append((elem, getattr(common, elem)))
         print(" ")
-        for elem in vars(spec):
-            if not elem.startswith("_"):
-                print(elem, getattr(spec, elem))
-                fields.append((elem, getattr(spec, elem)))
-        print("")
 
+        """Parses the subsystem specific data"""
+        #com and obcs have two separate .ksy files
+        if spec.__class__.__name__ == "Com":
+            for elem in vars(spec.pcom):
+                if not elem.startswith("_"):
+                    print(elem, getattr(spec.pcom, elem))
+                    fields.append((elem, getattr(spec.pcom, elem)))
+            print(" ")
+            for elem in vars(spec.scom):
+                if not elem.startswith("_"):
+                    print(elem, getattr(spec.scom, elem))
+                    fields.append((elem, getattr(spec.scom, elem)))
+            print(" ")
+        elif spec.__class__.__name__ == "Obcs":
+            for elem in vars(spec.obc):
+                if not elem.startswith("_"):
+                    print(elem, getattr(spec.obc, elem))
+                    fields.append((elem, getattr(spec.obc, elem)))
+            print(" ")
+            for elem in vars(spec.aocs):
+                if not elem.startswith("_"):
+                    print(elem, getattr(spec.aocs, elem))
+                    fields.append((elem, getattr(spec.aocs, elem)))
+            print(" ")
+
+        #eps, st and sp have a single file .ksy file
+        else:
+            for elem in vars(spec):
+                if not elem.startswith("_"):
+                    print(elem, getattr(spec, elem))
+                    fields.append((elem, getattr(spec, elem)))
+            print(" ")
 
         print("crc", getattr(icp, "crc"))
         fields.append(("crc", getattr(icp, "crc")))

@@ -1,8 +1,13 @@
 import random
-from datetime import datetime, timedelta
 from axFrameWriter import FrameBuilder
-from hk_common import *
-from hk_sp import *
+from test_code_common import *
+from test_code_eps import *
+from test_code_aocs import *
+from test_code_obc import *
+from test_code_st import *
+from test_code_sp import *
+from test_code_pcom import *
+from test_code_scom import *
 
 class BeaconGenerator:
 
@@ -19,48 +24,45 @@ class BeaconGenerator:
 
 
 
-    def generate_normal_beacon(self) -> bytearray:
+    def generate_normal_beacon(self, src: int) -> bytearray:
 
-        common = bytearray(hk_common_system_status(False, Housekeepings_Modes.HK_MODE_SAFE, 0))
-        common.extend(hk_common_unix_timestamp())
-        common.extend(hk_common_commands_in_queue(300))
-        common.extend(hk_common_handled_commands(15))
-        common.extend(hk_common_handled_gs_commands(9))
-        common.extend(hk_common_number_of_errors(5))
-        common.extend(hk_common_time_last_error(154))
-        common.extend(hk_common_number_of_resets(3))
-        common.extend(hk_common_last_reset_reason(1234))
-        common.extend(hk_common_uptime(1258))
-        common.extend(hk_common_available_heap(1200))
-        common.extend(hk_common_active_tasks(98))
-        common.extend(hk_common_cpu_temp(47.3))
-        common.extend(hk_common_current_firmware_slot(1))
-        common.extend(hk_common_firmware_version(12345))
-        common.extend(hk_common_firmware_version(54879))
-        common.extend(hk_common_firmware_version(65535))
-        common.extend(hk_common_firmware_version(65535))
-        common.extend(hk_common_firmware_slot_status(0x0F))
+        hk_packet = CommonData().createData()
+        spec = bytearray()
 
-        sp = bytearray(hk_sp_enabled([1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0]))
-        sp.extend(hk_sp_errors([1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0]))
-        sp.extend(hk_sp_temp_current(100))
-        sp.extend(hk_sp_mppt_current(3080))
-        sp.extend(hk_sp_coil_current(14900))
+        if src == 2:
+            spec = PcomData().createData()
+            spec.extend(ScomData().createData())
+        elif src == 3:
+            spec = EpsData().createData()
+        elif src == 4:
+            spec = ObcData().createData()
+            spec.extend(AocsData().createData())
+        elif src == 5:
+            spec = StData().createData()
+        elif 6 <= src <= 9:
+            spec = SpData().createData()
+        else:
+            print("ERROR")
 
-        hk_packet = common
-        hk_packet.extend(sp)
-
+        hk_packet.extend(spec)
         return hk_packet
 
-    def generate_icp(self):
-        beacon_data = self.generate_normal_beacon()
+    def generate_icp(self, src: int):
+
+        """
+        Paremeter src specifies the subsystem from which the data comes from
+        """
+
+        beacon_data = self.generate_normal_beacon(src)
 
         f = bytearray()
         f.append(0x01)
-        f.append(0x07)
+        f.append(src)
         f.append(len(beacon_data))
         f.append(0xF7)
-        f += random.randint(0, 16777214).to_bytes(3, "big")
+        tmp = random.randint(0, 16777214)
+        print("UUID CHECK: ", tmp)
+        f += tmp.to_bytes(3, "big")
         f.append(0x03)  # TODO Mode: NOW
         f += beacon_data
         f.append(0x05)  # TODO CRC
@@ -69,6 +71,6 @@ class BeaconGenerator:
         return f
 
     def generate_ax(self):
-        icp = self.generate_icp()
+        icp = self.generate_icp(9)
         self.ax.setInfo(icp)
         return self.ax.build()
