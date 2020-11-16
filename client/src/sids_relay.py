@@ -55,7 +55,7 @@ class SIDSRelay(object):
             frames = self.db.get_unrelayed_frames(100)
             for frame in frames:
                 self.relay(frame)
-            if len(frames) < 100:
+            if len(frames) < 100 or self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
                 break
 
     #Function that relays all packets every interval
@@ -63,7 +63,6 @@ class SIDSRelay(object):
         while True:
             if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
                 if self.ping_connection():
-                    self.failed_in_a_row = 0
                     self.relay_unrelayed_packets()
             time.sleep(int(self.config.get_conf("Client", "relay-interval")))
 
