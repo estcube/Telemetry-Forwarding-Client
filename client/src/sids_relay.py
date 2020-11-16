@@ -37,6 +37,7 @@ class SIDSRelay(object):
         self.last_status = RelayStatus.NO_REQUESTS
         self.request_counter = 0
         self.failed_in_a_row = 0
+        self.relay_active = False
         #Start thread to relay packets every set interval
         threading.Thread(target=self.relay_unrelayed_packets_every_interval).start()
 
@@ -50,6 +51,9 @@ class SIDSRelay(object):
 
     #Function that tries to relay all frames from database that are marked as unrelayed
     def relay_unrelayed_packets(self):
+        if self.relay_active:
+            return
+        self.relay_active = True
         self.failed_in_a_row = 0
         while True:
             frames = self.db.get_unrelayed_frames(100)
@@ -57,6 +61,7 @@ class SIDSRelay(object):
                 self.relay(frame)
             if len(frames) < 100 or self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
                 break
+        self.relay_active = False
 
     #Function that relays all packets every interval
     def relay_unrelayed_packets_every_interval(self):
