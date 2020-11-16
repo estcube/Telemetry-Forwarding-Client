@@ -59,7 +59,5 @@ frontend-port=5000
 debug-log = False
 # Interval between relaying all unrelayed packets in seconds
 relay-interval = 3600
-# Interval between pings to check relay endpoint connection in seconds
-ping-interval = 300
 # Number of packets lost in a row to stop relay
 lost-packet-count = 10

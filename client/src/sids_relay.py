@@ -58,20 +58,12 @@ class SIDSRelay(object):
             if len(frames) < 100:
                 break
 
-    #Function that pings the endpoint every set interval to check if it has come back online
-    def start_pinger(self):
-        while True:
-            if self.ping_connection():
-                self.failed_in_a_row = 0
-                self.relay_unrelayed_packets()
-                break
-            time.sleep(int(self.config.get_conf("Client", "ping-interval")))
-
     #Function that relays all packets every interval
     def relay_unrelayed_packets_every_interval(self):
         while True:
             if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
                 if self.ping_connection():
+                    self.failed_in_a_row = 0
                     self.relay_unrelayed_packets()
             time.sleep(int(self.config.get_conf("Client", "relay-interval")))
 
@@ -137,10 +129,6 @@ class SIDSRelay(object):
 
         if self.last_status != RelayStatus.SUCCESS:
             self.failed_in_a_row += 1
-
-            #If set amount of packets have been unsuccessfully relayed in a row, start thread to ping connection to see when it comes back online
-            if self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
-                threading.Thread(target=self.start_pinger).start()
 
 
 
