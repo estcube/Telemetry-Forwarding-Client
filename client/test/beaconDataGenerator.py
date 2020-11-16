@@ -71,6 +71,6 @@ class BeaconGenerator:
         return f
 
     def generate_ax(self):
-        icp = self.generate_icp(9)
+        icp = self.generate_icp(2)
         self.ax.setInfo(icp)
         return self.ax.build()

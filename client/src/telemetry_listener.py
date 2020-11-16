@@ -85,16 +85,21 @@ class TelemetryListener():
                     "sp") and not elem.startswith("cr"):
                 if elem == "uuid":
                     print(elem, int.from_bytes(getattr(icp, elem), "big"))
+                    fields.append((elem, int.from_bytes(getattr(icp, elem), "big")))
                 else:
                     print(elem, getattr(icp, elem))
-                fields.append((elem, getattr(icp, elem)))
+                    fields.append((elem, getattr(icp, elem)))
         print(" ")
 
         """Parses the common data"""
         for elem in vars(common):
             if not elem.startswith("_"):
-                print(elem, getattr(common, elem))
-                fields.append((elem, getattr(common, elem)))
+                if elem == "cpu_temp":
+                    print(elem, getattr(common, elem) * 0.25)
+                    fields.append((elem, getattr(common, elem) * 0.25))
+                else:
+                    print(elem, getattr(common, elem))
+                    fields.append((elem, getattr(common, elem)))
         print(" ")
 
         """Parses the subsystem specific data"""
@@ -102,8 +107,12 @@ class TelemetryListener():
         if spec.__class__.__name__ == "Com":
             for elem in vars(spec.pcom):
                 if not elem.startswith("_"):
-                    print(elem, getattr(spec.pcom, elem))
-                    fields.append((elem, getattr(spec.pcom, elem)))
+                    if elem == "temp_curr_1" or elem == "temp_curr_2":
+                        print(elem, getattr(spec.pcom, elem) * 0.25 - 10)
+                        fields.append((elem, getattr(spec.pcom, elem) * 0.25 - 10))
+                    else:
+                        print(elem, getattr(spec.pcom, elem))
+                        fields.append((elem, getattr(spec.pcom, elem)))
             print(" ")
             for elem in vars(spec.scom):
                 if not elem.startswith("_"):
@@ -126,8 +135,12 @@ class TelemetryListener():
         else:
             for elem in vars(spec):
                 if not elem.startswith("_"):
-                    print(elem, getattr(spec, elem))
-                    fields.append((elem, getattr(spec, elem)))
+                    if elem == "temp_curr":
+                        print(elem, getattr(spec, elem) * 0.25 - 10)
+                        fields.append((elem, getattr(spec, elem) * 0.25 - 10))
+                    else:
+                        print(elem, getattr(spec, elem))
+                        fields.append((elem, getattr(spec, elem)))
             print(" ")
 
         print("crc", getattr(icp, "crc"))

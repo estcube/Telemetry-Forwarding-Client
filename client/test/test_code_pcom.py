@@ -15,8 +15,8 @@ class PcomData():
         hk_packet.extend(hk_pcom_power_amp_temp(68))
         hk_packet.extend(hk_pcom_forward_rf_power(88))
         hk_packet.extend(hk_pcom_reflected_rf_power(99))
-        hk_packet.extend(hk_pcom_temp_curr_1(150))
-        hk_packet.extend(hk_pcom_temp_curr_2(160))
+        hk_packet.extend(hk_pcom_temp_curr_1(-4.3))
+        hk_packet.extend(hk_pcom_temp_curr_2(29.8))
         return hk_packet
 
 

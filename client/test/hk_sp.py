@@ -27,7 +27,7 @@ def hk_sp_errors(bits: list) -> bytes:
 
 
 def hk_sp_temp_current(temp: int) -> bytes:
-    return temp.to_bytes(1, byteorder='little')
+    return int((temp + 10) / 0.25).to_bytes(1, byteorder='little')
 
 def hk_sp_mppt_current(mppt: int) -> bytes:
     return mppt.to_bytes(2, byteorder='little')
