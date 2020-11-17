@@ -2,6 +2,7 @@ from random import random
 
 from hk_common import *
 from hk_sp import *
+
 from test_code_common import *
 from test_code_eps import *
 from test_code_aocs import *
@@ -10,10 +11,13 @@ from test_code_st import *
 from test_code_sp import *
 from test_code_pcom import *
 from test_code_scom import *
+
 from client.kaitai.main_kaitai import *
 
 
 def generate_normal_beacon() -> bytearray:
+
+
     common = CommonData().createData()
     obc = ObcData().createData()
     aocs = AocsData().createData()

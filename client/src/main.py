@@ -69,8 +69,8 @@ def main(argv):
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
     file_logger = FileLogger(conf.get_conf("Client", "logs"))
-
     telemetry_listener = TelemetryListener(database)
+
 
     # Create the flask app and start it in a forked process.
     port = None

@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - automatic-tests-to-ci-experiment-v2
+      - ci-windows-release-and-tests
 jobs:
   build:
     runs-on: windows-latest

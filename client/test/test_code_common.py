@@ -23,3 +23,4 @@ class CommonData():
         common.extend(hk_common_firmware_slot_status(0x0F))
 
         return common
+

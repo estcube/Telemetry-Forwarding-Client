@@ -11,7 +11,6 @@ sys.path.append(os.path.dirname(sys.executable))
 from main_kaitai import MainKaitai
 
 
-
 if getattr(sys, 'frozen', False):
     sys.path.append(os.path.join(util.get_root(), 'src'))
 
@@ -62,7 +61,6 @@ class TelemetryListener():
         self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.mode)
         self._logger.debug("Payload: %s", icp.common_data)
 
-
         common = icp.common_data
         spec = icp.spec_data
         fields = []
@@ -70,19 +68,28 @@ class TelemetryListener():
         for elem in vars(icp):
             if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith(
                     "sp") and not elem.startswith("cr"):
-                fields.append((elem, getattr(icp, elem)))
+                if elem == "uuid":
+                    fields.append((elem, int.from_bytes(getattr(icp, elem), "big")))
+                else:
+                    fields.append((elem, getattr(icp, elem)))
 
         """Parses the common data"""
         for elem in vars(common):
             if not elem.startswith("_"):
-                fields.append((elem, getattr(common, elem)))
+                if elem == "cpu_temp":
+                    fields.append((elem, getattr(common, elem) * 0.25))
+                else:
+                    fields.append((elem, getattr(common, elem)))
 
         """Parses the subsystem specific data"""
         #com and obcs have two separate .ksy files
         if spec.__class__.__name__ == "Com":
             for elem in vars(spec.pcom):
                 if not elem.startswith("_"):
-                    fields.append((elem, getattr(spec.pcom, elem)))
+                    if elem == "temp_curr_1" or elem == "temp_curr_2":
+                        fields.append((elem, getattr(spec.pcom, elem) * 0.25 - 10))
+                    else:
+                        fields.append((elem, getattr(spec.pcom, elem)))
             for elem in vars(spec.scom):
                 if not elem.startswith("_"):
                     fields.append((elem, getattr(spec.scom, elem)))
@@ -98,8 +105,10 @@ class TelemetryListener():
         else:
             for elem in vars(spec):
                 if not elem.startswith("_"):
-                    fields.append((elem, getattr(spec, elem)))
-                    
+                    if elem == "temp_curr":
+                        fields.append((elem, getattr(spec, elem) * 0.25 - 10))
+                    else:
+                        fields.append((elem, getattr(spec, elem)))
         fields.append(("crc", getattr(icp, "crc")))
 
         tmp = dict(fields)
