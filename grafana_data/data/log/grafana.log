@@ -1,0 +1,153 @@
+t=2020-11-02T16:17:42+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-02T16:17:42+0200 lvl=info msg="Config loaded from" logger=settings file=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana/conf/defaults.ini
+t=2020-11-02T16:17:42+0200 lvl=info msg="Path Home" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana
+t=2020-11-02T16:17:42+0200 lvl=info msg="Path Data" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data
+t=2020-11-02T16:17:42+0200 lvl=info msg="Path Logs" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\log
+t=2020-11-02T16:17:42+0200 lvl=info msg="Path Plugins" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\plugins
+t=2020-11-02T16:17:42+0200 lvl=info msg="Path Provisioning" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\conf\\provisioning
+t=2020-11-02T16:17:42+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-02T16:17:42+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-02T16:17:42+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-02T16:17:42+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-02T16:17:42+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-02T16:17:42+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-02T16:17:42+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-02T16:17:42+0200 lvl=info msg="External plugins directory created" logger=plugins directory=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\plugins
+t=2020-11-02T16:17:42+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-02T16:19:13+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:3 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-10-26T23:59:01+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login:admin Name: Role:Admin]] Queries:[map[Interval:6e+10 JSON:map[datasource:sqlite-datasource datasourceId:3 intervalMs:60000 maxDataPoints:455 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:455 QueryType: RefID:A TimeRange:map[From:2020-11-02T10:19:13.313+02:00 To:2020-11-02T16:19:13.313+02:00]]]]"
+t=2020-11-02T16:19:33+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:3 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-10-26T23:59:01+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login:admin Name: Role:Admin]] Queries:[map[Interval:3e+10 JSON:map[datasource:sqlite-datasource datasourceId:3 intervalMs:30000 maxDataPoints:492 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:492 QueryType: RefID:A TimeRange:map[From:2020-11-02T10:19:33.954+02:00 To:2020-11-02T16:19:33.954+02:00]]]]"
+t=2020-11-02T17:22:49+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:3 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-10-26T23:59:01+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login:admin Name: Role:Admin]] Queries:[map[Interval:6e+10 JSON:map[datasource:sqlite-datasource datasourceId:3 intervalMs:60000 maxDataPoints:446 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:446 QueryType: RefID:A TimeRange:map[From:2020-11-02T11:22:49.431+02:00 To:2020-11-02T17:22:49.431+02:00]]]]"
+t=2020-11-02T18:54:33+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-02T18:54:33+0200 lvl=info msg="Config loaded from" logger=settings file=grafana/conf/defaults.ini
+t=2020-11-02T18:54:33+0200 lvl=info msg="Path Home" logger=settings path=grafana
+t=2020-11-02T18:54:33+0200 lvl=info msg="Path Data" logger=settings path=grafana\\data
+t=2020-11-02T18:54:33+0200 lvl=info msg="Path Logs" logger=settings path=grafana\\data\\log
+t=2020-11-02T18:54:33+0200 lvl=info msg="Path Plugins" logger=settings path=grafana\\data\\plugins
+t=2020-11-02T18:54:33+0200 lvl=info msg="Path Provisioning" logger=settings path=grafana\\conf\\provisioning
+t=2020-11-02T18:54:33+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-02T18:54:33+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-02T18:54:33+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-02T18:54:33+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-02T18:54:33+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-02T18:54:33+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-02T18:54:33+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-02T18:54:33+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=grafana\\plugins-bundled\\internal\\input-datasource\\module.js
+t=2020-11-02T18:54:33+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-02T19:34:01+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-02T19:34:01+0200 lvl=info msg="Config loaded from" logger=settings file=grafana/conf/defaults.ini
+t=2020-11-02T19:34:01+0200 lvl=info msg="Path Home" logger=settings path=grafana
+t=2020-11-02T19:34:01+0200 lvl=info msg="Path Data" logger=settings path=grafana\\data
+t=2020-11-02T19:34:01+0200 lvl=info msg="Path Logs" logger=settings path=grafana\\data\\log
+t=2020-11-02T19:34:01+0200 lvl=info msg="Path Plugins" logger=settings path=grafana\\data\\plugins
+t=2020-11-02T19:34:01+0200 lvl=info msg="Path Provisioning" logger=settings path=grafana\\conf\\provisioning
+t=2020-11-02T19:34:01+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-02T19:34:01+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-02T19:34:01+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-02T19:34:01+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-02T19:34:01+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-02T19:34:01+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-02T19:34:01+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-02T19:34:01+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=grafana\\plugins-bundled\\internal\\input-datasource\\LICENSE
+t=2020-11-02T19:34:01+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-02T19:34:17+0200 lvl=info msg="Shutdown started" logger=server reason="System signal: interrupt"
+t=2020-11-09T00:21:59+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-09T00:21:59+0200 lvl=info msg="Config loaded from" logger=settings file=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana/conf/defaults.ini
+t=2020-11-09T00:21:59+0200 lvl=info msg="Path Home" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana
+t=2020-11-09T00:21:59+0200 lvl=info msg="Path Data" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data
+t=2020-11-09T00:21:59+0200 lvl=info msg="Path Logs" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\log
+t=2020-11-09T00:21:59+0200 lvl=info msg="Path Plugins" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\plugins
+t=2020-11-09T00:21:59+0200 lvl=info msg="Path Provisioning" logger=settings path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\conf\\provisioning
+t=2020-11-09T00:21:59+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-09T00:21:59+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-09T00:21:59+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-09T00:21:59+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-09T00:21:59+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-09T00:21:59+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-09T00:21:59+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-09T00:21:59+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=C:\\Users\\Teet\\Desktop\\estcub\\Telemetry-Forwarding-Client\\grafana\\plugins-bundled\\internal\\input-datasource\\LICENSE
+t=2020-11-09T00:21:59+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-09T00:22:14+0200 lvl=eror msg="Failed to look up user based on cookie" logger=context error="user token not found"
+t=2020-11-09T00:22:15+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:3 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-10-26T23:59:01+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login: Name: Role:Viewer]] Queries:[map[Interval:6e+10 JSON:map[datasource:sqlite-datasource datasourceId:3 intervalMs:60000 maxDataPoints:446 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:446 QueryType: RefID:A TimeRange:map[From:2020-11-08T18:22:15.349+02:00 To:2020-11-09T00:22:15.349+02:00]]]]"
+t=2020-11-09T00:22:59+0200 lvl=info msg="Shutdown started" logger=server reason="System signal: interrupt"
+t=2020-11-10T01:26:13+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-10T01:26:13+0200 lvl=info msg="Config loaded from" logger=settings file=C:\\Users\\Teet\\Desktop\\grafana/conf/defaults.ini
+t=2020-11-10T01:26:13+0200 lvl=info msg="Path Home" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana
+t=2020-11-10T01:26:13+0200 lvl=info msg="Path Data" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data
+t=2020-11-10T01:26:13+0200 lvl=info msg="Path Logs" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\log
+t=2020-11-10T01:26:13+0200 lvl=info msg="Path Plugins" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\plugins
+t=2020-11-10T01:26:13+0200 lvl=info msg="Path Provisioning" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\conf\\provisioning
+t=2020-11-10T01:26:13+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-10T01:26:13+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-10T01:26:13+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=C:\\Users\\Teet\\Desktop\\grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-10T01:26:13+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-10T01:26:13+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-10T01:26:13+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-10T01:26:13+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-10T01:26:13+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=C:\\Users\\Teet\\Desktop\\grafana\\plugins-bundled\\internal\\input-datasource\\LICENSE
+t=2020-11-10T01:26:14+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-10T01:26:34+0200 lvl=eror msg="Failed to look up user based on cookie" logger=context error="user token not found"
+t=2020-11-10T01:26:40+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:3 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-10-26T23:59:01+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login: Name: Role:Viewer]] Queries:[map[Interval:3e+10 JSON:map[datasource:sqlite-datasource datasourceId:3 intervalMs:30000 maxDataPoints:769 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:769 QueryType: RefID:A TimeRange:map[From:2020-11-09T19:26:40.274+02:00 To:2020-11-10T01:26:40.274+02:00]]]]"
+t=2020-11-10T01:26:40+0200 lvl=eror msg="Could execute query" logger=plugins.backend pluginId=frser-sqlite-datasource err="unable to open database file: The system cannot find the path specified." query="SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet"
+t=2020-11-10T01:26:40+0200 lvl=info msg="Request Completed" logger=context userId=0 orgId=2 uname= method=POST path=/api/ds/query status=400 remote_addr=[::1] time_ms=4 size=243 referer="http://localhost:3000/d/P3JF_FpMz/sqllite-copy?orgId=2"
+t=2020-11-10T01:28:41+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:3 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-10-26T23:59:01+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login: Name: Role:Viewer]] Queries:[map[Interval:3e+10 JSON:map[datasource:sqlite-datasource datasourceId:3 intervalMs:30000 maxDataPoints:769 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:769 QueryType: RefID:A TimeRange:map[From:2020-11-09T19:28:41.89+02:00 To:2020-11-10T01:28:41.89+02:00]]]]"
+t=2020-11-10T01:28:41+0200 lvl=eror msg="Could execute query" logger=plugins.backend pluginId=frser-sqlite-datasource err="unable to open database file: The system cannot find the path specified." query="SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet"
+t=2020-11-10T01:28:41+0200 lvl=info msg="Request Completed" logger=context userId=0 orgId=2 uname= method=POST path=/api/ds/query status=400 remote_addr=[::1] time_ms=0 size=243 referer="http://localhost:3000/d/P3JF_FpMz/sqllite-copy?orgId=2"
+t=2020-11-10T09:10:47+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-10T09:10:47+0200 lvl=info msg="Config loaded from" logger=settings file=C:\\Users\\Teet\\Desktop\\grafana/conf/defaults.ini
+t=2020-11-10T09:10:47+0200 lvl=info msg="Path Home" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana
+t=2020-11-10T09:10:47+0200 lvl=info msg="Path Data" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data
+t=2020-11-10T09:10:47+0200 lvl=info msg="Path Logs" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\log
+t=2020-11-10T09:10:47+0200 lvl=info msg="Path Plugins" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\plugins
+t=2020-11-10T09:10:47+0200 lvl=info msg="Path Provisioning" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\conf\\provisioning
+t=2020-11-10T09:10:47+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-10T09:10:47+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-10T09:10:47+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=C:\\Users\\Teet\\Desktop\\grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-10T09:10:47+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-10T09:10:47+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-10T09:10:47+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-10T09:10:47+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=C:\\Users\\Teet\\Desktop\\grafana\\plugins-bundled\\internal\\input-datasource\\LICENSE
+t=2020-11-10T09:10:47+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-10T09:10:56+0200 lvl=eror msg="Could not find plugin definition for data source: frser-sqlite-datasource"
+t=2020-11-10T09:11:01+0200 lvl=info msg="Request Completed" logger=context userId=0 orgId=2 uname= method=GET path=/ status=302 remote_addr=[::1] time_ms=7 size=29 referer="http://localhost:3000/?orgId=2"
+t=2020-11-10T09:11:01+0200 lvl=eror msg="Could not find plugin definition for data source: frser-sqlite-datasource"
+t=2020-11-10T09:11:08+0200 lvl=info msg="Successful Login" logger=http.server User=admin@localhost
+t=2020-11-10T09:11:11+0200 lvl=eror msg="Could not find plugin definition for data source: frser-sqlite-datasource"
+t=2020-11-10T09:11:21+0200 lvl=info msg="Request Completed" logger=context userId=1 orgId=2 uname=admin method=POST path=/api/tsdb/query status=400 remote_addr=[::1] time_ms=1048 size=422 referer=http://localhost:3000/datasources/edit/2/
+t=2020-11-10T09:11:24+0200 lvl=eror msg="Could not find plugin definition for data source: frser-sqlite-datasource"
+t=2020-11-10T09:11:25+0200 lvl=info msg="Request Completed" logger=context userId=1 orgId=2 uname=admin method=GET path=/api/plugins/frser-sqlite-datasource/settings status=404 remote_addr=[::1] time_ms=3 size=64 referer=http://localhost:3000/datasources/edit/3/
+t=2020-11-10T09:13:55+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-10T09:13:55+0200 lvl=info msg="Config loaded from" logger=settings file=C:\\Users\\Teet\\Desktop\\grafana/conf/defaults.ini
+t=2020-11-10T09:13:55+0200 lvl=info msg="Path Home" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana
+t=2020-11-10T09:13:55+0200 lvl=info msg="Path Data" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data
+t=2020-11-10T09:13:55+0200 lvl=info msg="Path Logs" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\log
+t=2020-11-10T09:13:55+0200 lvl=info msg="Path Plugins" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\plugins
+t=2020-11-10T09:13:55+0200 lvl=info msg="Path Provisioning" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\conf\\provisioning
+t=2020-11-10T09:13:55+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-10T09:13:55+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-10T09:13:55+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=C:\\Users\\Teet\\Desktop\\grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-10T09:13:55+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-10T09:13:55+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-10T09:13:55+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-10T09:13:55+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-10T09:13:56+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=C:\\Users\\Teet\\Desktop\\grafana\\plugins-bundled\\internal\\input-datasource\\module.js
+t=2020-11-10T09:13:56+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-10T09:14:39+0200 lvl=info msg="Request Completed" logger=context userId=1 orgId=2 uname=admin method=GET path=/api/datasources/4/health status=503 remote_addr=[::1] time_ms=9 size=77 referer=http://localhost:3000/datasources/edit/4/
+t=2020-11-10T09:15:15+0200 lvl=info msg="Starting Grafana" logger=server version=7.2.1 commit=72a6c64532 branch=HEAD compiled=2020-10-08T12:00:32+0300
+t=2020-11-10T09:15:15+0200 lvl=info msg="Config loaded from" logger=settings file=C:\\Users\\Teet\\Desktop\\grafana/conf/defaults.ini
+t=2020-11-10T09:15:15+0200 lvl=info msg="Path Home" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana
+t=2020-11-10T09:15:15+0200 lvl=info msg="Path Data" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data
+t=2020-11-10T09:15:15+0200 lvl=info msg="Path Logs" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\log
+t=2020-11-10T09:15:15+0200 lvl=info msg="Path Plugins" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\data\\plugins
+t=2020-11-10T09:15:15+0200 lvl=info msg="Path Provisioning" logger=settings path=C:\\Users\\Teet\\Desktop\\grafana\\conf\\provisioning
+t=2020-11-10T09:15:15+0200 lvl=info msg="App mode production" logger=settings
+t=2020-11-10T09:15:15+0200 lvl=info msg="Connecting to DB" logger=sqlstore dbtype=sqlite3
+t=2020-11-10T09:15:15+0200 lvl=warn msg="SQLite database file has broader permissions than it should" logger=sqlstore path=C:\\Users\\Teet\\Desktop\\grafana\\data\\grafana.db mode=-rw-rw-rw- expected=-rw-r-----
+t=2020-11-10T09:15:15+0200 lvl=info msg="Starting DB migrations" logger=migrator
+t=2020-11-10T09:15:15+0200 lvl=info msg="Starting plugin search" logger=plugins
+t=2020-11-10T09:15:15+0200 lvl=info msg="Registering plugin" logger=plugins name=sqlite-datasource
+t=2020-11-10T09:15:15+0200 lvl=info msg="Registering plugin" logger=plugins name="Direct Input"
+t=2020-11-10T09:15:15+0200 lvl=warn msg="Plugin file's signature has been modified versus manifest" logger=plugins plugin=input filename=C:\\Users\\Teet\\Desktop\\grafana\\plugins-bundled\\internal\\input-datasource\\plugin.json
+t=2020-11-10T09:15:15+0200 lvl=info msg="HTTP Server Listen" logger=http.server address=[::]:3000 protocol=http subUrl= socket=
+t=2020-11-10T09:15:42+0200 lvl=info msg=QueryData logger=plugins.backend pluginId=frser-sqlite-datasource req="map[Headers:<nil> PluginContext:map[AppInstanceSettings:<nil> DataSourceInstanceSettings:map[BasicAuthEnabled:false BasicAuthUser: Database: DecryptedSecureJSONData:<nil> ID:4 JSONData:map[path:..\\..\\dist\\telemetry.db] Name:sqlite-datasource URL: Updated:2020-11-10T09:14:39+02:00 User:] OrgID:2 PluginID:frser-sqlite-datasource User:map[Email: Login:admin Name: Role:Admin]] Queries:[map[Interval:6e+10 JSON:map[datasource:sqlite-datasource datasourceId:4 intervalMs:60000 maxDataPoints:455 orgId:2 queryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet rawQueryText:SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet refId:A timeColumns:[time ts packet_timestamp]] MaxDataPoints:455 QueryType: RefID:A TimeRange:map[From:2020-11-10T03:15:42.941+02:00 To:2020-11-10T09:15:42.941+02:00]]]]"
+t=2020-11-10T09:15:42+0200 lvl=eror msg="Could execute query" logger=plugins.backend pluginId=frser-sqlite-datasource err="unable to open database file: The system cannot find the path specified." query="SELECT SUBSTR(packet_json, INSTR(packet_json, 'src') + LENGTH('src')+3, INSTR(SUBSTR(packet_json, INSTR(packet_json, 'src')), ',')-(4+ LENGTH('src'))), packet_timestamp from telemetry_packet"
+t=2020-11-10T09:15:42+0200 lvl=info msg="Request Completed" logger=context userId=1 orgId=2 uname=admin method=POST path=/api/ds/query status=400 remote_addr=[::1] time_ms=22 size=243 referer="http://localhost:3000/d/P3JF_FpMz/sqllite-copy?orgId=2"

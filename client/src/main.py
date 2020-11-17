@@ -16,6 +16,9 @@ from sids_relay import SIDSRelay
 from tnc_pool import TNCPool
 from file_logger import FileLogger
 import api
+from pkg_resources import parse_version
+from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
+from enum import Enum
 
 
 def print_frame(frame: AXFrame):
@@ -62,17 +65,12 @@ def main(argv):
     database = TelemetryDB(db_loc)
     database.init_db()
 
-    # Read the json configuration of telemetry fields.
-    with open(os.path.join(util.get_root(), conf.get_conf("Client", "telemetry-configuration")),
-              "r", encoding="utf-8") as f:
-        telemetry_conf = f.read()
-
     # Build the other components.
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
     file_logger = FileLogger(conf.get_conf("Client", "logs"))
 
-    telemetry_listener = TelemetryListener(telemetry_conf, database)
+    telemetry_listener = TelemetryListener(database)
 
     # Create the flask app and start it in a forked process.
     port = None

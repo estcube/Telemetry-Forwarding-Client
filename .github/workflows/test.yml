@@ -1,0 +1,22 @@
+name: Test
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: test-frontend
+      run: |
+        cd frontend
+        yarn install
+        yarn test
+    - name: test-client
+      run: |
+        cd client
+        sudo apt-get install python3-setuptools
+        pip3 install -r requirements.txt
+        python3 src/_unit_tests.py
+    - name: systest-client
+      run: |
+        cd client
+        sh sys_test.sh

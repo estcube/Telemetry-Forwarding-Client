@@ -1,4 +1,3 @@
-
 import sys
 import os
 import logging
@@ -8,21 +7,27 @@ from enum import Enum
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
 import util
+sys.path.append(os.path.dirname(sys.executable))
+from main_kaitai import MainKaitai
+
+
+
 if getattr(sys, 'frozen', False):
     sys.path.append(os.path.join(util.get_root(), 'src'))
-from icp import Icp
+
 
 class TelemetryFrame():
     """ Data structure for the output of the telemetry listener that is sent to the repository. """
 
-    def __init__(self, packet_timestamp: datetime, recv_timestamp: datetime, fields):
+    def __init__(self, packet_timestamp: datetime, fields):
         self.timestamp = packet_timestamp
-        self.recv_timestamp = recv_timestamp
         self.fields = fields
+
 
 class TimestampType(Enum):
     """ Enum of the supported timestamp types. """
     unix = 'unix_timestamp'
+
 
 class TelemetryListener():
     """
@@ -36,65 +41,72 @@ class TelemetryListener():
 
     _logger = logging.getLogger(__name__)
 
-    def __init__(self, conf: str, db: TelemetryDB):
+    def __init__(self, db: TelemetryDB):
         self.database = db
-        self.conf = json.loads(conf)
-        if "prefix" not in self.conf:
-            raise ValueError("The telemetry configuration does not include the 'prefix' field")
-        if "fields" not in self.conf:
-            raise ValueError("The telemetry configuration does not include the 'fields' field")
-        if "msgTimestamp" not in self.conf:
-            raise ValueError(
-                "The telemetry configuration does not include the 'msgTimestamp' field")
-
-        self.prefix = self.conf["prefix"].split(".")
-
-        self.msg_ts_id = self.conf["msgTimestamp"]["id"]
-        try:
-            self.msg_ts_type = TimestampType(self.conf["msgTimestamp"]["type"])
-        except ValueError:
-            raise ValueError("The type of the message timestamp is unknown.")
 
     def receive(self, ax_frame: AXFrame):
         """
-        Main function that receives an AXFrame and processes its payload.
+        Main function that receives an AXFrame and processes its data.
 
         After processing, calls the database repository function to add the data to the database.
         """
 
         icp = None
         try:
-            icp = Icp.from_bytes(ax_frame.info)
+            icp = MainKaitai.from_bytes(ax_frame.info)
         except ValueError as error:
             self._logger.debug(error)
             self._logger.info("Failed to parse payload.")
             return
 
-        self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.data.mode)
-        self._logger.debug("Payload: %s", icp.data.payload)
+        self._logger.debug("ICP Packet received (cmd: %s, mode: %s)", icp.cmd, icp.mode)
+        self._logger.debug("Payload: %s", icp.common_data)
 
-        obj = icp
-        for prefix_part in self.prefix:
-            # self._logger.debug("prefix_part: %s, obj: %s", prefix_part, obj)
-            if prefix_part not in dir(obj):
-                self._logger.debug("Didn't find the prefix part '%s'.", prefix_part)
-                return
-            obj = getattr(obj, prefix_part)
 
+        common = icp.common_data
+        spec = icp.spec_data
         fields = []
-        timestamp = self.extract_fields(obj, [], fields, self.msg_ts_id)
-        if timestamp is None:
-            self._logger.debug("Didn't find the configured msg timestamp from the fields")
+        """Parses the icp header"""
+        for elem in vars(icp):
+            if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith(
+                    "sp") and not elem.startswith("cr"):
+                fields.append((elem, getattr(icp, elem)))
 
-        ts_datetime = None
+        """Parses the common data"""
+        for elem in vars(common):
+            if not elem.startswith("_"):
+                fields.append((elem, getattr(common, elem)))
 
-        if self.msg_ts_type == TimestampType.unix:
-            ts_datetime = datetime.fromtimestamp(timestamp)
+        """Parses the subsystem specific data"""
+        #com and obcs have two separate .ksy files
+        if spec.__class__.__name__ == "Com":
+            for elem in vars(spec.pcom):
+                if not elem.startswith("_"):
+                    fields.append((elem, getattr(spec.pcom, elem)))
+            for elem in vars(spec.scom):
+                if not elem.startswith("_"):
+                    fields.append((elem, getattr(spec.scom, elem)))
+        elif spec.__class__.__name__ == "Obcs":
+            for elem in vars(spec.obc):
+                if not elem.startswith("_"):
+                    fields.append((elem, getattr(spec.obc, elem)))
+            for elem in vars(spec.aocs):
+                if not elem.startswith("_"):
+                    fields.append((elem, getattr(spec.aocs, elem)))
 
-        # TODO: CRC control
+        #eps, st and sp have a single file .ksy file
+        else:
+            for elem in vars(spec):
+                if not elem.startswith("_"):
+                    fields.append((elem, getattr(spec, elem)))
+                    
+        fields.append(("crc", getattr(icp, "crc")))
 
-        self.database.add_telemetry_frame(TelemetryFrame(ts_datetime, ax_frame.recv_time, fields))
+        tmp = dict(fields)
+        tmp.pop("uuid")
+        fields_json = json.dumps(tmp)
 
+        self.database.add_telemetry_frame(TelemetryFrame(common.unix_time, fields_json))
 
     def extract_fields(self, obj, name_stack, fields, msg_ts_id):
         """
