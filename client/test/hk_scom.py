@@ -56,7 +56,7 @@ def hk_scom_digipeated_packets(packets: int) -> bytes:
 
 
 def hk_scom_power_amp_temp(temp: int) -> bytes:
-    return temp.to_bytes(1, byteorder='little')
+    return int((temp + 10) / 0.25).to_bytes(1, byteorder='little')
 
 def hk_scom_forward_rf_power(power: int) -> bytes:
     return power.to_bytes(1, byteorder='little', signed=True)
