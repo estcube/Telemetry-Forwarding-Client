@@ -175,13 +175,31 @@ CONSTRAINTS = {
             "value": False,
             "description": "Turn on debug level logging"
         },
+
         "tle-url": {
             "type": "str",
             "regexType": "url",
             "description": "URL of the tle",
             "label": "TLE URL",
             "value": "http://staging.estcube.eu/sids/tle"
+        },
+        "relay-interval": {
+            "type": "int",
+            "description": "Interval between relaying all unrelayed packets in seconds.",
+            "requiresRestart": True,
+            "label": "Relay interval",
+            "min": 0,
+            "value": "3600"
+        },
+        "lost-packet-count": {
+            "type": "int",
+            "description": "Number of packets lost in a row to stop relay.",
+            "requiresRestart": True,
+            "label": "Lost packet count",
+            "min": 1,
+            "value": "10"
         }
+
     }
 }
 

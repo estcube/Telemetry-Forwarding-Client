@@ -35,6 +35,8 @@ connection-retry-time=5
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 satellite-src = CHANGE_ME
 
+
+
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
 database=telemetry.db
@@ -57,3 +59,7 @@ kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 frontend-port=5000
 # Turns on debug logging for the client.
 debug-log = False
+# Interval between relaying all unrelayed packets in seconds
+relay-interval = 3600
+# Number of packets lost in a row to stop relay
+lost-packet-count = 10
