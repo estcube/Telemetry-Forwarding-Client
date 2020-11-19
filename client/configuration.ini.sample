@@ -44,6 +44,8 @@ logs=packets.log
 static-files-path=static/
 # Path to the file that specifies the ax.25 data blob structure.
 kaitai-configuration=spec/icp.ksy
+# URL of the latest tle endpoint.
+tle-url=http://staging.estcube.eu/sids/tle
 # URL of the latest telemetry configuration endpoint.
 telemetry-configuration-url=http://staging.estcube.eu:8029/icp/telemetry
 # URL of the latest packet structure (kaitai) endpoint.
