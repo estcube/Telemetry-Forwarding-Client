@@ -30,7 +30,7 @@ def hk_eps_bus_voltage(volt: int) -> bytes:
     return volt.to_bytes(2, byteorder='little')
 
 def hk_eps_avg_power_balance(power: int) -> bytes:
-    return power.to_bytes(2, byteorder='little')
+    return power.to_bytes(2, byteorder='little', signed=True)
 
 def hk_eps_battery_status(bits: list) -> bytes:
 

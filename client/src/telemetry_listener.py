@@ -107,7 +107,7 @@ class TelemetryListener():
         if spec.__class__.__name__ == "Com":
             for elem in vars(spec.pcom):
                 if not elem.startswith("_"):
-                    if elem == "temp_curr_1" or elem == "temp_curr_2":
+                    if elem == "temp_curr_1" or elem == "temp_curr_2" or elem == "power_amp_temp":
                         print(elem, getattr(spec.pcom, elem) * 0.25 - 10)
                         fields.append((elem, getattr(spec.pcom, elem) * 0.25 - 10))
                     else:
@@ -116,8 +116,12 @@ class TelemetryListener():
             print(" ")
             for elem in vars(spec.scom):
                 if not elem.startswith("_"):
-                    print(elem, getattr(spec.scom, elem))
-                    fields.append((elem, getattr(spec.scom, elem)))
+                    if elem == "power_amp_temp":
+                        print(elem, getattr(spec.scom, elem) * 0.25 - 10)
+                        fields.append((elem, getattr(spec.scom, elem) * 0.25 - 10))
+                    else:
+                        print(elem, getattr(spec.scom, elem))
+                        fields.append((elem, getattr(spec.scom, elem)))
             print(" ")
         elif spec.__class__.__name__ == "Obcs":
             for elem in vars(spec.obc):

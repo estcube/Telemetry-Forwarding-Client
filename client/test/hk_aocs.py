@@ -1,21 +1,21 @@
 def hk_aocs_bmg160_gyro_x(value: int) -> bytes:
-    return value.to_bytes(2, byteorder='little')
+    return value.to_bytes(2, byteorder='little', signed=True)
 
 def hk_aocs_bmg160_gyro_y(value: int) -> bytes:
-    return value.to_bytes(2, byteorder='little')
+    return value.to_bytes(2, byteorder='little', signed=True)
 
 def hk_aocs_bmg160_gyro_z(value: int) -> bytes:
-    return value.to_bytes(2, byteorder='little')
+    return value.to_bytes(2, byteorder='little', signed=True)
 
 
 def hk_aocs_lis3mdl_magnet_x(value: int) -> bytes:
-    return value.to_bytes(2, byteorder='little')
+    return value.to_bytes(2, byteorder='little', signed=True)
 
 def hk_aocs_lis3mdl_magnet_y(value: int) -> bytes:
-    return value.to_bytes(2, byteorder='little')
+    return value.to_bytes(2, byteorder='little', signed=True)
 
 def hk_aocs_lis3mdl_magnet_z(value: int) -> bytes:
-    return value.to_bytes(2, byteorder='little')
+    return value.to_bytes(2, byteorder='little', signed=True)
 
 
 def hk_aocs_sun_x_intensity1(value: int) -> bytes:
@@ -116,13 +116,13 @@ def hk_aocs_modes(bits: list) -> bytes:
 
 
 def hk_aocs_reaction_wheel1(rotations: int) -> bytes:
-    return rotations.to_bytes(2, byteorder='little')
+    return rotations.to_bytes(2, byteorder='little', signed=True)
 
 def hk_aocs_reaction_wheel2(rotations: int) -> bytes:
-    return rotations.to_bytes(2, byteorder='little')
+    return rotations.to_bytes(2, byteorder='little', signed=True)
 
 def hk_aocs_reaction_wheel3(rotations: int) -> bytes:
-    return rotations.to_bytes(2, byteorder='little')
+    return rotations.to_bytes(2, byteorder='little', signed=True)
 
 
 
