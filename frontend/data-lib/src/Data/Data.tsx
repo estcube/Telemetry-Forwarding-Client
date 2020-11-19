@@ -9,7 +9,7 @@ export default class Data extends React.Component {
       <div>
         <iframe
           title="grafana"
-          src="http://localhost:3000/d-solo/P3JF_FpMz/sqllite-copy?orgId=2&theme=light&panelId=2"
+          src="http://localhost:3000/d/P3JF_FpMz/estcube?orgId=2&theme=light"
           width="450"
           height="200"
         />
