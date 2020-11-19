@@ -7,7 +7,6 @@ from enum import Enum
 from typing import Callable
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
-from main_kaitai import MainKaitai
 import util
 sys.path.append(os.path.dirname(sys.executable))
 from main_kaitai import MainKaitai
