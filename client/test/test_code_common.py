@@ -1,4 +1,5 @@
 from hk_common import *
+from numberGen import generate
 
 class CommonData():
     def createData(self):

@@ -7,6 +7,7 @@ from enum import Enum
 from typing import Callable
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
+from main_kaitai import MainKaitai
 import util
 sys.path.append(os.path.dirname(sys.executable))
 from main_kaitai import MainKaitai
@@ -77,51 +78,76 @@ class TelemetryListener():
         common = icp.common_data
         spec = icp.spec_data
         fields = []
+
         """Parses the icp header"""
         for elem in vars(icp):
             if not elem.startswith("_") and not elem.startswith("co") and not elem.startswith(
                     "sp") and not elem.startswith("cr"):
                 if elem == "uuid":
+                    print(elem, int.from_bytes(getattr(icp, elem), "big"))
                     fields.append((elem, int.from_bytes(getattr(icp, elem), "big")))
                 else:
+                    print(elem, getattr(icp, elem))
                     fields.append((elem, getattr(icp, elem)))
+        print(" ")
 
         """Parses the common data"""
         for elem in vars(common):
             if not elem.startswith("_"):
                 if elem == "cpu_temp":
+                    print(elem, getattr(common, elem) * 0.25)
                     fields.append((elem, getattr(common, elem) * 0.25))
                 else:
+                    print(elem, getattr(common, elem))
                     fields.append((elem, getattr(common, elem)))
+        print(" ")
 
         """Parses the subsystem specific data"""
         #com and obcs have two separate .ksy files
         if spec.__class__.__name__ == "Com":
             for elem in vars(spec.pcom):
                 if not elem.startswith("_"):
-                    if elem == "temp_curr_1" or elem == "temp_curr_2":
+                    if elem == "temp_curr_1" or elem == "temp_curr_2" or elem == "power_amp_temp":
+                        print(elem, getattr(spec.pcom, elem) * 0.25 - 10)
                         fields.append((elem, getattr(spec.pcom, elem) * 0.25 - 10))
                     else:
+                        print(elem, getattr(spec.pcom, elem))
                         fields.append((elem, getattr(spec.pcom, elem)))
+            print(" ")
             for elem in vars(spec.scom):
                 if not elem.startswith("_"):
-                    fields.append((elem, getattr(spec.scom, elem)))
+                    if elem == "power_amp_temp":
+                        print(elem, getattr(spec.scom, elem) * 0.25 - 10)
+                        fields.append((elem, getattr(spec.scom, elem) * 0.25 - 10))
+                    else:
+                        print(elem, getattr(spec.scom, elem))
+                        fields.append((elem, getattr(spec.scom, elem)))
+            print(" ")
         elif spec.__class__.__name__ == "Obcs":
             for elem in vars(spec.obc):
                 if not elem.startswith("_"):
+                    print(elem, getattr(spec.obc, elem))
                     fields.append((elem, getattr(spec.obc, elem)))
+            print(" ")
             for elem in vars(spec.aocs):
                 if not elem.startswith("_"):
+                    print(elem, getattr(spec.aocs, elem))
                     fields.append((elem, getattr(spec.aocs, elem)))
+            print(" ")
 
         #eps, st and sp have a single file .ksy file
         else:
             for elem in vars(spec):
                 if not elem.startswith("_"):
                     if elem == "temp_curr":
+                        print(elem, getattr(spec, elem) * 0.25 - 10)
                         fields.append((elem, getattr(spec, elem) * 0.25 - 10))
                     else:
+                        print(elem, getattr(spec, elem))
                         fields.append((elem, getattr(spec, elem)))
+            print(" ")
+
+        print("crc", getattr(icp, "crc"))
         fields.append(("crc", getattr(icp, "crc")))
 
         tmp = dict(fields)
