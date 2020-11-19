@@ -5,6 +5,7 @@ import logging
 import json
 from datetime import datetime
 from enum import Enum
+from typing import Callable
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
 import util
@@ -19,6 +20,11 @@ class TelemetryFrame():
         self.timestamp = packet_timestamp
         self.recv_timestamp = recv_timestamp
         self.fields = fields
+
+    def __repr__(self):
+        return (("Timestamp: {}; recv_timestamp: {}; fields: {}"
+                 ).format(self.timestamp, self.recv_timestamp,
+                          self.fields))
 
 class TimestampType(Enum):
     """ Enum of the supported timestamp types. """
@@ -37,6 +43,7 @@ class TelemetryListener():
     _logger = logging.getLogger(__name__)
 
     def __init__(self, conf: str, db: TelemetryDB):
+        self.callbacks = []
         self.database = db
         self.conf = json.loads(conf)
         if "prefix" not in self.conf:
@@ -54,6 +61,13 @@ class TelemetryListener():
             self.msg_ts_type = TimestampType(self.conf["msgTimestamp"]["type"])
         except ValueError:
             raise ValueError("The type of the message timestamp is unknown.")
+
+    def add_callback(self, callback: Callable) -> int:
+        """Adds a callback to the list of functions that are called, when a packet is received."""
+        if not callable(callback):
+            raise ValueError("Cannot add a callback that is not callable.")
+        self.callbacks.append(callback)
+        return len(self.callbacks) - 1
 
     def receive(self, ax_frame: AXFrame):
         """
@@ -94,6 +108,8 @@ class TelemetryListener():
         # TODO: CRC control
 
         self.database.add_telemetry_frame(TelemetryFrame(ts_datetime, ax_frame.recv_time, fields))
+        for callback in self.callbacks:
+            callback(TelemetryFrame(ts_datetime, ax_frame.recv_time, fields))
 
 
     def extract_fields(self, obj, name_stack, fields, msg_ts_id):

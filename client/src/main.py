@@ -22,6 +22,7 @@ def print_frame(frame: AXFrame):
     """ Debug function that just prints the AXFrame object emitted by the AXListener. """
     print(frame)
 
+
 def terminate_handler(_signo, _stack_frame):
     """
     Attempt to exit more cleanly on receiving a SIGTERM signal.
@@ -29,6 +30,7 @@ def terminate_handler(_signo, _stack_frame):
     Raises a SystemExit exception, upon receiving SIGTERM. Registered in the main function.
     """
     sys.exit(0)
+
 
 def main(argv):
     """ Main loop function. """
@@ -43,7 +45,7 @@ def main(argv):
         # if opt == "-v":
         #     verbose = True
 
-    if conf_path is None: # Default conf path
+    if conf_path is None:  # Default conf path
         conf_path = os.path.join(util.get_root(), "configuration.ini")
 
     # Create the configuration object
@@ -70,16 +72,15 @@ def main(argv):
     # Build the other components.
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
-    file_logger = FileLogger('../packets.log')
-
-    # telemetry_listener = TelemetryListener(telemetry_conf, database)
+    telemetry_listener = TelemetryListener(telemetry_conf, database)
+    file_logger = FileLogger(conf, '../logs/', "log")
 
     # Create the flask app and start it in a forked process.
     port = None
     try:
         port = int(conf.get_conf("Client", "frontend-port"))
     except ValueError:
-        port = 5000 # Default port.
+        port = 5000  # Default port.
 
     # Set the handler for SIGTERM, so we can exit a bit more gracefully.
     signal.signal(signal.SIGTERM, terminate_handler)
@@ -89,7 +90,7 @@ def main(argv):
     ax_listener.add_callback(database.insert_ax_frame)
     ax_listener.add_callback(sids_relay.relay)
     ax_listener.add_callback(file_logger.log_ax_frame)
-    # ax_listener.add_callback(telemetry_listener.receive)
+    ax_listener.add_callback(telemetry_listener.receive)
 
     tnc_pool = TNCPool(conf, ax_listener)
     tnc_pool.connect_main_tnc()
@@ -111,6 +112,7 @@ def main(argv):
         pass
     finally:
         tnc_pool.cleanup()
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
