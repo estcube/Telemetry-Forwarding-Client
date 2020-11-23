@@ -1,18 +1,18 @@
 # This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-from pkg_resources import parse_version
-from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
 from enum import Enum
 
+from kaitaistruct import __version__ as ks_version, KaitaiStruct
+from pkg_resources import parse_version
 
 if parse_version(ks_version) < parse_version('0.7'):
     raise Exception("Incompatible Kaitai Struct Python API: 0.7 or later is required, but you have %s" % (ks_version))
 
 from obc import Obc
-from pcom import Pcom
-from aocs import Aocs
 from scom import Scom
+from aocs import Aocs
 from sp import Sp
+from pcom import Pcom
 from eps import Eps
 from common import Common
 from st import St
