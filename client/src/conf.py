@@ -122,6 +122,14 @@ CONSTRAINTS = {
             "hidden": True,
             "value": "../telemetry.db"
         },
+        "logs": {
+            "type": "str",
+            "description": "Path to the log file. Relative to executable file.",
+            "requiresRestart": True,
+            "label": "Logfile path",
+            "hidden": True,
+            "value": "../packets.log"
+        },
         "static-files-path": {
             "type": "str",
             "description": "Path to the root directory of static frontend files",
@@ -147,11 +155,6 @@ CONSTRAINTS = {
             "label": "Telemetry configuration URL",
             "value": "http://staging.estcube.eu:8029/icp/telemetry"
         },
-        "telemetry-configuration": {
-            "type": "str",
-            "description": "Path to the file that specifies the telemetry data fields",
-            "value": "spec/telemetry.json"
-        },
         "kaitai-compiler-path": {
             "type": "str",
             "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
@@ -171,7 +174,32 @@ CONSTRAINTS = {
             "label": "Debug logging",
             "value": False,
             "description": "Turn on debug level logging"
+        },
+
+        "tle-url": {
+            "type": "str",
+            "regexType": "url",
+            "description": "URL of the tle",
+            "label": "TLE URL",
+            "value": "http://staging.estcube.eu/sids/tle"
+        },
+        "relay-interval": {
+            "type": "int",
+            "description": "Interval between relaying all unrelayed packets in seconds.",
+            "requiresRestart": True,
+            "label": "Relay interval",
+            "min": 0,
+            "value": "3600"
+        },
+        "lost-packet-count": {
+            "type": "int",
+            "description": "Number of packets lost in a row to stop relay.",
+            "requiresRestart": True,
+            "label": "Lost packet count",
+            "min": 1,
+            "value": "10"
         }
+
     }
 }
 

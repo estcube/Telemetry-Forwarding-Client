@@ -35,15 +35,19 @@ connection-retry-time=5
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 satellite-src = CHANGE_ME
 
+
+
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
 database=telemetry.db
+# Path to the log file (will be created if doesn't exist). Relative to the executable.
+logs=packets.log
 # Path to the folder containing the static frontend files. Relative to the executable.
 static-files-path=static/
-# Path to the file that specifies the telemetry data fields.
-telemetry-configuration=spec/telemetry.json
 # Path to the file that specifies the ax.25 data blob structure.
 kaitai-configuration=spec/icp.ksy
+# URL of the latest tle endpoint.
+tle-url=http://staging.estcube.eu/sids/tle
 # URL of the latest telemetry configuration endpoint.
 telemetry-configuration-url=http://staging.estcube.eu:8029/icp/telemetry
 # URL of the latest packet structure (kaitai) endpoint.
@@ -55,3 +59,7 @@ kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 frontend-port=5000
 # Turns on debug logging for the client.
 debug-log = False
+# Interval between relaying all unrelayed packets in seconds
+relay-interval = 3600
+# Number of packets lost in a row to stop relay
+lost-packet-count = 10

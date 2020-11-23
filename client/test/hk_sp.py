@@ -9,7 +9,6 @@ def hk_sp_enabled(bits: list) -> bytes:
     for i in range(len(bits)):
         enabled_bits |= bits[i] << i
 
-    bits.reverse()
     return enabled_bits.to_bytes(2, byteorder='big')
 
 

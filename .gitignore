@@ -7,7 +7,7 @@ client/configuration.ini
 **/*.db
 client/static/
 client/dist/
-**/dist/
+dist/
 client/src/__test__
 client/test/utListener.py
 env/

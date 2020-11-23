@@ -11,4 +11,3 @@ class SpData():
         hk_packet.extend(hk_sp_coil_current(generate(6666, 0, 65535), enabled[10]))
         return hk_packet
 
-

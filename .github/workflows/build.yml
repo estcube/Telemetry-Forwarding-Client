@@ -1,0 +1,41 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+      - ci-windows-release-and-tests
+      - branch-for-peer-review
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the frontend.
+      run: |
+        cd frontend
+        yarn install 
+        yarn build:prod
+    - name: Package the client
+      run: |
+        cd client
+        pip3 install -r requirements.txt
+        pip3 install pyinstaller
+        pyinstaller src/main.py --onefile --hidden-import csv --runtime-hook src/grafana_launcher.py --exclude-module main_kaitai
+        sh build_windows_exe.sh
+        cd src 
+        Foreach ($I in ("aocs.py","common.py","eps.py","icp.py","main_kaitai.py","pcom.py","scom.py","sp.py","st.py","obc.py")) { copy $I "../../dist" }
+        cd ../../dist
+        curl.exe --output grafana.zip --url https://dl.grafana.com/oss/release/grafana-7.3.1.windows-amd64.zip
+        tar -xf "grafana.zip"
+        del "grafana.zip"
+        ren "grafana-7.3.1" "grafana"
+        xcopy "..\grafana_data" ".\grafana" /h /i /c /k /e /r /y
+        cd ".\grafana\plugins-bundled"
+        curl.exe --output "grafana-sqlite-datasource-0.1.3.zip" -L https://github.com/estcube/grafana-sqlite-datasource/files/5542334/grafana-sqlite-datasource-0.1.3.zip
+        tar -xf "grafana-sqlite-datasource-0.1.3.zip"
+        del "grafana-sqlite-datasource-0.1.3.zip"
+    - name: Archive the production artifact.
+      uses: actions/upload-artifact@v1
+      with:
+        name: telemetry-forwarding-client-windows
+        path: dist

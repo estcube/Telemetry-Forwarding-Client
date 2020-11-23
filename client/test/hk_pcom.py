@@ -62,6 +62,7 @@ def hk_pcom_reflected_rf_power(power: int) -> bytes:
     return power.to_bytes(1, byteorder='little', signed=True)
 
 def hk_pcom_temp_curr_1(temp: int) -> bytes:
+
     return int((temp + 10) / 0.25).to_bytes(1, byteorder='little')
 
 def hk_pcom_temp_curr_2(temp: int) -> bytes:

@@ -64,40 +64,13 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
             sids_relay.relay_unrelayed_packets()
         return response_json, 200
 
-    @app.route("/api/telemetry/configuration", methods=["GET"])
-    def get_telemetry_configuration():
-        path = os.path.join(util.get_root(), config.get_conf("Client", "telemetry-configuration"))
-        with open(path, "r", encoding="utf-8") as file:
-            tel_conf = file.read()
-        return json.loads(tel_conf)
-
     @app.route("/api/update", methods=[ "POST" ])
     def post_update_telemetry_configuration():
-        telconf_url = config.get_conf("Client", "telemetry-configuration-url")
         kaitai_url = config.get_conf("Client", "packet-structure-url")
-        telconf_path = os.path.join(
-            util.get_root(),
-            config.get_conf("Client", "telemetry-configuration")
-        )
         kaitai_path = os.path.join(
             util.get_root(),
             config.get_conf("Client", "kaitai-configuration")
         )
-
-        try:
-            tel_req = requests.get(telconf_url)
-        except (requests.ConnectionError, requests.ConnectTimeout) as err:
-            log.warning("Connection to telemetry configuration endpoint failed.")
-            log.warning(err)
-            return jsonify({
-                "error": "Connection to telemetry configuration endpoint failed"
-            }), 500
-
-        if tel_req.status_code != 200:
-            return jsonify({
-                "error": "Request for the telemetry configuration failed",
-                "statusCode": tel_req.status_code
-            }), 500
 
         try:
             kaitai_req = requests.get(kaitai_url)
@@ -112,9 +85,6 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
                 "error": "Request for the kaitai configuration failed.",
                 "statusCode": kaitai_req.status_code
             }), 500
-
-        with open(telconf_path, "w", encoding="utf-8") as tel_f:
-            tel_f.write(tel_req.text)
 
         # TODO: Revert changes is compiling ksy fails?
         with open(kaitai_path, "w", encoding="utf-8") as kaitai_f:

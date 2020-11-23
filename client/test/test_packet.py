@@ -17,10 +17,10 @@ from client.kaitai.main_kaitai import *
 
 def generate_normal_beacon() -> bytearray:
 
+
     common = CommonData().createData()
     obc = ObcData().createData()
     aocs = AocsData().createData()
-
     hk_packet = common
     hk_packet.extend(obc)
     hk_packet.extend(aocs)
