@@ -39,7 +39,7 @@ class SIDSRelay(object):
         self.failed_in_a_row = 0
         self.relay_active = False
         #Start thread to relay packets every set interval
-        threading.Thread(target=self.relay_unrelayed_packets_every_interval).start()
+        threading.Thread(target=self.relay_unrelayed_packets_every_interval, daemon=True).start()
 
     #Function to check if endpoint is online
     def ping_connection(self):
@@ -59,17 +59,17 @@ class SIDSRelay(object):
             frames = self.db.get_unrelayed_frames(100)
             for frame in frames:
                 self.relay(frame)
-            if len(frames) < 100 or self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
+            if len(frames) < 100 or self.failed_in_a_row > self.config.get_conf("Client", "lost-packet-count"):
                 break
         self.relay_active = False
 
     #Function that relays all packets every interval
     def relay_unrelayed_packets_every_interval(self):
         while True:
-            if str(self.config.get_conf("Mission Control", "relay-enabled")) == "True":
+            if self.config.get_conf("Mission Control", "relay-enabled"):
                 if self.ping_connection():
                     self.relay_unrelayed_packets()
-            time.sleep(int(self.config.get_conf("Client", "relay-interval")))
+            time.sleep(self.config.get_conf("Client", "relay-interval"))
 
 
     def relay(self, frame: AXFrame):
@@ -77,7 +77,7 @@ class SIDSRelay(object):
         self._logger.debug("Received frame.")
 
         #If relay is turned off or endpoint offline
-        if str(self.config.get_conf("Mission Control", "relay-enabled")) != "True" or self.failed_in_a_row > int(self.config.get_conf("Client", "lost-packet-count")):
+        if not self.config.get_conf("Mission Control", "relay-enabled") or self.failed_in_a_row > self.config.get_conf("Client", "lost-packet-count"):
             return
 
         params = {
@@ -141,7 +141,7 @@ class SIDSRelay(object):
         with self.lock.read_lock:
             return {
                 "lastStatus": self.last_status.name if \
-                    str(self.config.get_conf("Mission Control", "relay-enabled")) == "True" \
+                    self.config.get_conf("Mission Control", "relay-enabled") \
                         else RelayStatus.TURNED_OFF.name,
                 "requestCount": self.request_counter
             }

@@ -178,6 +178,7 @@ CONSTRAINTS = {
             "requiresRestart": True,
             "label": "Relay interval",
             "min": 0,
+            "max": 999999,
             "value": "3600"
         },
         "lost-packet-count": {
@@ -186,6 +187,7 @@ CONSTRAINTS = {
             "requiresRestart": True,
             "label": "Lost packet count",
             "min": 1,
+            "max": 999999,
             "value": "10"
         }
 
@@ -207,6 +209,60 @@ class Configuration(object):
 
         self.lock = ReadWriteLock()
 
+    def get_conf_value(self, value, constr, section, element):
+        if constr["type"] == "str":
+            return value
+        if "regexType" in constr:
+            if constr["regexType"] == "url":
+                regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
+                is_valid = re.match(regex, value)
+                if not is_valid:
+                    raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
+                return value
+            elif constr["regexType"] == "ip":
+                regex = '(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$'
+                is_valid = re.match(regex, constr["value"])
+                if not is_valid:
+                    raise ValueError("Expected {} as {} value (got '{}')".format("ip", element, value))
+                return value
+        elif constr["type"] == "int":
+            try:
+                value = int(value)
+            except Exception as e:
+                raise type(e)("Expected {} as {} value (got '{}')".format("integer", element, value))
+            if not (int(constr["min"]) <= value <= int(constr["max"])):
+                raise Exception(
+                    "Value {} is out of range (expected value between {} and {}, got {})".format(
+                        element, constr["min"], constr["max"], value))
+            return value
+
+        elif constr["type"] == "float":
+            try:
+                value = float(value)
+            except Exception as e:
+                raise type(e)("Expected {} as {} value (got '{}')".format("float", element, value))
+            if not (float(constr["min"]) <= value <= float(constr["max"])):
+                raise Exception(
+                    "Value {} is out of range (expected value between {} and {}, got {})".format(
+                        element, constr["min"], constr["max"], value))
+            return value
+        elif constr["type"] == "bool":
+
+            if value.strip().lower() == "true":
+                value = True
+            elif value.strip().lower() == "false":
+                value = False
+            else:
+                raise ValueError(
+                    "Expected {} as {} value (got '{}')".format("True or False", element,
+                                                                constr["value"]))
+            return value
+        elif constr["type"] == "select":
+            if value not in constr["options"]:
+                raise ValueError("{} - {} only supports values: {}".format(
+                    section, element, constr["options"]))
+            return value
+
     def get_conf(self, section, element):
         """
         Retrieves the configured value at the specified field.
@@ -214,15 +270,20 @@ class Configuration(object):
         example: getConf("Mission Control", "relay-enabled")
         """
         with self.lock.read_lock:
-            conf_value = None
-            try:
-                conf_value = self.config.get(section, element)
-            except (configparser.NoSectionError, configparser.NoOptionError):
-                if section in CONSTRAINTS:
-                    sec = CONSTRAINTS[section]
-                    if element in sec and "value" in sec[element]:
+
+            if section in CONSTRAINTS:
+                sec = CONSTRAINTS[section]
+                if element in sec and "value" in sec[element]:
+                    constr = sec[element]
+                    try:
+                        conf_value = self.config.get(section, element)
+                    except (configparser.NoSectionError, configparser.NoOptionError):
                         conf_value = sec[element]["value"]
-            return conf_value
+                    return self.get_conf_value(str(conf_value), constr, section, element)
+                else:
+                    raise ConfigurationUndefinedException
+            else:
+                raise ConfigurationUndefinedException
 
     def get_constraints(self):
         """ Returns all of the constraints for the configuration. """
@@ -301,9 +362,9 @@ class Configuration(object):
                     raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
             elif constr["type"] == "bool":
                 if not isinstance(value, bool):
-                    if value.lower() == "true":
+                    if value.strip().lower() == "true":
                         value = True
-                    elif value.lower() == "false":
+                    elif value.strip().lower() == "false":
                         value = False
                     else:
                         raise ValueError("Expected {} as {} value (got '{}')".format("True or False", element,
@@ -334,3 +395,7 @@ class Configuration(object):
                         pass
 
             return constraints
+
+class ConfigurationUndefinedException:
+    """ Exception when undefined key is asked from the configuration """
+    pass

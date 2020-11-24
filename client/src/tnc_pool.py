@@ -153,8 +153,8 @@ class TNCPool():
             ConnectionProtocol.KISS,
             self.conf.get_conf("TNC interface", "tnc-ip"),
             self.conf.get_conf("TNC interface", "tnc-port"),
-            int(self.conf.get_conf("TNC interface", "max-connection-attempts")),
-            int(self.conf.get_conf("TNC interface", "connection-retry-time"))
+            self.conf.get_conf("TNC interface", "max-connection-attempts"),
+            self.conf.get_conf("TNC interface", "connection-retry-time")
         ), self.main_listener.receive)
 
     def connect_tnc(self, name: str, conn_conf: ConnectionConfiguration, callback: Callable):
@@ -196,6 +196,7 @@ class TNCPool():
         with self.lock:
             self._log.info("Stopping TNC connection %s", name)
             self.__get_conn(name).stop()
+            print("stopped")
 
     def check_tnc(self, name: str) -> ConnectionStatus:
         """

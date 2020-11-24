@@ -49,7 +49,7 @@ def main(argv):
     # Create the configuration object
     conf = Configuration(conf_path)
 
-    if str(conf.get_conf("Client", "debug-log")) != "True":
+    if not conf.get_conf("Client", "debug-log"):
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.DEBUG)
@@ -77,7 +77,7 @@ def main(argv):
     # Create the flask app and start it in a forked process.
     port = None
     try:
-        port = int(conf.get_conf("Client", "frontend-port"))
+        port = conf.get_conf("Client", "frontend-port")
     except ValueError:
         port = 5000 # Default port.
 
