@@ -23,8 +23,6 @@ module.exports = {
 
     moduleNameMapper: {
         '^@app/(.*)$': '<rootDir>/src/$1',
-        '@estcube/data-components': '<rootDir>/../data-lib/src',
-
         '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/src/__test__/__mocks__/fileMock.js',
         '\\.(css|scss)$': '<rootDir>/src/__test__/__mocks__/styleMock.js'
     },

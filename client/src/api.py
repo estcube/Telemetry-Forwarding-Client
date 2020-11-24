@@ -26,9 +26,6 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
 
     log = logging.getLogger(__name__)
 
-    db_loc = os.path.join(util.get_root(), config.get_conf("Client", "database"))
-    database = TelemetryDB(db_loc)
-
     static_folder = os.path.join(util.get_root(), config.get_conf("Client", "static-files-path"))
 
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
@@ -49,6 +46,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         }
     )
     app.register_blueprint(swaggerui_blueprint, url_prefix=swagger_url)
+
     # end swagger specific
 
     @app.route("/api/sids/status", methods=["GET"])
@@ -58,13 +56,13 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
     @app.route("/api/sids/toggle", methods=["POST"])
     def toggle_relay():
         response_json = request.get_json()
-        current_relay_status = response_json['Mission Control']['relay-enabled']
-        config.set_conf(section='Mission Control', element='relay-enabled', value=current_relay_status)
+        current_relay_status = response_json["Mission Control"]["relay-enabled"]
+        config.set_conf(section="Mission Control", element="relay-enabled", value=current_relay_status)
         if current_relay_status:
             sids_relay.relay_unrelayed_packets()
         return response_json, 200
 
-    @app.route("/api/update", methods=[ "POST" ])
+    @app.route("/api/update", methods=["POST"])
     def post_update_telemetry_configuration():
         kaitai_url = config.get_conf("Client", "packet-structure-url")
         kaitai_path = os.path.join(
@@ -100,8 +98,8 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
             }), 500
 
         args = (comp_path, "--target", "python", "--outdir", "src", "--python-package", "icp",
-            "spec/icp.ksy"
-        )
+                "spec/icp.ksy"
+                )
         p_open = subprocess.Popen(
             args,
             cwd=util.get_root(),
@@ -116,7 +114,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
                 "exitCode": exit_code
             }), 500
 
-        return '', 204
+        return "", 204
 
     @app.route("/api/tnc/<name>/status", methods=["GET"])
     def get_tnc_connection_check(name: str):
@@ -132,7 +130,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
             return jsonify({"error": "TNC Pool is not defined."}), 500
 
         tnc_pool.connect_main_tnc()
-        return '', 204
+        return "", 204
 
     @app.route("/api/tnc/<name>/stop", methods=["POST"])
     def post_tnc_connection_stop(name: str):
@@ -140,7 +138,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
             return jsonify({"error": "TNC Pool is not defined."}), 500
 
         tnc_pool.stop_tnc(name)
-        return '', 204
+        return "", 204
 
     @app.route("/api/conf", methods=["GET"])
     def getconf():
@@ -164,14 +162,14 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.errorhandler(404)
-    def not_found(err):
+    def not_found():
         return send_file(os.path.join(static_folder, "index.html"))
 
-    @app.route('/api/static/<path:path>')
+    @app.route("/api/static/<path:path>")
     def send_static(path):
-        return send_from_directory('static', path)
+        return send_from_directory("static", path)
 
-    @app.route('/api/conf', methods=["POST"])
+    @app.route("/api/conf", methods=["POST"])
     def post_set_conf():
         some_json = request.get_json()
         try:
@@ -180,12 +178,13 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
                     config.set_conf(section=i, element=j, value=some_json[i][j])
         except:
             _, error, _ = sys.exc_info()
-            return jsonify({"Error": '{err}'.format(err=error)}), 500
+            return jsonify({"Error": "{err}".format(err=error)}), 500
         return jsonify(some_json), 200
 
     return app
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     CONF_PATH = os.path.join(util.get_root(), "configuration.ini")
     conf = Configuration(CONF_PATH)
     STATIC_PATH = os.path.join(util.get_root(), conf.get_conf("Client", "static-files-path"))

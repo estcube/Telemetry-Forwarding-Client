@@ -10,7 +10,6 @@
         "target": "es2015",
         "baseUrl": ".",
         "paths": {
-            "@estcube/data-components": ["../data-lib/src"],
             "*": ["src/*"]
         }
     },

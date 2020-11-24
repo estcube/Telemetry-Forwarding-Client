@@ -8,15 +8,15 @@ from typing import Callable
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
 import util
+
 sys.path.append(os.path.dirname(sys.executable))
 from main_kaitai import MainKaitai
 
+if getattr(sys, "frozen", False):
+    sys.path.append(os.path.join(util.get_root(), "src"))
 
-if getattr(sys, 'frozen', False):
-    sys.path.append(os.path.join(util.get_root(), 'src'))
 
-
-class TelemetryFrame():
+class TelemetryFrame:
     """ Data structure for the output of the telemetry listener that is sent to the repository. """
 
     def __init__(self, packet_timestamp: datetime, fields):
@@ -28,12 +28,13 @@ class TelemetryFrame():
                  ).format(self.timestamp, self.recv_timestamp,
                           self.fields))
 
+
 class TimestampType(Enum):
     """ Enum of the supported timestamp types. """
-    unix = 'unix_timestamp'
+    unix = "unix_timestamp"
 
 
-class TelemetryListener():
+class TelemetryListener:
     """
     The listener class for telemetry.
 
@@ -63,7 +64,6 @@ class TelemetryListener():
         After processing, calls the database repository function to add the data to the database.
         """
 
-        icp = None
         try:
             icp = MainKaitai.from_bytes(ax_frame.info)
         except ValueError as error:
@@ -101,8 +101,8 @@ class TelemetryListener():
                     fields.append((elem, getattr(common, elem)))
         print(" ")
 
-        """Parses the subsystem specific data"""
-        #com and obcs have two separate .ksy files
+        """ Parses the subsystem specific data """
+        """ com and obcs have two separate .ksy files """
         if spec.__class__.__name__ == "Com":
             for elem in vars(spec.pcom):
                 if not elem.startswith("_"):
@@ -134,8 +134,8 @@ class TelemetryListener():
                     fields.append((elem, getattr(spec.aocs, elem)))
             print(" ")
 
-        #eps, st and sp have a single file .ksy file
         else:
+            """eps, st and sp have a single file .ksy file"""
             for elem in vars(spec):
                 if not elem.startswith("_"):
                     if elem == "temp_curr":
@@ -159,7 +159,6 @@ class TelemetryListener():
 
         for callback in self.callbacks:
             callback(frame)
-
 
     def extract_fields(self, obj, name_stack, fields, msg_ts_id):
         """
