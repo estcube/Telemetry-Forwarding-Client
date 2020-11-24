@@ -5,6 +5,7 @@ on:
       - master
       - ci-windows-release-and-tests
       - branch-for-peer-review
+      - Grafana-Dashboard
 jobs:
   build:
     runs-on: windows-latest
