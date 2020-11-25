@@ -19,17 +19,21 @@ class ConnectionStatus(Enum):
     DISCONNECTING = auto(),
     DISCONNECTED = auto()
 
+
 class ConnectionType(Enum):
     """ Possible connection types. RS232 is currently unsupported. """
     TCPIP = 0,
     RS232 = 1
 
+
 class ConnectionProtocol(Enum):
     """ Possible connection protocols. """
     KISS = 0
 
+
 class ConnectionConfiguration:
     """ Struct for a tnc connection configuration. """
+
     def __init__(self, conn_type: ConnectionType, protocol: ConnectionProtocol, ip: str, port: str,
                  retry_attempts: int, retry_time: int):
         self.type = conn_type
@@ -39,8 +43,10 @@ class ConnectionConfiguration:
         self.retry_attempts = retry_attempts
         self.retry_time = retry_time
 
+
 class TNCThread(Thread):
     """ Base thread class for a single TNC connection. """
+
     def __init__(self, name: str):
         Thread.__init__(self)
         self.connected = False
@@ -68,6 +74,7 @@ class TNCThread(Thread):
 
     def status(self) -> ConnectionStatus:
         """ Abstract function. Returns the state of the TNC Connection. """
+
 
 class TCPKISSThread(TNCThread):
     """ Implementation for running a tnc connection over tcp in a thread. """
@@ -128,7 +135,7 @@ class TCPKISSThread(TNCThread):
                 return ConnectionStatus.CONNECTING
 
 
-class TNCPool():
+class TNCPool:
     """ Implementation of the pool for managing tnc connections. """
 
     _log = logging.getLogger(__name__)
