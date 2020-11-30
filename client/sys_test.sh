@@ -25,9 +25,10 @@ relay-enabled=False
 tnc-protocol-type=KISS
 tnc-connection-type=TCP/IP
 tnc-ip=localhost
-tnc-port=3030
+tnc-port=8100
 max-connection-attempts=10
 connection-retry-time=5
+satellite-src = ESTCUB
 
 [Client]
 database=src/__test__/systest.db
@@ -47,3 +48,4 @@ sleep 7s
 cleanup
 
 python3 "$BASEDIR/src/_system_tests.py"
+

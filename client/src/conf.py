@@ -79,14 +79,14 @@ CONSTRAINTS = {
             "value": "localhost",
             "regexType": "ip"
         },
-         "tnc-port": {
-             "type": "str",
-             "requiresRestart": True,
-             "label": "TNC port",
-             "value": "8100",
+        "tnc-port": {
+            "type": "str",
+            "requiresRestart": True,
+            "label": "TNC port",
+            "value": "8100",
             "min": 1024,
             "max": 65535
-         },
+        },
         "max-connection-attempts": {
             "type": "int",
             "requiresRestart": True,
@@ -122,6 +122,14 @@ CONSTRAINTS = {
             "hidden": True,
             "value": "../telemetry.db"
         },
+        "logs": {
+            "type": "str",
+            "description": "Path to the log file. Relative to executable file.",
+            "requiresRestart": True,
+            "label": "Logfile path",
+            "hidden": True,
+            "value": "../packets.log"
+        },
         "static-files-path": {
             "type": "str",
             "description": "Path to the root directory of static frontend files",
@@ -147,11 +155,6 @@ CONSTRAINTS = {
             "label": "Telemetry configuration URL",
             "value": "http://staging.estcube.eu:8029/icp/telemetry"
         },
-        "telemetry-configuration": {
-            "type": "str",
-            "description": "Path to the file that specifies the telemetry data fields",
-            "value": "spec/telemetry.json"
-        },
         "kaitai-compiler-path": {
             "type": "str",
             "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
@@ -172,6 +175,13 @@ CONSTRAINTS = {
             "value": False,
             "description": "Turn on debug level logging"
         },
+        "tle-url": {
+            "type": "str",
+            "regexType": "url",
+            "description": "URL of the tle",
+            "label": "TLE URL",
+            "value": "http://staging.estcube.eu/sids/tle"
+        },
         "relay-interval": {
             "type": "int",
             "description": "Interval between relaying all unrelayed packets in seconds.",
@@ -189,15 +199,7 @@ CONSTRAINTS = {
             "min": 1,
             "max": 999999,
             "value": "10"
-        },
-        "tle-url": {
-            "type": "str",
-            "regexType": "url",
-            "description": "URL of the tle",
-            "label": "TLE URL",
-            "value": "http://staging.estcube.eu/sids/tle"
         }
-
     }
 }
 
@@ -292,7 +294,8 @@ class Configuration(object):
             else:
                 raise ConfigurationUndefinedException
 
-    def get_constraints(self):
+    @staticmethod
+    def get_constraints():
         """ Returns all of the constraints for the configuration. """
         return CONSTRAINTS
 
@@ -335,18 +338,18 @@ class Configuration(object):
                 raise ValueError("Field {} - {} does not exist.".format(section, element))
 
             constr = section_constraints[element]
-            if 'hidden' in constr and constr["hidden"] == True:
+            if "hidden" in constr and constr["hidden"] == True:
                 return
             if constr["type"] == "str":
                 pass
             if "regexType" in constr:
                 if constr["regexType"] == "url":
-                    regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
+                    regex = "^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$"
                     is_valid = re.match(regex, value)
                     if not is_valid:
                         raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
                 elif constr["regexType"] == "ip":
-                    regex = '(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$'
+                    regex = "(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$"
                     is_valid = re.match(regex, value)
                     if not is_valid:
                         raise ValueError("Expected {} as {} value (got '{}')".format("ip", element, value))
@@ -357,7 +360,11 @@ class Configuration(object):
                 except Exception as e:
                     raise type(e)("Expected {} as {} value (got '{}')".format("integer", element, value))
                 if not (int(constr["min"]) <= value <= int(constr["max"])):
-                    raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
+                    raise Exception(
+                        "Value {} is out of range (expected value between {} and {}, got {})".format(element,
+                                                                                                     constr["min"],
+                                                                                                     constr["max"],
+                                                                                                     value))
 
             elif constr["type"] == "float":
                 try:
@@ -366,7 +373,11 @@ class Configuration(object):
                 except Exception as e:
                     raise type(e)("Expected {} as {} value (got '{}')".format("float", element, value))
                 if not (float(constr["min"]) <= value <= float(constr["max"])):
-                    raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
+                    raise Exception(
+                        "Value {} is out of range (expected value between {} and {}, got {})".format(element,
+                                                                                                     constr["min"],
+                                                                                                     constr["max"],
+                                                                                                     value))
             elif constr["type"] == "bool":
                 if not isinstance(value, bool):
                     if value.strip().lower() == "true":
@@ -375,7 +386,7 @@ class Configuration(object):
                         value = False
                     else:
                         raise ValueError("Expected {} as {} value (got '{}')".format("True or False", element,
-                                                                                            value))
+                                                                                     value))
             elif constr["type"] == "select":
                 if value not in constr["options"]:
                     raise ValueError("{} - {} only supports values: {}".format(
@@ -383,7 +394,7 @@ class Configuration(object):
 
             self.config.set(section, element, value)
 
-            with open(self.config_path, 'w') as configfile:
+            with open(self.config_path, "w") as configfile:
                 self.config.write(configfile)
 
     def get_conf_with_constraints(self):

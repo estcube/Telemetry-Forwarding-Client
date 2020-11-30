@@ -7,8 +7,10 @@ from datetime import datetime
 from typing import Callable
 from conf import Configuration
 
+
 class AXFrame(object):
     """ Simple data class for holding the decoded data of an AX.25 frame. """
+
     def __init__(self, dest: str, source: str, repeaters, ctrl: int, pid: int,
                  info: bytearray, frame: bytearray, recv_time: datetime):
         self.dest = dest
@@ -22,10 +24,11 @@ class AXFrame(object):
 
     def __repr__(self):
         return (("Receive Time: {}; Dest: {}; Source: {}; Repeaters: {}; Control: {}; PID: {}; INFO: {};"
-                    ).format(self.recv_time, self.dest, self.source,
-                                      ", ".join([x[0] for x in self.repeaters]),
-                                      self.ctrl, self.pid, self.info.hex()
-                                      ))
+                 ).format(self.recv_time, self.dest, self.source,
+                          ", ".join([x[0] for x in self.repeaters]),
+                          self.ctrl, self.pid, self.info.hex()
+                          ))
+
 
 class AXListener(object):
     """
@@ -65,7 +68,9 @@ class AXListener(object):
         # Check if the source of AX25 is from where we want it from
         satellite_src = self.config.get_conf("TNC interface", "satellite-src")
         if source.strip() != str(satellite_src):
-            self._logger.warning("Packet not sent from configured SRC (Expected packet from SRC - {}, got packet from SRC - {})".format(satellite_src, source))
+            self._logger.warning(
+                "Packet not sent from configured SRC (Expected packet from SRC - {}, got packet from SRC - {})".format(
+                    satellite_src, source))
             return
         # Repeater address parsing.
         i = 0
@@ -75,13 +80,13 @@ class AXListener(object):
                 self._logger.warning(
                     "Read 8 repeater addresses without the 'last address' bit set.")
                 return
-            (addr, ssid, is_last) = self.extract_address(frame[7 * (i+2) : 7 * (i+3)])
+            (addr, ssid, is_last) = self.extract_address(frame[7 * (i + 2): 7 * (i + 3)])
             self._logger.debug("Repeater addr: %s\tssid: %s\tIs last: %s", addr, ssid, is_last)
             repeaters.append((addr, ssid))
             i += 1
 
         # Pointer to the current byte
-        byte_pointer = 7 * (i+2)
+        byte_pointer = 7 * (i + 2)
         # self._logger.debug("Byte pointer: %i", byte_pointer)
 
         # Control byte
@@ -98,7 +103,6 @@ class AXListener(object):
 
         # Info
         info_bytes = frame[byte_pointer:]
-
 
         # Send Frame obj to callbacks.
         ax_frame = AXFrame(dest, source, repeaters, control, pid, info_bytes, frame,
@@ -123,7 +127,7 @@ class AXListener(object):
         is_last = frame_part[-1] & 0x01 == 0x01
 
         for i in range(0, 6):
-            frame_part[i] = frame_part[i]>>1
+            frame_part[i] = frame_part[i] >> 1
         addr = frame_part[:6].decode("ASCII")
 
-        return (addr, frame_part[-1], is_last)
+        return addr, frame_part[-1], is_last

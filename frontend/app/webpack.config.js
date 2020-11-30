@@ -74,8 +74,10 @@ module.exports = {
       template: path.resolve('public/index.html')
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new CopyPlugin([
-      { from: 'public', to: '', ignore: ["index.html"] }
-    ])
+    new CopyPlugin({
+      patterns: [
+      { from: 'public', to: '', globOptions: { ignore: ["index.html"] }}
+      ]}
+    )
   ]
 };
