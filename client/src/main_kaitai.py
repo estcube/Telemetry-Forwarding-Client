@@ -1,29 +1,21 @@
 # This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-from enum import Enum
-
-from kaitaistruct import __version__ as ks_version, KaitaiStruct
 from pkg_resources import parse_version
+from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
+
 
 if parse_version(ks_version) < parse_version('0.7'):
     raise Exception("Incompatible Kaitai Struct Python API: 0.7 or later is required, but you have %s" % (ks_version))
 
 from obc import Obc
-from scom import Scom
 from aocs import Aocs
+from scom import Scom
 from sp import Sp
 from pcom import Pcom
 from eps import Eps
 from common import Common
 from st import St
 class MainKaitai(KaitaiStruct):
-
-    class Command(Enum):
-        beacon_data = 247
-
-    class BeaconMode(Enum):
-        normal = 78
-        safe = 83
     def __init__(self, _io, _parent=None, _root=None):
         self._io = _io
         self._parent = _parent
@@ -40,7 +32,7 @@ class MainKaitai(KaitaiStruct):
         self.common_data = Common(self._io)
         _on = self.src
         if _on == 10:
-            self.spec_data = self._root.Nodes(self._io, self, self._root)
+            self.spec_data = Sp(self._io)
         elif _on == 0:
             self.spec_data = self._root.Broad(self._io, self, self._root)
         elif _on == 4:
@@ -51,8 +43,12 @@ class MainKaitai(KaitaiStruct):
             self.spec_data = Sp(self._io)
         elif _on == 1:
             self.spec_data = self._root.Mcs(self._io, self, self._root)
-        elif _on == 11:
+        elif _on == 13:
             self.spec_data = self._root.InvalidMac(self._io, self, self._root)
+        elif _on == 11:
+            self.spec_data = Sp(self._io)
+        elif _on == 12:
+            self.spec_data = self._root.Nodes(self._io, self, self._root)
         elif _on == 3:
             self.spec_data = Eps(self._io)
         elif _on == 5:
