@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Data from '@estcube/data-components';
 import { CircularProgress, Typography, createStyles, WithStyles, withStyles } from '@material-ui/core';
 import TNCStatus from './TNCStatus';
 import LocationDataMap from './LocationDataMap';
@@ -51,7 +50,16 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
         <Typography variant="h6">Could not connect to the client. Try re-launching your client to fix this.</Typography>
       );
     } else {
-      content = <Data />;
+      content = (
+        <div>
+          <iframe
+            title="grafana"
+            src="http://localhost:3000/d/P3JF_FpMz/estcube?orgId=2&theme=light"
+            width="100%"
+            height="2000"
+          />
+        </div>
+      );
     }
     return (
       <div data-testid="confDiv">

@@ -13,7 +13,8 @@ if TYPE_CHECKING:
 
 CONN_TIMEOUT = 2000
 
-class TelemetryDB():
+
+class TelemetryDB:
     """
     Class for interfacing with the database.
 
@@ -27,6 +28,7 @@ class TelemetryDB():
         connections made by this object.
         """
         self.conn_str = conn_str
+        self.conn = apsw.Connection(self.conn_str)
 
     def init_db(self):
         """
@@ -35,8 +37,7 @@ class TelemetryDB():
         started.
         """
         self._logger.info("Initializing database at %s", self.conn_str)
-        conn = apsw.Connection(self.conn_str)
-        cur = conn.cursor()
+        cur = self.conn.cursor()
         cur.execute("""
                                 create table if not exists ax_frame (
                                     frame_id integer primary key autoincrement,
@@ -54,28 +55,23 @@ class TelemetryDB():
                                     foreign key(frame_id) references ax_frame(frame_id)
                                 );
                             """)
-        conn.close()
-
 
     def insert_ax_frame(self, frame: AXFrame):
         """
         Insert a single ax.25 frame into the database log.
         Will store the entire frame in a blob along with its recv_time.
         """
-        conn = apsw.Connection(self.conn_str)
-        conn.setbusytimeout(CONN_TIMEOUT)
-        cur = conn.cursor()
+        self.conn.setbusytimeout(CONN_TIMEOUT)
+        cur = self.conn.cursor()
         cur.execute("insert into ax_frame values (?, ?, ?, ?);", (None, frame.frame, True, frame.recv_time.isoformat()))
-        conn.close()
 
     def get_unrelayed_frames(self, n=0):
         if n == 0:
             query = "select * from ax_frame where needs_relay = TRUE"
         else:
             query = "select * from ax_frame where needs_relay = TRUE LIMIT " + str(n)
-        conn = apsw.Connection(self.conn_str)
-        conn.setbusytimeout(CONN_TIMEOUT)
-        cur = conn.cursor()
+        self.conn.setbusytimeout(CONN_TIMEOUT)
+        cur = self.conn.cursor()
         res = cur.execute(query)
 
         frames = []
@@ -85,33 +81,29 @@ class TelemetryDB():
                 AXFrame(None, None, None, None, None, None, row[1], datetime.strptime(row[3], "%Y-%m-%dT%H:%M:%S.%f"))
             )
 
-        conn.close()
-
         return frames
 
-
     def mark_as_relayed(self, frame: AXFrame):
-        conn = apsw.Connection(self.conn_str)
-        conn.setbusytimeout(CONN_TIMEOUT)
-        cur = conn.cursor()
-        cur.execute("UPDATE ax_frame SET needs_relay = FALSE WHERE time = ? AND data = ?;", (frame.recv_time.isoformat(), frame.frame))
-        conn.close()
+        self.conn.setbusytimeout(CONN_TIMEOUT)
+        cur = self.conn.cursor()
+        cur.execute("UPDATE ax_frame SET needs_relay = FALSE WHERE time = ? AND data = ?;",
+                    (frame.recv_time.isoformat(), frame.frame))
 
     def add_telemetry_frame(self, frame: "TelemetryFrame"):
         """
         Adds the telemetry data into the database.
         """
-        conn = apsw.Connection(self.conn_str)
-        conn.setbusytimeout(CONN_TIMEOUT)
-        cur = conn.cursor()
+        self.conn.setbusytimeout(CONN_TIMEOUT)
+        cur = self.conn.cursor()
 
         try:
-            new_id = cur.execute("select frame_id from ax_frame where frame_id = (select max(frame_id) from ax_frame);").fetchone()[0]
+            new_id = cur.execute(
+                "select frame_id from ax_frame where frame_id = (select max(frame_id) from ax_frame);").fetchone()[0]
             cur.execute("""
                 insert into telemetry_packet values (?, ?, ?, ?);""",
                         (None, frame.fields, new_id, frame.timestamp))
         except Exception as exception:
             raise exception
-        finally:
-            conn.close()
 
+    def __exit__(self):
+        self.conn.close()
