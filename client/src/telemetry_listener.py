@@ -8,12 +8,15 @@ from typing import Callable
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
 import util
-
-sys.path.append(os.path.dirname(sys.executable))
 from main_kaitai import MainKaitai
 
-if getattr(sys, "frozen", False):
-    sys.path.append(os.path.join(util.get_root(), "src"))
+sys.path.append(os.path.dirname(sys.executable))
+
+
+
+if getattr(sys, 'frozen', False):
+    sys.path.append(os.path.join(util.get_root(), 'src'))
+
 
 
 class TelemetryFrame:
@@ -159,24 +162,3 @@ class TelemetryListener:
 
         for callback in self.callbacks:
             callback(frame)
-
-    def extract_fields(self, obj, name_stack, fields, msg_ts_id):
-        """
-        Extracts all the fields from an arbitrary (possibly nested) struct object into an array.
-
-        Uses dot as a delimeter when joining the field names.
-        """
-
-        timestamp = None
-        for name in dir(obj):
-            if name[:1] == "_":
-                continue
-            value = getattr(obj, name)
-            if isinstance(value, str) or isinstance(value, int) or isinstance(value, bool):
-                if ".".join(name_stack + [name]) == msg_ts_id:
-                    timestamp = value
-                fields.append((".".join(name_stack + [name]), value))
-            else:
-                timestamp = timestamp or self.extract_fields(
-                    value, name_stack + [name], fields, msg_ts_id)
-        return timestamp

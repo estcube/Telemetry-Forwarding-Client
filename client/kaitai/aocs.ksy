@@ -93,9 +93,3 @@ seq:
     type: s2
   - id: reaction_wheel3
     type: s2
-enums:
-  command:
-    247: beacon_data
-  beacon_mode:
-    78: normal
-    83: safe
