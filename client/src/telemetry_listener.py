@@ -18,7 +18,8 @@ if getattr(sys, 'frozen', False):
     sys.path.append(os.path.join(util.get_root(), 'src'))
 
 
-class TelemetryFrame():
+
+class TelemetryFrame:
     """ Data structure for the output of the telemetry listener that is sent to the repository. """
 
     def __init__(self, packet_timestamp: datetime, fields):
@@ -30,12 +31,13 @@ class TelemetryFrame():
                  ).format(self.timestamp, self.recv_timestamp,
                           self.fields))
 
+
 class TimestampType(Enum):
     """ Enum of the supported timestamp types. """
-    unix = 'unix_timestamp'
+    unix = "unix_timestamp"
 
 
-class TelemetryListener():
+class TelemetryListener:
     """
     The listener class for telemetry.
 
@@ -102,8 +104,8 @@ class TelemetryListener():
                     fields.append((elem, getattr(common, elem)))
         print(" ")
 
-        """Parses the subsystem specific data"""
-        #com and obcs have two separate .ksy files
+        """ Parses the subsystem specific data """
+        """ com and obcs have two separate .ksy files """
         if spec.__class__.__name__ == "Com":
             for elem in vars(spec.pcom):
                 if not elem.startswith("_"):
@@ -135,8 +137,8 @@ class TelemetryListener():
                     fields.append((elem, getattr(spec.aocs, elem)))
             print(" ")
 
-        #eps, st and sp have a single file .ksy file
         else:
+            """eps, st and sp have a single file .ksy file"""
             for elem in vars(spec):
                 if not elem.startswith("_"):
                     if elem == "temp_curr":

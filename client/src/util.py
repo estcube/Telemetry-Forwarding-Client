@@ -5,6 +5,7 @@ Small util functions for the telemetry client.
 import sys
 import os
 
+
 def get_root():
     """
     Returns the path to the root client folder.
@@ -15,7 +16,7 @@ def get_root():
     Otherwise, expects that the file is a script inside the `client/src` folder.
     """
 
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, "frozen", False):
         return os.path.dirname(sys.executable)
     else:
         return os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
