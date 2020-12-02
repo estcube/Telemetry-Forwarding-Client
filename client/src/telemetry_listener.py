@@ -8,10 +8,9 @@ from typing import Callable
 from ax_listener import AXFrame
 from db_interface import TelemetryDB
 import util
-from main_kaitai import MainKaitai
 
 sys.path.append(os.path.dirname(sys.executable))
-
+from main_kaitai import MainKaitai
 
 
 if getattr(sys, 'frozen', False):
