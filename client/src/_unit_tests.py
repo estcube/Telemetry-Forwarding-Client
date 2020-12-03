@@ -91,7 +91,7 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
 
         conf = Configuration(self.confPath)
         self.assertEqual(conf.get_conf("Client", "database"), "../db")
-        self.assertEqual(conf.get_conf("Client", "frontend-port"), "5000")
+        self.assertEqual(conf.get_conf("Client", "frontend-port"), 5000)
 
         os.remove(self.confPath)
 

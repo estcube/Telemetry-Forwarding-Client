@@ -3,10 +3,13 @@
 BASEDIR=$(dirname "$BASH_SOURCE")
 DISTDIR="$BASEDIR/../dist"
 mkdir "$DISTDIR"
+mkdir "$DISTDIR/src"
+
 cp "$BASEDIR/configuration.ini.sample" "$DISTDIR/configuration.ini"
 cp "$BASEDIR/../README.md" "$DISTDIR/"
+cp "$BASEDIR/versions.pckl" "$DISTDIR/"
 
-cp "$BASEDIR/dist/main.exe" "$DISTDIR/"
+cp "$BASEDIR/dist/main.exe" "$DISTDIR/src"
 
 cp -r "$BASEDIR/kaitai" "$DISTDIR/kaitai"
 

@@ -50,6 +50,8 @@ tle-url=http://staging.estcube.eu/sids/tle
 telemetry-configuration-url=http://staging.estcube.eu:8029/icp/telemetry
 # URL of the latest packet structure (kaitai) endpoint.
 packet-structure-url=http://staging.estcube.eu:8029/icp/config
+# URL of the latest version check endpoint.
+versions-url=https://api.jsonbin.io/b/5fc508f5045eb86f1f890594
 # Path to the kaitai-struct-compiler executable. Relative to client executable.
 kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 # Localhost port to serve the frontend on.
@@ -57,6 +59,8 @@ kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 frontend-port=5000
 # Turns on debug logging for the client.
 debug-log = False
+# Turns on automatic updating for the client.
+automatic-updating = True
 # Interval between relaying all unrelayed packets in seconds
 relay-interval = 3600
 # Number of packets lost in a row to stop relay

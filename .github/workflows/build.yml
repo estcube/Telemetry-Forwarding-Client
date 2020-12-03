@@ -3,8 +3,7 @@ on:
   push:
     branches:
       - master
-      - ci-windows-release-and-tests
-      - branch-for-peer-review
+      - shortcut-exp
 jobs:
   build:
     runs-on: windows-latest
@@ -23,8 +22,12 @@ jobs:
         pyinstaller src/main.py --onefile --hidden-import csv --runtime-hook src/grafana_launcher.py --exclude-module main_kaitai
         sh build_windows_exe.sh
         cd src 
-        Foreach ($I in ("aocs.py","common.py","eps.py","icp.py","main_kaitai.py","pcom.py","scom.py","sp.py","st.py","obc.py")) { copy $I "../../dist" }
+        Foreach ($I in ("aocs.py","common.py","eps.py","icp.py","main_kaitai.py","pcom.py","scom.py","sp.py","st.py","obc.py")) { copy $I "../../dist/src" }
         cd ../../dist
+        echo "@echo off" > LaunchClient.bat
+        echo "cd src" >> LaunchClient.bat
+        echo ".\\main.exe" >> LaunchClient.bat
+        echo "@echo on" >> LaunchClient.bat
         curl.exe --output grafana.zip --url https://dl.grafana.com/oss/release/grafana-7.3.1.windows-amd64.zip
         tar -xf "grafana.zip"
         del "grafana.zip"

@@ -155,6 +155,13 @@ CONSTRAINTS = {
             "label": "Telemetry configuration URL",
             "value": "http://staging.estcube.eu:8029/icp/telemetry"
         },
+        "versions-url": {
+            "type": "str",
+            "regexType": "url",
+            "description": "URL of the latest version check endpoint.",
+            "label": "Version Check URL",
+            "value": "https://api.jsonbin.io/b/5fc508f5045eb86f1f890594/1"
+        },
         "kaitai-compiler-path": {
             "type": "str",
             "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
@@ -174,6 +181,12 @@ CONSTRAINTS = {
             "label": "Debug logging",
             "value": False,
             "description": "Turn on debug level logging"
+        },
+        "automatic-updating": {
+            "type": "bool",
+            "label": "Automatic updating",
+            "value": True,
+            "description": "Turn on automatically update on startup"
         },
         "tle-url": {
             "type": "str",

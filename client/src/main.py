@@ -15,6 +15,7 @@ from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
 from tnc_pool import TNCPool
 from file_logger import FileLogger
+from updater import Updater
 import api
 from pkg_resources import parse_version
 from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
@@ -65,6 +66,10 @@ def main(argv):
     db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
     database.init_db()
+
+    """ Update grafana and kaitai configurations """
+    if conf.get_conf("Client", "automatic-updating"):
+        Updater(conf).checkForUpdates()
 
     """ Build the other components. """
     ax_listener = AXListener(conf)
