@@ -54,11 +54,22 @@ def main(argv):
     """ Create the configuration object """
     conf = Configuration(conf_path)
 
+    """ Set up logging """
+
     if not conf.get_conf("Client", "debug-log"):
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.DEBUG)
     _logger = logging.getLogger(__name__)
+
+    if not os.path.isdir("../logs"):
+        os.mkdir("../logs")
+
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    handler = logging.FileHandler("../logs/system_logs.log")
+    handler.setFormatter(formatter)
+
+    logging.getLogger('').addHandler(handler)
 
     _logger.info("Using configuration from: %s", conf_path)
 
@@ -75,14 +86,10 @@ def main(argv):
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
     telemetry_listener = TelemetryListener(database)
-    file_logger = FileLogger(conf, "logs/", "log")
+    file_logger = FileLogger(conf, "../logs/", "log")
 
     """ Create the flask app and start it in a forked process. """
-    try:
-        port = conf.get_conf("Client", "frontend-port")
-    except ValueError:
-        """ Default port. """
-        port = 5000
+    port = conf.get_conf("Client", "frontend-port")
 
     """ Set the handler for SIGTERM, so we can exit a bit more gracefully. """
     signal.signal(signal.SIGTERM, terminate_handler)

@@ -250,10 +250,10 @@ class Configuration(object):
         elif constr["type"] == "int":
             try:
                 value = int(value)
-            except Exception as e:
-                raise type(e)("Expected {} as {} value (got '{}')".format("integer", element, value))
+            except Exception:
+                raise ValueError("Expected {} as {} value (got '{}')".format("integer", element, value))
             if not (int(constr["min"]) <= value <= int(constr["max"])):
-                raise Exception(
+                raise ValueError(
                     "Value {} is out of range (expected value between {} and {}, got {})".format(
                         element, constr["min"], constr["max"], value))
             return value
@@ -261,10 +261,10 @@ class Configuration(object):
         elif constr["type"] == "float":
             try:
                 value = float(value)
-            except Exception as e:
-                raise type(e)("Expected {} as {} value (got '{}')".format("float", element, value))
+            except Exception:
+                raise ValueError("Expected {} as {} value (got '{}')".format("float", element, value))
             if not (float(constr["min"]) <= value <= float(constr["max"])):
-                raise Exception(
+                raise ValueError(
                     "Value {} is out of range (expected value between {} and {}, got {})".format(
                         element, constr["min"], constr["max"], value))
             return value
@@ -299,7 +299,8 @@ class Configuration(object):
                     constr = sec[element]
                     try:
                         conf_value = self.config.get(section, element)
-                    except (configparser.NoSectionError, configparser.NoOptionError):
+                    except (configparser.NoSectionError, configparser.NoOptionError, ValueError):
+                        self._log.error("Configuration section " + section + ", value " + element + " was undefined or unsuitable. Using default value: " + str(sec[element]["value"]))
                         conf_value = sec[element]["value"]
                     return self.get_conf_value(str(conf_value), constr, section, element)
                 else:
