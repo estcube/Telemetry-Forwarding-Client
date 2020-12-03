@@ -39,7 +39,7 @@ class BeaconGenerator:
             spec.extend(AocsData().createData())
         elif src == 5:
             spec = StData().createData()
-        elif 6 <= src <= 9:
+        elif 6 <= src <= 11:
             spec = SpData().createData()
         else:
             print("ERROR")
@@ -47,30 +47,33 @@ class BeaconGenerator:
         hk_packet.extend(spec)
         return hk_packet
 
-    def generate_icp(self, src: int):
+    def generate_icp(self, dst: int, src: int, cmd: int, mode: int):
 
         """
-        Paremeter src specifies the subsystem from which the data comes from
+        dst specifies the mission control system
+        src specifies the subsystem from which the data comes from
+        cmd specifies the housekeeping response id
+        mode can be either normal operations or safe mode
         """
 
         beacon_data = self.generate_normal_beacon(src)
 
         f = bytearray()
-        f.append(0x01)
+        f.append(dst)
         f.append(src)
         f.append(len(beacon_data))
-        f.append(0xF7)
+        f.append(cmd)
         tmp = random.randint(0, 16777214)
         print("UUID CHECK: ", tmp)
         f += tmp.to_bytes(3, "big")
-        f.append(0x03)  # TODO Mode: NOW
+        f.append(mode)
         f += beacon_data
-        f.append(0x05)  # TODO CRC
+        f.append(0x05)
         f.append(0x05)
 
         return f
 
     def generate_ax(self):
-        icp = self.generate_icp(4)
+        icp = self.generate_icp(1, 11, 247, 1)
         self.ax.setInfo(icp)
         return self.ax.build()

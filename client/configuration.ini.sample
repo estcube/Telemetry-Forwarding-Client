@@ -38,8 +38,8 @@ satellite-src = CHANGE_ME
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
 database=telemetry.db
-# Path to the log file (will be created if doesn't exist). Relative to the executable.
-logs=packets.log
+# Path to the logs folder (will be created if doesn't exist). Relative to the executable.
+logs=packet_logs
 # Path to the folder containing the static frontend files. Relative to the executable.
 static-files-path=static/
 # Path to the file that specifies the ax.25 data blob structure.

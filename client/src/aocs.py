@@ -2,20 +2,12 @@
 
 from pkg_resources import parse_version
 from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
-from enum import Enum
 
 
 if parse_version(ks_version) < parse_version('0.7'):
     raise Exception("Incompatible Kaitai Struct Python API: 0.7 or later is required, but you have %s" % (ks_version))
 
 class Aocs(KaitaiStruct):
-
-    class Command(Enum):
-        beacon_data = 247
-
-    class BeaconMode(Enum):
-        normal = 78
-        safe = 83
     def __init__(self, _io, _parent=None, _root=None):
         self._io = _io
         self._parent = _parent
