@@ -7,35 +7,39 @@ import pickle
 import urllib
 import logging
 from conf import Configuration
+from os import path
 
 
-def downloadAndReplaceFile(path, download_url):
+def downloadAndReplaceFile(file_path, download_url):
     """
         Downloads a new file and replaces the current
     """
     file = urllib.request.urlopen(download_url)
-    with open(path, 'wb') as output:
+    with open(file_path, 'wb') as output:
         output.write(file.read())
 
 
-def getCurrentVersions():
-    """
-        Fetches the currents versions of files
-    """
-    f = open('../versions.pckl', 'rb')
-    versions = pickle.load(f)
-    f.close()
-    return versions
-
-
 class Updater:
-    """ Class that manages updating grafana dashboard files and kaitai files"""
+    """ Class that manages updating grafana dashboard files and subsystems files"""
 
     _logger = logging.getLogger(__name__)
 
     def __init__(self, config: Configuration):
         self.config = config
-        self.versions = getCurrentVersions()
+        self.mission_name = self.config.get_conf("Mission Control", "mission-name")
+        self.versions = self.getCurrentVersions()
+
+    def getCurrentVersions(self):
+        """
+            Fetches the currents versions of files
+        """
+        if path.exists('../versions.pckl'):
+            f = open('../versions.pckl', 'rb')
+            versions = pickle.load(f)
+            f.close()
+        else:
+            versions = {"subsystems": {}, "grafana": {}}
+        return versions
 
     def checkForUpdates(self):
         """
@@ -43,11 +47,12 @@ class Updater:
         """
         url = self.config.get_conf("Client", "versions-url")
         try:
+            self._logger.info("Checking for updates...")
             response = requests.get(url)
             if 200 <= response.status_code <= 300:
-                data = response.json()
+                data = response.json()[self.mission_name]
                 self.updateGrafana(data)
-                self.updateKaitai(data)
+                self.updateSubSystems(data)
                 self.updateVersions()
             else:
                 self._logger.warning("Connection failed to version check endpoint %s", url)
@@ -58,8 +63,7 @@ class Updater:
         except requests.RequestException:
             self._logger.warning("Something went wrong with the version check %s request.", url)
         except Exception as exc:
-            self._logger.warning("Something went wrong with the version check %s request.", url)
-            raise exc
+            self._logger.warning("Something went wrong with version updating: %s", str(exc))
 
     def updateVersions(self):
         """
@@ -74,31 +78,34 @@ class Updater:
             Updates the grafana.db fail to display updates dashboards
         """
         try:
-            if data["grafana"]["version"] != self.versions["grafana"]["version"]:
-                downloadAndReplaceFile("../grafana/data/grafana.db", data["grafana"]["download"])
-                self.versions["grafana"]["version"] = data["grafana"]["version"]
+            if "version" not in self.versions["grafana"] or self.mission_name + data["grafana"]["version"] != self.versions["grafana"]["version"]:
+                downloadAndReplaceFile(self.config.get_conf("Client", "grafana-database"), data["grafana"]["link"])
+                self.versions["grafana"]["version"] = self.mission_name + data["grafana"]["version"]
                 self._logger.info("Grafana updated to version: " + data["grafana"]["version"])
         except Exception as e:
             self._logger.error("Failed to update Grafana configuration due to an exception: " + str(e))
 
-    def updateKaitai(self, data):
+    def updateSubSystems(self, data):
         """
-            Updates the kaitai files to respond to changes in packet configuration
+            Updates the subsystems files to respond to changes in packet configuration
         """
-        current_kaitai_files = {}
+        current_subsystems_files = {}
 
-        for kaitai_file in self.versions["kaitai"]:
-            current_kaitai_files[kaitai_file["name"]] = kaitai_file["version"]
+        for subsystems_filename in self.versions["subsystems"]:
+            current_subsystems_files[subsystems_filename] = self.versions["subsystems"][subsystems_filename]
 
-        for kaitai_file in data["kaitai"]:
+        for subsystems_filename in data["subsystems"]:
+            subsystems_file = data["subsystems"][subsystems_filename]
+            if subsystems_filename == "main":
+                continue
             try:
-                if kaitai_file["name"] not in current_kaitai_files or kaitai_file["version"] != current_kaitai_files[kaitai_file["name"]]:
-                    downloadAndReplaceFile(kaitai_file["name"], kaitai_file["download"])
-                    self.versions["kaitai"][kaitai_file] = {}
-                    self.versions["kaitai"][kaitai_file]["version"] = kaitai_file["version"]
-                    self._logger.info("Kaitai file " + kaitai_file["name"] + " updated to version: " + data["grafana"]["version"])
+                if subsystems_filename not in current_subsystems_files.keys() or self.mission_name + subsystems_file["version"] != current_subsystems_files[subsystems_filename]:
+                    downloadAndReplaceFile(subsystems_filename + ".py", subsystems_file["python"])
+                    self.versions["subsystems"][subsystems_filename] = {}
+                    self.versions["subsystems"][subsystems_filename]["version"] = self.mission_name + subsystems_file["version"]
+                    self._logger.info("subsystems file " + subsystems_filename + " updated to version: " + subsystems_file["version"])
             except Exception as e:
-                self._logger.error("Failed to update kaitai file " + kaitai_file["name"] + " due to an exception: " + str(e))
+                self._logger.error("Failed to update subsystems file " + subsystems_filename + " due to an exception: " + str(e))
 
 
 

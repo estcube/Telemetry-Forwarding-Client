@@ -3,13 +3,7 @@ on:
   push:
     branches:
       - master
-<<<<<<< HEAD
-      - shortcut-exp
-=======
-      - ci-windows-release-and-tests
-      - branch-for-peer-review
-      - Grafana-Dashboard
->>>>>>> master
+      - demo-branch
 jobs:
   build:
     runs-on: windows-latest

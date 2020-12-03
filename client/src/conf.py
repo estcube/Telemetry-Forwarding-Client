@@ -13,6 +13,11 @@ CONSTRAINTS = {
             "label": "Relay enabled",
             "value": "False"
         },
+        "mission-name": {
+            "type": "str",
+            "label": "Name of the mission",
+            "value": "ESTCube-2"
+        },
         "mcs-relay-url": {
             "type": "str",
             "label": "MCS relay URL",
@@ -122,6 +127,14 @@ CONSTRAINTS = {
             "hidden": True,
             "value": "../telemetry.db"
         },
+        "grafana-database": {
+            "type": "str",
+            "description": "Path to the grafana.db file. Relative to executable file.",
+            "requiresRestart": True,
+            "label": "Grafana Database path",
+            "hidden": True,
+            "value": "../grafana.db"
+        },
         "logs": {
             "type": "str",
             "description": "Path to the logs folder. Relative to executable file.",
@@ -148,19 +161,12 @@ CONSTRAINTS = {
             "max": 65535,
             "value": "5000"
         },
-        "telemetry-configuration-url": {
-            "type": "str",
-            "regexType": "url",
-            "description": "URL of the latest telemetry configuration endpoint.",
-            "label": "Telemetry configuration URL",
-            "value": "http://staging.estcube.eu:8029/icp/telemetry"
-        },
         "versions-url": {
             "type": "str",
             "regexType": "url",
             "description": "URL of the latest version check endpoint.",
             "label": "Version Check URL",
-            "value": "https://api.jsonbin.io/b/5fc508f5045eb86f1f890594/1"
+            "value": "https://api.jsonbin.io/b/5fc508f5045eb86f1f890594/2"
         },
         "kaitai-compiler-path": {
             "type": "str",
@@ -168,13 +174,6 @@ CONSTRAINTS = {
             "requireRestart": False,
             "hidden": True,
             "value": "../../kaitai/bin/kaitai-struct-compiler"
-        },
-        "packet-structure-url": {
-            "type": "str",
-            "regexType": "url",
-            "description": "URL of the latest packet structure (kaitai) endpoint.",
-            "label": "Packet structure URL",
-            "value": "http://staging.estcube.eu:8029/icp/config"
         },
         "debug-log": {
             "type": "bool",
