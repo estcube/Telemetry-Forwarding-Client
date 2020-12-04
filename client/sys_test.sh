@@ -31,7 +31,7 @@ connection-retry-time=5
 satellite-src = ESTCUB
 
 [Client]
-database=src/__test__/systest.db
+database=__test__/systest.db
 automatic-updating=False
 frontend-port=6666
 static-files-path=../static
