@@ -12,7 +12,7 @@ class FileLogger:
         self._logger = logging.getLogger(__name__)
         """ Get Satellite catalog number from tle to be used as name for log file. """
         try:
-            tle_req = requests.get(config.get_conf("Client", "tle-url"))
+            tle_req = requests.get(config.get_conf("Client", "tle-url"),timeout=5)
             if tle_req.status_code == 200:
                 mission_name = tle_req.text.split("\n")[1][2:7]
         except:
