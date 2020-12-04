@@ -31,7 +31,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
     app = Flask(__name__, static_url_path="", static_folder=static_folder)
     CORS(app)
 
-    if str(config.get_conf("Client", "debug-log")) != "True":
+    if not config.get_conf("Client", "debug-log"):
         server_log = logging.getLogger("werkzeug")
         server_log.setLevel(logging.WARN)
 

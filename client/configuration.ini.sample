@@ -35,8 +35,6 @@ connection-retry-time=5
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 satellite-src = CHANGE_ME
 
-
-
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
 database=telemetry.db
