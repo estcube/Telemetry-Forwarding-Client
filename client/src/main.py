@@ -7,7 +7,6 @@ import signal
 import platform
 from getopt import getopt
 from threading import Thread
-import time
 import util
 from ax_listener import AXListener, AXFrame
 from conf import Configuration
@@ -75,7 +74,7 @@ def main(argv):
     ax_listener = AXListener(conf)
     sids_relay = SIDSRelay(conf, database)
     telemetry_listener = TelemetryListener(database)
-    file_logger = FileLogger(conf, "logs/", "log")
+    file_logger = FileLogger(conf, conf.get_conf("Client", "logs"), "log")
 
     """ Create the flask app and start it in a forked process. """
     try:
