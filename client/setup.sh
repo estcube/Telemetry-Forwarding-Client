@@ -1,10 +1,10 @@
 #!/bin/bash
 
-sudo apt-get update
-sudo apt-get install python3-pip
+sudo apt update
+sudo apt install python3-pip
 pip3 install -r requirements.txt
-sudo apt-get install python3-apsw
-sudo apt-get install yarnpkg
+sudo apt install python3-apsw
+sudo apt install yarnpkg
 cd ../frontend/
 yarnpkg install -silent
 yarnpkg build
@@ -13,4 +13,7 @@ sudo sh build.sh
 sudo chmod -R 777 ../dist
 mkdir ../dist/logs
 touch ../dist/logs/log_packets.log
-echo "Now do in Telemetry-Forwarding-Client/dist/src 'python3 main.py' to start the program and go to localhost:5000 with your preferred web browser"
+touch ../ start_program_linux.sh
+echo 'python3 ./dist/src/main.py' >> ../start_program_linux.sh
+echo 'echo now open localhost:5000 with your preffered web browser' >> ../start_program_linux.sh
+echo 'Now in main root folder do sh start_program_linux.sh to start the program'
