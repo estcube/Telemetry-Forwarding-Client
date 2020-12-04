@@ -166,7 +166,7 @@ CONSTRAINTS = {
             "regexType": "url",
             "description": "URL of the latest version check endpoint.",
             "label": "Version Check URL",
-            "value": "https://api.jsonbin.io/b/5fc508f5045eb86f1f890594/2"
+            "value": "https://staging.estcube.eu/sids/index"
         },
         "kaitai-compiler-path": {
             "type": "str",
