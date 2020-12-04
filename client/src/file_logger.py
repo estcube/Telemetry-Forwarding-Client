@@ -22,7 +22,6 @@ class FileLogger:
 
         if not os.path.isdir(path):
             os.mkdir(path)
-        logfile = "{}{}_packets.log".format(path, mission_name)
         logfile = "{}/{}_packets.log".format(path, mission_name)
         self.file_logger = logging.FileHandler(logfile)
 
