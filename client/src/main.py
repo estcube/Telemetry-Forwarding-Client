@@ -15,6 +15,7 @@ from telemetry_listener import TelemetryListener
 from sids_relay import SIDSRelay
 from tnc_pool import TNCPool
 from file_logger import FileLogger
+from updater import Updater
 import api
 from pkg_resources import parse_version
 from kaitaistruct import __version__ as ks_version, KaitaiStruct, KaitaiStream, BytesIO
@@ -29,7 +30,6 @@ def print_frame(frame: AXFrame):
 def terminate_handler(_signo, _stack_frame):
     """
     Attempt to exit more cleanly on receiving a SIGTERM signal.
-
     Raises a SystemExit exception, upon receiving SIGTERM. Registered in the main function.
     """
     sys.exit(0)
@@ -54,7 +54,6 @@ def main(argv):
     conf = Configuration(conf_path)
 
     """ Set up logging """
-
     if not conf.get_conf("Client", "debug-log"):
         logging.basicConfig(level=logging.INFO)
     else:
@@ -76,6 +75,10 @@ def main(argv):
     db_loc = os.path.join(util.get_root(), conf.get_conf("Client", "database"))
     database = TelemetryDB(db_loc)
     database.init_db()
+
+    """ Update grafana and kaitai configurations """
+    if conf.get_conf("Client", "automatic-updating"):
+        Updater(conf).checkForUpdates()
 
     """ Build the other components. """
     ax_listener = AXListener(conf)

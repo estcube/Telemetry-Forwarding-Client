@@ -32,6 +32,7 @@ satellite-src = ESTCUB
 
 [Client]
 database=src/__test__/systest.db
+automatic-updating=False
 frontend-port=6666
 static-files-path=../static
 telemetry-configuration=spec/telemetry.json

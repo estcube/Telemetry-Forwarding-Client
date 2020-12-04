@@ -9,10 +9,6 @@ from ax_listener import AXFrame
 from db_interface import TelemetryDB
 import util
 
-sys.path.append(os.path.dirname(sys.executable))
-from main_kaitai import MainKaitai
-
-
 if getattr(sys, 'frozen', False):
     sys.path.append(os.path.join(util.get_root(), 'src'))
 
@@ -49,6 +45,9 @@ class TelemetryListener:
     _logger = logging.getLogger(__name__)
 
     def __init__(self, db: TelemetryDB):
+        sys.path.append(os.path.dirname(sys.executable))
+        from main_kaitai import MainKaitai
+        self.kaitai = MainKaitai
         self.callbacks = []
         self.database = db
 
@@ -67,7 +66,7 @@ class TelemetryListener:
         """
 
         try:
-            icp = MainKaitai.from_bytes(ax_frame.info)
+            icp = self.kaitai.from_bytes(ax_frame.info)
         except ValueError as error:
             self._logger.debug(error)
             self._logger.info("Failed to parse payload.")
