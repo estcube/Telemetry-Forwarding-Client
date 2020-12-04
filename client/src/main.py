@@ -48,7 +48,7 @@ def main(argv):
 
     if conf_path is None:
         """ Default conf path """
-        conf_path = os.path.join(util.get_root(), "configuration.ini")
+        conf_path = "../configuration.ini"
 
     """ Create the configuration object """
     conf = Configuration(conf_path)
