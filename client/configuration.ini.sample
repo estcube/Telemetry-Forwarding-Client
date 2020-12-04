@@ -14,7 +14,7 @@ relay-request-type = POST
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 receiver-callsign = CHANGE_ME
 # Norad ID of the spacecraft that you're listening to. Will be transmitted alongside the AX.25 packet.
-norad-id = 43792
+norad-id = 39161
 # Longitude of the receiver. Will be transmitted alongside the AX.25 packet.
 longitude = 58.377974
 # Latitude of the receiver. Will be transmitted alongside the AX.25 packet.
@@ -40,11 +40,11 @@ satellite-src = CHANGE_ME
 
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
-database=telemetry.db
+database=../telemetry.db
 # Path to the logs folder (will be created if doesn't exist). Relative to the executable.
 logs=packet_logs
 # Path to the folder containing the static frontend files. Relative to the executable.
-static-files-path=static/
+static-files-path=../static/
 # URL of the latest tle endpoint.
 tle-url=http://staging.estcube.eu/sids/tle
 # URL of the latest version check endpoint.
