@@ -31,6 +31,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import threading
 
+
 class ProxyLock:
     def __init__(self, acq: callable, rel: callable):
         self.acq = acq
@@ -41,6 +42,7 @@ class ProxyLock:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.rel()
+
 
 class ReadWriteLock:
     """ A lock object that allows many simultaneous "read locks", but

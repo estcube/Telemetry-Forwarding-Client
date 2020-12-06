@@ -13,6 +13,11 @@ CONSTRAINTS = {
             "label": "Relay enabled",
             "value": "False"
         },
+        "mission-name": {
+            "type": "str",
+            "label": "Name of the mission",
+            "value": "ESTCube-2"
+        },
         "mcs-relay-url": {
             "type": "str",
             "label": "MCS relay URL",
@@ -79,14 +84,14 @@ CONSTRAINTS = {
             "value": "localhost",
             "regexType": "ip"
         },
-         "tnc-port": {
-             "type": "str",
-             "requiresRestart": True,
-             "label": "TNC port",
-             "value": "8100",
+        "tnc-port": {
+            "type": "str",
+            "requiresRestart": True,
+            "label": "TNC port",
+            "value": "8100",
             "min": 1024,
             "max": 65535
-         },
+        },
         "max-connection-attempts": {
             "type": "int",
             "requiresRestart": True,
@@ -122,6 +127,22 @@ CONSTRAINTS = {
             "hidden": True,
             "value": "../telemetry.db"
         },
+        "grafana-database": {
+            "type": "str",
+            "description": "Path to the grafana.db file. Relative to executable file.",
+            "requiresRestart": True,
+            "label": "Grafana Database path",
+            "hidden": True,
+            "value": "../grafana.db"
+        },
+        "logs": {
+            "type": "str",
+            "description": "Path to the logs folder. Relative to executable file.",
+            "requiresRestart": True,
+            "label": "Logfile path",
+            "hidden": True,
+            "value": "packet_logs"
+        },
         "static-files-path": {
             "type": "str",
             "description": "Path to the root directory of static frontend files",
@@ -140,17 +161,12 @@ CONSTRAINTS = {
             "max": 65535,
             "value": "5000"
         },
-        "telemetry-configuration-url": {
+        "versions-url": {
             "type": "str",
             "regexType": "url",
-            "description": "URL of the latest telemetry configuration endpoint.",
-            "label": "Telemetry configuration URL",
-            "value": "http://staging.estcube.eu:8029/icp/telemetry"
-        },
-        "telemetry-configuration": {
-            "type": "str",
-            "description": "Path to the file that specifies the telemetry data fields",
-            "value": "spec/telemetry.json"
+            "description": "URL of the latest version check endpoint.",
+            "label": "Version Check URL",
+            "value": "https://staging.estcube.eu/sids/index"
         },
         "kaitai-compiler-path": {
             "type": "str",
@@ -159,18 +175,17 @@ CONSTRAINTS = {
             "hidden": True,
             "value": "../../kaitai/bin/kaitai-struct-compiler"
         },
-        "packet-structure-url": {
-            "type": "str",
-            "regexType": "url",
-            "description": "URL of the latest packet structure (kaitai) endpoint.",
-            "label": "Packet structure URL",
-            "value": "http://staging.estcube.eu:8029/icp/config"
-        },
         "debug-log": {
             "type": "bool",
             "label": "Debug logging",
             "value": False,
             "description": "Turn on debug level logging"
+        },
+        "automatic-updating": {
+            "type": "bool",
+            "label": "Automatic updating",
+            "value": True,
+            "description": "Turn on automatically update on startup"
         },
         "tle-url": {
             "type": "str",
@@ -178,6 +193,24 @@ CONSTRAINTS = {
             "description": "URL of the tle",
             "label": "TLE URL",
             "value": "http://staging.estcube.eu/sids/tle"
+        },
+        "relay-interval": {
+            "type": "int",
+            "description": "Interval between relaying all unrelayed packets in seconds.",
+            "requiresRestart": True,
+            "label": "Relay interval",
+            "min": 0,
+            "max": 999999,
+            "value": "3600"
+        },
+        "lost-packet-count": {
+            "type": "int",
+            "description": "Number of packets lost in a row to stop relay.",
+            "requiresRestart": True,
+            "label": "Lost packet count",
+            "min": 1,
+            "max": 999999,
+            "value": "10"
         }
     }
 }
@@ -197,6 +230,60 @@ class Configuration(object):
 
         self.lock = ReadWriteLock()
 
+    def get_conf_value(self, value, constr, section, element):
+        if constr["type"] == "str":
+            return value
+        if "regexType" in constr:
+            if constr["regexType"] == "url":
+                regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
+                is_valid = re.match(regex, value)
+                if not is_valid:
+                    raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
+                return value
+            elif constr["regexType"] == "ip":
+                regex = '(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$'
+                is_valid = re.match(regex, constr["value"])
+                if not is_valid:
+                    raise ValueError("Expected {} as {} value (got '{}')".format("ip", element, value))
+                return value
+        elif constr["type"] == "int":
+            try:
+                value = int(value)
+            except Exception:
+                raise ValueError("Expected {} as {} value (got '{}')".format("integer", element, value))
+            if not (int(constr["min"]) <= value <= int(constr["max"])):
+                raise ValueError(
+                    "Value {} is out of range (expected value between {} and {}, got {})".format(
+                        element, constr["min"], constr["max"], value))
+            return value
+
+        elif constr["type"] == "float":
+            try:
+                value = float(value)
+            except Exception:
+                raise ValueError("Expected {} as {} value (got '{}')".format("float", element, value))
+            if not (float(constr["min"]) <= value <= float(constr["max"])):
+                raise ValueError(
+                    "Value {} is out of range (expected value between {} and {}, got {})".format(
+                        element, constr["min"], constr["max"], value))
+            return value
+        elif constr["type"] == "bool":
+
+            if value.strip().lower() == "true":
+                value = True
+            elif value.strip().lower() == "false":
+                value = False
+            else:
+                raise ValueError(
+                    "Expected {} as {} value (got '{}')".format("True or False", element,
+                                                                constr["value"]))
+            return value
+        elif constr["type"] == "select":
+            if value not in constr["options"]:
+                raise ValueError("{} - {} only supports values: {}".format(
+                    section, element, constr["options"]))
+            return value
+
     def get_conf(self, section, element):
         """
         Retrieves the configured value at the specified field.
@@ -204,17 +291,24 @@ class Configuration(object):
         example: getConf("Mission Control", "relay-enabled")
         """
         with self.lock.read_lock:
-            conf_value = None
-            try:
-                conf_value = self.config.get(section, element)
-            except (configparser.NoSectionError, configparser.NoOptionError):
-                if section in CONSTRAINTS:
-                    sec = CONSTRAINTS[section]
-                    if element in sec and "value" in sec[element]:
-                        conf_value = sec[element]["value"]
-            return conf_value
 
-    def get_constraints(self):
+            if section in CONSTRAINTS:
+                sec = CONSTRAINTS[section]
+                if element in sec and "value" in sec[element]:
+                    constr = sec[element]
+                    try:
+                        conf_value = self.config.get(section, element)
+                    except (configparser.NoSectionError, configparser.NoOptionError, ValueError):
+                        self._log.error("Configuration section " + section + ", value " + element + " was undefined or unsuitable. Using default value: " + str(sec[element]["value"]))
+                        conf_value = sec[element]["value"]
+                    return self.get_conf_value(str(conf_value), constr, section, element)
+                else:
+                    raise ConfigurationUndefinedException
+            else:
+                raise ConfigurationUndefinedException
+
+    @staticmethod
+    def get_constraints():
         """ Returns all of the constraints for the configuration. """
         return CONSTRAINTS
 
@@ -257,18 +351,18 @@ class Configuration(object):
                 raise ValueError("Field {} - {} does not exist.".format(section, element))
 
             constr = section_constraints[element]
-            if 'hidden' in constr and constr["hidden"] == True:
+            if "hidden" in constr and constr["hidden"] == True:
                 return
             if constr["type"] == "str":
                 pass
             if "regexType" in constr:
                 if constr["regexType"] == "url":
-                    regex = '^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$'
+                    regex = "^https?://(www.)?([0-9a-zA-Z]+.)+([a-z]+|[0-9]+)(:\d+)?(/\S+)*$"
                     is_valid = re.match(regex, value)
                     if not is_valid:
                         raise ValueError("Expected {} as {} value (got '{}')".format("URL", element, value))
                 elif constr["regexType"] == "ip":
-                    regex = '(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$'
+                    regex = "(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$|^(localhost)$"
                     is_valid = re.match(regex, value)
                     if not is_valid:
                         raise ValueError("Expected {} as {} value (got '{}')".format("ip", element, value))
@@ -279,7 +373,11 @@ class Configuration(object):
                 except Exception as e:
                     raise type(e)("Expected {} as {} value (got '{}')".format("integer", element, value))
                 if not (int(constr["min"]) <= value <= int(constr["max"])):
-                    raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
+                    raise Exception(
+                        "Value {} is out of range (expected value between {} and {}, got {})".format(element,
+                                                                                                     constr["min"],
+                                                                                                     constr["max"],
+                                                                                                     value))
 
             elif constr["type"] == "float":
                 try:
@@ -288,16 +386,20 @@ class Configuration(object):
                 except Exception as e:
                     raise type(e)("Expected {} as {} value (got '{}')".format("float", element, value))
                 if not (float(constr["min"]) <= value <= float(constr["max"])):
-                    raise Exception("Value {} is out of range (expected value between {} and {}, got {})".format(element, constr["min"], constr["max"], value))
+                    raise Exception(
+                        "Value {} is out of range (expected value between {} and {}, got {})".format(element,
+                                                                                                     constr["min"],
+                                                                                                     constr["max"],
+                                                                                                     value))
             elif constr["type"] == "bool":
                 if not isinstance(value, bool):
-                    if value.lower() == "true":
+                    if value.strip().lower() == "true":
                         value = True
-                    elif value.lower() == "false":
+                    elif value.strip().lower() == "false":
                         value = False
                     else:
                         raise ValueError("Expected {} as {} value (got '{}')".format("True or False", element,
-                                                                                            value))
+                                                                                     value))
             elif constr["type"] == "select":
                 if value not in constr["options"]:
                     raise ValueError("{} - {} only supports values: {}".format(
@@ -305,7 +407,7 @@ class Configuration(object):
 
             self.config.set(section, element, value)
 
-            with open(self.config_path, 'w') as configfile:
+            with open(self.config_path, "w") as configfile:
                 self.config.write(configfile)
 
     def get_conf_with_constraints(self):
@@ -324,3 +426,7 @@ class Configuration(object):
                         pass
 
             return constraints
+
+class ConfigurationUndefinedException:
+    """ Exception when undefined key is asked from the configuration """
+    pass

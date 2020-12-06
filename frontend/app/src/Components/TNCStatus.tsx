@@ -173,45 +173,6 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
     this.setState({ tncBtnEnabled: false });
   };
 
-  handleTelConfUpdate = () => {
-    const { enqueueSnackbar } = this.props;
-
-    this.setState({ updateBtnEnabled: false });
-    fetch('/api/update', { method: 'POST' })
-      .then((res: Response) => {
-        if (res.status === 204) {
-          enqueueSnackbar('Configurations successfully updated. Restart client for the changes to apply.', {
-            variant: 'success'
-          });
-        } else {
-          res
-            .json()
-            .then((response: UpdateFailResponse) => {
-              if (response?.error) {
-                let codeStr = '';
-                if (response.exitCode) {
-                  codeStr = `Compiler exit code: ${response.exitCode}`;
-                } else if (response.statusCode) {
-                  codeStr = `Status code: ${response.statusCode}`;
-                }
-                enqueueSnackbar(`${response.error} ${codeStr}`, { variant: 'error' });
-              } else {
-                enqueueSnackbar('Failed to update configurations.', { variant: 'error' });
-              }
-            })
-            .catch(() => {
-              enqueueSnackbar(res.statusText, { variant: 'error' });
-            });
-        }
-      })
-      .catch((reason: any) => {
-        enqueueSnackbar(String(reason), { variant: 'error' });
-      })
-      .finally(() => {
-        this.setState({ updateBtnEnabled: true });
-      });
-  };
-
   // TODO: Redirect to configuration page.
   render() {
     const { classes } = this.props;
@@ -255,7 +216,7 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
             )}
             <Tooltip placement="top" title="Update configurations">
               <div>
-                <IconButton disabled={!updateBtnEnabled} onClick={this.handleTelConfUpdate}>
+                <IconButton disabled={!updateBtnEnabled}>
                   <SystemUpdateAltIcon />
                 </IconButton>
               </div>

@@ -1,24 +1,28 @@
 import logging
 from ax_listener import AXFrame
-from telemetry_listener import TelemetryFrame
 from conf import Configuration
 import requests
+import os
 
 
-class FileLogger():
+
+class FileLogger:
     log = logging.getLogger(__name__)
 
     def __init__(self, config: Configuration, path, mission_name):
         self._logger = logging.getLogger(__name__)
-        # Get Satellite catalog number from tle to be used as name for log file
+        """ Get Satellite catalog number from tle to be used as name for log file. """
         try:
-            tle_req = requests.get(config.get_conf("Client", "tle-url"))
+            tle_req = requests.get(config.get_conf("Client", "tle-url"),timeout=5)
             if tle_req.status_code == 200:
                 mission_name = tle_req.text.split("\n")[1][2:7]
         except:
-            self.log.warning("Connection to tle endpoint failed")
+            self.log.warning(
+                "Connection to tle endpoint failed. Using default packet log file name ({})".format(mission_name))
 
-        logfile = "{}{}_packets.log".format(path, mission_name)
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        logfile = "{}/{}_packets.log".format(path, mission_name)
         self.file_logger = logging.FileHandler(logfile)
 
     def log_ax_frame(self, frame: AXFrame):

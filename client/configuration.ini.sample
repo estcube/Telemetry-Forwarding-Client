@@ -1,17 +1,20 @@
 [Mission Control]
 # Whether to relay received data to remote servers or not.
 relay-enabled = False
+# Mission name
+mission-name=ESTCube-2
 # If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
 mcs-relay-url = http://staging.estcube.eu:8029/ax.25
 # Type of the SIDS relay request. Possible values are GET and POST.
 # (Currently only POST is supported by ESTCube servers).
 relay-request-type = POST
 
+
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 receiver-callsign = CHANGE_ME
 # Norad ID of the spacecraft that you're listening to. Will be transmitted alongside the AX.25 packet.
-norad-id = 43792
+norad-id = 39161
 # Longitude of the receiver. Will be transmitted alongside the AX.25 packet.
 longitude = 58.377974
 # Latitude of the receiver. Will be transmitted alongside the AX.25 packet.
@@ -37,19 +40,15 @@ satellite-src = CHANGE_ME
 
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.
-database=telemetry.db
+database=../telemetry.db
+# Path to the logs folder (will be created if doesn't exist). Relative to the executable.
+logs=packet_logs
 # Path to the folder containing the static frontend files. Relative to the executable.
-static-files-path=static/
-# Path to the file that specifies the telemetry data fields.
-telemetry-configuration=spec/telemetry.json
-# Path to the file that specifies the ax.25 data blob structure.
-kaitai-configuration=spec/icp.ksy
+static-files-path=../static/
 # URL of the latest tle endpoint.
 tle-url=http://staging.estcube.eu/sids/tle
-# URL of the latest telemetry configuration endpoint.
-telemetry-configuration-url=http://staging.estcube.eu:8029/icp/telemetry
-# URL of the latest packet structure (kaitai) endpoint.
-packet-structure-url=http://staging.estcube.eu:8029/icp/config
+# URL of the latest version check endpoint.
+versions-url=https://staging.estcube.eu/sids/index
 # Path to the kaitai-struct-compiler executable. Relative to client executable.
 kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 # Localhost port to serve the frontend on.
@@ -57,3 +56,11 @@ kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 frontend-port=5000
 # Turns on debug logging for the client.
 debug-log = False
+# Turns on automatic updating for the client.
+automatic-updating = True
+# Interval between relaying all unrelayed packets in seconds
+relay-interval = 3600
+# Number of packets lost in a row to stop relay
+lost-packet-count = 10
+# grafana.db filepath
+grafana-database=../grafana/data/grafana.db

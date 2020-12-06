@@ -1,6 +1,13 @@
 import random
-from datetime import datetime, timedelta
 from axFrameWriter import FrameBuilder
+from test_code_common import *
+from test_code_eps import *
+from test_code_aocs import *
+from test_code_obc import *
+from test_code_st import *
+from test_code_sp import *
+from test_code_pcom import *
+from test_code_scom import *
 
 class BeaconGenerator:
 
@@ -17,62 +24,56 @@ class BeaconGenerator:
 
 
 
-    def generate_normal_beacon(self) -> bytearray:
-        offset = timedelta(minutes=random.randrange(7, 10))
-        packet_timestamp = datetime.utcnow() - offset
-        #print(packet_timestamp)
+    def generate_normal_beacon(self, src: int) -> bytearray:
+
+        hk_packet = CommonData().createData()
+        spec = bytearray()
+
+        if src == 2:
+            spec = PcomData().createData()
+            spec.extend(ScomData().createData())
+        elif src == 3:
+            spec = EpsData().createData()
+        elif src == 4:
+            spec = ObcData().createData()
+            spec.extend(AocsData().createData())
+        elif src == 5:
+            spec = StData().createData()
+        elif 6 <= src <= 11:
+            spec = SpData().createData()
+        else:
+            print("ERROR")
+
+        hk_packet.extend(spec)
+        return hk_packet
+
+    def generate_icp(self, dst: int, src: int, cmd: int, mode: int):
+
+        """
+        dst specifies the mission control system
+        src specifies the subsystem from which the data comes from
+        cmd specifies the housekeeping response id
+        mode can be either normal operations or safe mode
+        """
+
+        beacon_data = self.generate_normal_beacon(src)
 
         f = bytearray()
-        f += "N".encode("ascii")
-        f += int(packet_timestamp.timestamp()).to_bytes(4, byteorder="big")
-        f += self.get_voltage()
-        f += random.randint(-100, 100).to_bytes(1, "big", signed=True)
-        f += self.get_voltage()
-        f += self.get_voltage()
-        f += self.get_voltage()
-        f += self.get_voltage()
-        f += self.get_temp()
-        f += self.get_temp()
-        f += self.get_temp()
-        f += self.get_temp()
-        f += random.randint(-32000, 32000).to_bytes(2, "big", signed=True)
-        f += random.randint(-100, 100).to_bytes(1, "big", signed=True)
-
-        ph_res = 0x00
-        ph_res |= random.randint(0, 3) << 6
-        ph_res |= random.randint(0, 3) << 4
-        ph_res |= random.randint(0, 3) << 2
-        ph_res |= random.randint(0, 3)
-        f.append(ph_res)
-
-        f += random.randint(0, 255).to_bytes(1, "big")
-
-        f += random.randint(0, 255).to_bytes(1, "big")
-
-        f += random.randint(0, 255).to_bytes(1, "big")
-        f += random.randint(0, 255).to_bytes(1, "big")
-        f += random.randint(0, 255).to_bytes(1, "big")
-        f += random.randint(0, 255).to_bytes(1, "big")
-
-        return f
-
-    def generate_icp(self):
-        beacon_data = self.generate_normal_beacon()
-
-        f = bytearray()
-        f.append(0x01)
-        f.append(0x02)
+        f.append(dst)
+        f.append(src)
         f.append(len(beacon_data))
-        f.append(0xF7)
-        f += random.randint(0, 16777214).to_bytes(3, "big")
-        f.append(0x03) # TODO Mode: NOW
+        f.append(cmd)
+        tmp = random.randint(0, 16777214)
+        print("UUID CHECK: ", tmp)
+        f += tmp.to_bytes(3, "big")
+        f.append(mode)
         f += beacon_data
-        f.append(0x05) # TODO CRC
+        f.append(0x05)
         f.append(0x05)
 
         return f
 
     def generate_ax(self):
-        icp = self.generate_icp()
+        icp = self.generate_icp(1, 11, 247, 1)
         self.ax.setInfo(icp)
         return self.ax.build()
