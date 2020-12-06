@@ -54,7 +54,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
         <div>
           <iframe
             title="grafana"
-            src="http://localhost:3000/d/P3JF_FpMz/estcube?orgId=2&theme=light"
+            src="http://localhost:3000/d/P3JF_FpMz/estcube?orgId=2&theme=light&kiosk"
             width="100%"
             height="2000"
           />
