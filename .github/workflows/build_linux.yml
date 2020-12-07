@@ -1,0 +1,29 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    - steps: actions/checkout@v1
+    - name: Build the frontend.
+      run : |
+        cd frontend
+        yarnpkg install
+        yarnpkg build:prod
+    - name: Package the client
+      run : |
+        cd client
+        pip3 install -r requirements.txt
+        sudo apt install python3-apsw
+        sh build.sh
+        wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+        sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
+        sudo apt install grafana
+        grafana-cli plugins install natel-discrete-panel
+        sudo sed -i 's/allow_loading_unsigned_plugins =/allow_loading_unsigned_plugins = frser-sqlite-datasource' /etc/grafana/grafana.ini
+        sudo grafana-cli --pluginUrl https://github.com/fr-ser/grafana-sqlite-datasource/releases/download/v0.2.3/frser-sqlite-datasource-0.2.3.zip plugins install frser-sqlite-datasource
+        service grafana-server restart
+    - name: Archive the production artifact.
+        uses: actions/upload-artifact@v1
+        with:
+          name: telemetry-forwarding-client
+          path: dist
