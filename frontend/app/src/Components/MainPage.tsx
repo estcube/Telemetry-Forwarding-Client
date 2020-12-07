@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { CircularProgress, Typography, createStyles, WithStyles, withStyles } from '@material-ui/core';
-import TNCStatus from './TNCStatus';
-import LocationDataMap from './LocationDataMap';
 
 type MainPageState = {
   dataFetchErrored: boolean;
@@ -40,7 +38,6 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
   }
 
   render() {
-    const { classes } = this.props;
     const { loading, dataFetchErrored } = this.state;
     let content;
     if (loading) {
@@ -62,16 +59,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
       );
     }
     return (
-      <div data-testid="confDiv">
-        <div className={classes.topRow}>
-          <div className={classes.tncConns}>
-            <TNCStatus />
-          </div>
-          <div className={classes.flexFill} />
-          <div className={classes.locationMap}>
-            <LocationDataMap />
-          </div>
-        </div>
+      <div data-testid="grafanaDiv">
         {content}
       </div>
     );
