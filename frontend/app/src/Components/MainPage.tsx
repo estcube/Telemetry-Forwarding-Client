@@ -58,11 +58,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
         </div>
       );
     }
-    return (
-      <div data-testid="grafanaDiv">
-        {content}
-      </div>
-    );
+    return <div data-testid="grafanaDiv">{content}</div>;
   }
 }
 

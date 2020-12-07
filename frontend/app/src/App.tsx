@@ -42,9 +42,9 @@ class App extends React.Component<WithStyles<typeof styles>> {
                 <Route path="/" exact>
                   <MainPage />
                 </Route>
-                  <Route path="/controls" exact>
-                      <ControlsPage />
-                  </Route>
+                <Route path="/controls" exact>
+                  <ControlsPage />
+                </Route>
                 <Route path="/configure" exact>
                   <ConfigurationPage />
                 </Route>
