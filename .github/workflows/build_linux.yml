@@ -3,7 +3,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    - steps: actions/checkout@v1
+    steps:
+    - uses: actions/checkout@v1
     - name: Build the frontend.
       run : |
         cd frontend
@@ -23,7 +24,7 @@ jobs:
         sudo grafana-cli --pluginUrl https://github.com/fr-ser/grafana-sqlite-datasource/releases/download/v0.2.3/frser-sqlite-datasource-0.2.3.zip plugins install frser-sqlite-datasource
         service grafana-server restart
     - name: Archive the production artifact.
-        uses: actions/upload-artifact@v1
-        with:
-          name: telemetry-forwarding-client
-          path: dist
+      uses: actions/upload-artifact@v1
+      with:
+        name: telemetry-forwarding-client
+        path: dist
