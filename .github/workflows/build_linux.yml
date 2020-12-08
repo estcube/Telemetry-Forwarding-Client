@@ -13,7 +13,6 @@ jobs:
     - name: Package the client
       run : |
         cd client
-        pip3 install -r requirements.txt
         sudo apt install python3-apsw
         sh build.sh
         wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
