@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { CircularProgress, Typography, createStyles, WithStyles, withStyles } from '@material-ui/core';
+import TNCStatus from './TNCStatus';
+import LocationDataMap from './LocationDataMap';
 
-type MainPageState = {
+type ControlsPageState = {
   dataFetchErrored: boolean;
   loading: boolean;
 };
@@ -25,10 +27,7 @@ const styles = () =>
     }
   });
 
-/**
- * Front-page view
- */
-class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState> {
+class ControlsPage extends React.Component<WithStyles<typeof styles>, ControlsPageState> {
   constructor(props: WithStyles<typeof styles>) {
     super(props);
     this.state = {
@@ -38,6 +37,7 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
   }
 
   render() {
+    const { classes } = this.props;
     const { loading, dataFetchErrored } = this.state;
     let content;
     if (loading) {
@@ -47,19 +47,23 @@ class MainPage extends React.Component<WithStyles<typeof styles>, MainPageState>
         <Typography variant="h6">Could not connect to the client. Try re-launching your client to fix this.</Typography>
       );
     } else {
-      content = (
-        <div>
-          <iframe
-            title="grafana"
-            src="http://localhost:3000/d/P3JF_FpMz/estcube?orgId=2&theme=light&kiosk=tv"
-            width="100%"
-            height="2000"
-          />
-        </div>
-      );
+      content = <div />;
     }
-    return <div data-testid="grafanaDiv">{content}</div>;
+    return (
+      <div data-testid="confDiv">
+        <div className={classes.topRow}>
+          <div className={classes.tncConns}>
+            <TNCStatus />
+          </div>
+          <div className={classes.flexFill} />
+          <div className={classes.locationMap}>
+            <LocationDataMap />
+          </div>
+        </div>
+        {content}
+      </div>
+    );
   }
 }
 
-export default withStyles(styles)(MainPage);
+export default withStyles(styles)(ControlsPage);

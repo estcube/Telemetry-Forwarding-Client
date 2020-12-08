@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - master-fix
+      - demo-fixes
 jobs:
   build:
     runs-on: windows-latest

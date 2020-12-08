@@ -36,7 +36,13 @@ class Header extends React.Component<WithStyles<typeof styles>> {
                 </Button>
               </Link>
             </Box>
-            <Box width={1 / 3} />
+            <Box width={1 / 3}>
+              <Link to="/controls">
+                <Button className={classes.linkButton} color="default">
+                  Controls
+                </Button>
+              </Link>
+            </Box>
             <Box width={1 / 3}>
               <Link to="/configure">
                 <Button className={classes.linkButton} color="default">

@@ -8,6 +8,7 @@ import Footer from './Components/Footer';
 import Header from './Components/Header';
 import MainPage from './Components/MainPage';
 import ConfigurationPage from './Components/ConfigurationPage';
+import ControlsPage from './Components/ControlsPage';
 import PageNotFound from './Components/PageNotFound';
 
 const styles = () =>
@@ -40,6 +41,9 @@ class App extends React.Component<WithStyles<typeof styles>> {
               <Switch>
                 <Route path="/" exact>
                   <MainPage />
+                </Route>
+                <Route path="/controls" exact>
+                  <ControlsPage />
                 </Route>
                 <Route path="/configure" exact>
                   <ConfigurationPage />
