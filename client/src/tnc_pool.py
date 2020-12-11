@@ -102,8 +102,8 @@ class TCPKISSThread(TNCThread):
                                   self.conn_conf.ip, self.conn_conf.port)
                 if conn_tries < self.conn_conf.retry_attempts:
                     conn_tries += 1
-                    self._log.info("Retrying TNC %s connection in %d seconds...", self.name,
-                                   self.conn_conf.retry_time)
+                    self._log.info("(%s/%s) Retrying TNC %s connection in %d seconds..."+"\033[A\033[A",conn_tries,self.conn_conf.retry_attempts, self.name,
+                                  self.conn_conf.retry_time)
                     time.sleep(self.conn_conf.retry_time)
                 else:
                     self._log.warning("Maximum TNC %s connection retries reached.", self.name)
