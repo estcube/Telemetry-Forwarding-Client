@@ -106,7 +106,9 @@ def main(argv):
         finished because we don't have a good way of stopping the Flask app properly. """
     api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
     api_thread.start()
-    _logger.info("For the GUI open localhost:{}".format(port))
+    _logger.info("\033[32m" +
+                 "For the GUI open localhost:{}".format(port)
+                 + "\033[0m")
     try:
         """ On windows, the KeyboardInterrupt doesn't break the join. """
         if platform.system() == "Windows":
