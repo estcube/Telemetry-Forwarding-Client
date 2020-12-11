@@ -112,6 +112,7 @@ def main(argv):
     try:
         """ On windows, the KeyboardInterrupt doesn't break the join. """
         if platform.system() == "Windows":
+            os.system("") # Color work?
             while api_thread.isAlive:
                 api_thread.join(2)
         else:
