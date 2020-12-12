@@ -215,7 +215,7 @@ class Configuration(object):
     _log = logging.getLogger(__name__)
 
     def __init__(self, path: str):
-        self.config = configparser.RawConfigParser()
+        self.config = configparser.RawConfigParser(comment_prefixes='¤', allow_no_value=True)
         self.config_path = path
         self.config.read(path)
         self.constraints = {}
