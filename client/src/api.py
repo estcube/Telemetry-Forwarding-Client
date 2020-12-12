@@ -62,60 +62,6 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
             sids_relay.relay_unrelayed_packets()
         return response_json, 200
 
-    @app.route("/api/update", methods=["POST"])
-    def post_update_telemetry_configuration():
-        kaitai_url = config.get_conf("Client", "packet-structure-url")
-        kaitai_path = os.path.join(
-            util.get_root(),
-            config.get_conf("Client", "kaitai-configuration")
-        )
-
-        try:
-            kaitai_req = requests.get(kaitai_url)
-        except (requests.ConnectionError, requests.ConnectTimeout) as err:
-            log.warning("Connection to kaitai configuration endpoint failed.")
-            log.warning(err)
-            return jsonify({
-                "error": "Connection to kaitai configuration endpoint failed."
-            }), 500
-        if kaitai_req.status_code != 200:
-            return jsonify({
-                "error": "Request for the kaitai configuration failed.",
-                "statusCode": kaitai_req.status_code
-            }), 500
-
-        # TODO: Revert changes is compiling ksy fails?
-        with open(kaitai_path, "w", encoding="utf-8") as kaitai_f:
-            kaitai_f.write(kaitai_req.text)
-
-        comp_path = os.path.join(
-            util.get_root(),
-            config.get_conf("Client", "kaitai-compiler-path")
-        )
-        if not os.path.isfile(comp_path):
-            return jsonify({
-                "error": "Telemetry conf updated. Cannot find kaitai-struct-compiler executable."
-            }), 500
-
-        args = (comp_path, "--target", "python", "--outdir", "src", "--python-package", "icp",
-                "spec/icp.ksy"
-                )
-        p_open = subprocess.Popen(
-            args,
-            cwd=util.get_root(),
-            stdout=subprocess.PIPE
-        )
-        exit_code = p_open.wait()
-
-        if exit_code != 0:
-            log.error(p_open.stdout.read())
-            return jsonify({
-                "error": "Telemetry conf updated. Kaitai file failed compilation.",
-                "exitCode": exit_code
-            }), 500
-
-        return "", 204
-
     @app.route("/api/tnc/<name>/status", methods=["GET"])
     def get_tnc_connection_check(name: str):
         if tnc_pool is None:
