@@ -105,7 +105,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.errorhandler(404)
-    def not_found():
+    def not_found(e):
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.route("/api/static/<path:path>")
