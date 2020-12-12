@@ -36,7 +36,7 @@ max-connection-attempts=20
 connection-retry-time=5
 # Source of AX.25 frame that the client will accept and forward
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
-satellite-src = CHANGE_ME
+satellite-src = ES5E-1
 
 [Client]
 # Path to the client database file (will be created if doesn't exist). Relative to the executable.

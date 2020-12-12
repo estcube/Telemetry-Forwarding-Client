@@ -28,21 +28,21 @@ CONSTRAINTS = {
             "type": "select",
             "options": ["GET", "POST"],
             "label": "Relay request type",
-            "value": "GET"
+            "value": "POST"
         },
 
         "receiver-callsign": {
             "type": "str",
             "label": "Receiver callsign",
             "max_len": 6,
-            "value": "String"
+            "value": "ANONYM"
         },
         "norad-id": {
             "type": "int",
             "label": "Satellite Norad ID",
             "min": 1,
             "max": 99999,
-            "value": "43792"
+            "value": "39161"
         },
         "longitude": {
             "type": "float",
@@ -67,7 +67,7 @@ CONSTRAINTS = {
             "options": ["KISS"],
             "disabledOptions": ["AGW"],
             "label": "TNC protocol type",
-            "value": "kiss"
+            "value": "KISS"
         },
         "tnc-connection-type": {
             "type": "select",
@@ -113,7 +113,7 @@ CONSTRAINTS = {
         "satellite-src": {
             "type": "str",
             "label": "AX.25 frame SRC",
-            "value": "ESTCUB",
+            "value": "ES5E-1",
             "max_len": 6
         }
     },
@@ -133,7 +133,7 @@ CONSTRAINTS = {
             "requiresRestart": True,
             "label": "Grafana Database path",
             "hidden": True,
-            "value": "../grafana.db"
+            "value": "../grafana/data/grafana.db"
         },
         "logs": {
             "type": "str",
@@ -150,7 +150,7 @@ CONSTRAINTS = {
             "requiresRestart": True,
             "label": "Static files path",
             "hidden": True,
-            "value": "../static"
+            "value": "../static/"
         },
         "frontend-port": {
             "type": "int",
@@ -167,13 +167,6 @@ CONSTRAINTS = {
             "description": "URL of the latest version check endpoint.",
             "label": "Version Check URL",
             "value": "https://staging.estcube.eu/sids/index"
-        },
-        "kaitai-compiler-path": {
-            "type": "str",
-            "description": "Path to the kaitai-struct-compiler executable. Relative to client executables.",
-            "requireRestart": False,
-            "hidden": True,
-            "value": "../../kaitai/bin/kaitai-struct-compiler"
         },
         "debug-log": {
             "type": "bool",
@@ -199,7 +192,7 @@ CONSTRAINTS = {
             "description": "Interval between relaying all unrelayed packets in seconds.",
             "requiresRestart": True,
             "label": "Relay interval",
-            "min": 0,
+            "min": 60,
             "max": 999999,
             "value": "3600"
         },
