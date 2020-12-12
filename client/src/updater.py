@@ -78,9 +78,9 @@ class Updater:
             Updates the grafana.db fail to display updates dashboards
         """
         try:
-            if "version" not in self.versions["grafana"] or self.mission_name + data["grafana"]["version"] != self.versions["grafana"]["version"]:
+            if "version" not in self.versions["grafana"] or self.mission_name + "_" + data["grafana"]["version"] != self.versions["grafana"]["version"]:
                 downloadAndReplaceFile(self.config.get_conf("Client", "grafana-database"), data["grafana"]["link"])
-                self.versions["grafana"]["version"] = self.mission_name + data["grafana"]["version"]
+                self.versions["grafana"]["version"] = self.mission_name + "_" + data["grafana"]["version"]
                 self._logger.info("Grafana updated to version: " + data["grafana"]["version"])
         except Exception as e:
             self._logger.error("Failed to update Grafana configuration due to an exception: " + str(e))
@@ -99,10 +99,10 @@ class Updater:
             if subsystems_filename == "main":
                 continue
             try:
-                if subsystems_filename not in current_subsystems_files.keys() or self.mission_name + subsystems_file["version"] != current_subsystems_files[subsystems_filename]:
+                if subsystems_filename not in current_subsystems_files.keys() or self.mission_name + "_" + subsystems_file["version"] != current_subsystems_files[subsystems_filename]["version"]:
                     downloadAndReplaceFile(subsystems_filename + ".py", subsystems_file["python"])
                     self.versions["subsystems"][subsystems_filename] = {}
-                    self.versions["subsystems"][subsystems_filename]["version"] = self.mission_name + subsystems_file["version"]
+                    self.versions["subsystems"][subsystems_filename]["version"] = self.mission_name + "_" + subsystems_file["version"]
                     self._logger.info("subsystems file " + subsystems_filename + " updated to version: " + subsystems_file["version"])
             except Exception as e:
                 self._logger.error("Failed to update subsystems file " + subsystems_filename + " due to an exception: " + str(e))
