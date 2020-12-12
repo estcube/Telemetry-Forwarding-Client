@@ -7,16 +7,13 @@ Does not include any authentication, so should not be open to the external netwo
 
 import sys
 import os
-import json
-import subprocess
 import logging
-import requests
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 import util
 from tnc_pool import TNCPool
-from db_interface import TelemetryDB
+import threading
 from sids_relay import SIDSRelay
 from conf import Configuration
 
@@ -59,7 +56,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         current_relay_status = response_json["Mission Control"]["relay-enabled"]
         config.set_conf(section="Mission Control", element="relay-enabled", value=current_relay_status)
         if current_relay_status:
-            sids_relay.relay_unrelayed_packets()
+            threading.Thread(target=sids_relay.relay_unrelayed_packets, daemon=True).start()
         return response_json, 200
 
     @app.route("/api/tnc/<name>/status", methods=["GET"])

@@ -21,7 +21,7 @@ CONSTRAINTS = {
         "mcs-relay-url": {
             "type": "str",
             "label": "MCS relay URL",
-            "value": "http://staging.estcube.eu:8029/ax25",
+            "value": "https://staging.estcube.eu/sids/ax.25",
             "regexType": "url"
         },
         "relay-request-type": {
