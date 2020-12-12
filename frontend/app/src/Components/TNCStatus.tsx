@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
-import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
 
 enum SIDSStatusType {
@@ -52,7 +51,6 @@ interface TNCStatusState {
   sidsTimeout?: number;
   tncTimeout?: number;
   tncBtnEnabled: boolean;
-  updateBtnEnabled: boolean;
 }
 
 interface UpdateFailResponse {
@@ -97,8 +95,7 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
     this.state = {
       sidsStatus: null,
       tncStatus: null,
-      tncBtnEnabled: true,
-      updateBtnEnabled: true
+      tncBtnEnabled: true
     };
   }
 
@@ -176,7 +173,7 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
   // TODO: Redirect to configuration page.
   render() {
     const { classes } = this.props;
-    const { sidsStatus, tncStatus, tncBtnEnabled, updateBtnEnabled } = this.state;
+    const { sidsStatus, tncStatus, tncBtnEnabled } = this.state;
     const tncAlive = tncStatus === TNCStatusType.CONNECTED || tncStatus === TNCStatusType.CONNECTING;
     const tncBtnDisabled = !tncBtnEnabled || tncStatus === TNCStatusType.DISCONNECTING;
 
@@ -214,13 +211,6 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
                 </div>
               </Tooltip>
             )}
-            <Tooltip placement="top" title="Update configurations">
-              <div>
-                <IconButton disabled={!updateBtnEnabled}>
-                  <SystemUpdateAltIcon />
-                </IconButton>
-              </div>
-            </Tooltip>
             <Tooltip placement="top" title="Connection settings">
               <Link to="/configure">
                 <IconButton>
