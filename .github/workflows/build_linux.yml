@@ -1,5 +1,9 @@
-name: CI
-on: [push]
+name: Build Linux
+on:
+  push:
+    branches:
+      - master
+      - LinuxRelease
 jobs:
   build:
     runs-on: ubuntu-latest
