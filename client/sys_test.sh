@@ -28,14 +28,13 @@ tnc-ip=localhost
 tnc-port=8100
 max-connection-attempts=10
 connection-retry-time=5
-satellite-src = ESTCUB
+satellite-src = ES5E-1
 
 [Client]
 database=__test__/systest.db
 automatic-updating=False
 frontend-port=6666
 static-files-path=../static
-telemetry-configuration=spec/telemetry.json
 EOL
 
 trap catch_exit SIGINT SIGHUP SIGTERM
