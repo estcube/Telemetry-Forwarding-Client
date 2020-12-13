@@ -4,12 +4,10 @@ relay-enabled = False
 # Mission name
 mission-name=ESTCube-2
 # If the relay is enabled, all received AX.25 packets are sent to the SIDS service at this url.
-mcs-relay-url = http://staging.estcube.eu:8029/ax.25
+mcs-relay-url = https://staging.estcube.eu/sids/ax.25
 # Type of the SIDS relay request. Possible values are GET and POST.
 # (Currently only POST is supported by ESTCube servers).
 relay-request-type = POST
-
-
 # Callsign of the receiver. Will be transmitted alongside the AX.25 packet.
 # The callsign is made up of upper-case alpha and numeric ASCII characters only, maximum length of 6.
 receiver-callsign = CHANGE_ME
@@ -46,7 +44,7 @@ logs=packet_logs
 # Path to the folder containing the static frontend files. Relative to the executable.
 static-files-path=../static/
 # URL of the latest tle endpoint.
-tle-url=http://staging.estcube.eu/sids/tle
+tle-url=https://staging.estcube.eu/sids/tle
 # URL of the latest version check endpoint.
 versions-url=https://staging.estcube.eu/sids/index
 # Path to the kaitai-struct-compiler executable. Relative to client executable.
