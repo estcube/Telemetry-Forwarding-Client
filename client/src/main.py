@@ -107,6 +107,7 @@ def main(argv):
     api_thread = Thread(target=api_app.run, kwargs={"port": port}, daemon=True)
     api_thread.start()
     _logger.info("For the GUI open localhost:{}".format(port))
+
     try:
         """ On windows, the KeyboardInterrupt doesn't break the join. """
         if platform.system() == "Windows":
