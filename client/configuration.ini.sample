@@ -49,8 +49,6 @@ static-files-path=../static/
 tle-url=http://staging.estcube.eu/sids/tle
 # URL of the latest version check endpoint.
 versions-url=https://staging.estcube.eu/sids/index
-# Path to the kaitai-struct-compiler executable. Relative to client executable.
-kaitai-compiler-path=kaitai/bin/kaitai-struct-compiler
 # Localhost port to serve the frontend on.
 # Defaults to port 5000
 frontend-port=5000
