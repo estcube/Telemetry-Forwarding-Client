@@ -51,6 +51,8 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
 
         listener = TelemetryListener(database)
 
+        database.conn.close()
+
         os.remove(self.dbPath)
 
     # Tests if a packet is correctly stored in AXFrame by sending a packet and checking if current date is saved
@@ -123,15 +125,15 @@ RIg30bY;BJ:K/JyOUu1tVqkch\\TN>dx~"""
         database.insert_ax_frame(frame)
 
         # Placeholder assert since querying DB is not implemented
-        conn = apsw.Connection(self.dbPath)
-        cur = conn.cursor()
+
+        cur = database.conn.cursor()
         cur.execute("select frame_timestamp, frame_data from ax_frame order by frame_timestamp desc limit 1")
         time, data = cur.fetchone()
 
         self.assertEqual(time, ts.isoformat())
         self.assertEqual(data, self.axPacket)
         
-        conn.close()
+        database.conn.close()
 
         os.remove(self.dbPath)
 

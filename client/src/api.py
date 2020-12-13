@@ -7,16 +7,13 @@ Does not include any authentication, so should not be open to the external netwo
 
 import sys
 import os
-import json
-import subprocess
 import logging
-import requests
 from flask import Flask, jsonify, send_file, send_from_directory, request
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 import util
 from tnc_pool import TNCPool
-from db_interface import TelemetryDB
+import threading
 from sids_relay import SIDSRelay
 from conf import Configuration
 
@@ -59,62 +56,8 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         current_relay_status = response_json["Mission Control"]["relay-enabled"]
         config.set_conf(section="Mission Control", element="relay-enabled", value=current_relay_status)
         if current_relay_status:
-            sids_relay.relay_unrelayed_packets()
+            threading.Thread(target=sids_relay.relay_unrelayed_packets, daemon=True).start()
         return response_json, 200
-
-    @app.route("/api/update", methods=["POST"])
-    def post_update_telemetry_configuration():
-        kaitai_url = config.get_conf("Client", "packet-structure-url")
-        kaitai_path = os.path.join(
-            util.get_root(),
-            config.get_conf("Client", "kaitai-configuration")
-        )
-
-        try:
-            kaitai_req = requests.get(kaitai_url)
-        except (requests.ConnectionError, requests.ConnectTimeout) as err:
-            log.warning("Connection to kaitai configuration endpoint failed.")
-            log.warning(err)
-            return jsonify({
-                "error": "Connection to kaitai configuration endpoint failed."
-            }), 500
-        if kaitai_req.status_code != 200:
-            return jsonify({
-                "error": "Request for the kaitai configuration failed.",
-                "statusCode": kaitai_req.status_code
-            }), 500
-
-        # TODO: Revert changes is compiling ksy fails?
-        with open(kaitai_path, "w", encoding="utf-8") as kaitai_f:
-            kaitai_f.write(kaitai_req.text)
-
-        comp_path = os.path.join(
-            util.get_root(),
-            config.get_conf("Client", "kaitai-compiler-path")
-        )
-        if not os.path.isfile(comp_path):
-            return jsonify({
-                "error": "Telemetry conf updated. Cannot find kaitai-struct-compiler executable."
-            }), 500
-
-        args = (comp_path, "--target", "python", "--outdir", "src", "--python-package", "icp",
-                "spec/icp.ksy"
-                )
-        p_open = subprocess.Popen(
-            args,
-            cwd=util.get_root(),
-            stdout=subprocess.PIPE
-        )
-        exit_code = p_open.wait()
-
-        if exit_code != 0:
-            log.error(p_open.stdout.read())
-            return jsonify({
-                "error": "Telemetry conf updated. Kaitai file failed compilation.",
-                "exitCode": exit_code
-            }), 500
-
-        return "", 204
 
     @app.route("/api/tnc/<name>/status", methods=["GET"])
     def get_tnc_connection_check(name: str):
@@ -162,7 +105,7 @@ def create_app(config: Configuration, tnc_pool: TNCPool, sids_relay: SIDSRelay) 
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.errorhandler(404)
-    def not_found():
+    def not_found(e):
         return send_file(os.path.join(static_folder, "index.html"))
 
     @app.route("/api/static/<path:path>")

@@ -6,7 +6,7 @@ mkdir "$DISTDIR"
 mkdir "$DISTDIR/src"
 
 cp "$BASEDIR/configuration.ini.sample" "$DISTDIR/configuration.ini"
-cp "$BASEDIR/../README.md" "$DISTDIR/"
+cp "$BASEDIR/../README.md" "$DISTDIR/README.txt"
 cp "$BASEDIR/versions.pckl" "$DISTDIR/"
 
 cp "$BASEDIR/dist/main.exe" "$DISTDIR/src"

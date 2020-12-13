@@ -2,13 +2,9 @@
 
 ## Project structure
 
-The project consists of two sub-projects.
+The `app` sub-project is a React application that will contain a iframe to display the contents of the grafana dashboard as well as any other features, exclusive to the telemetry decoder and relay software (such as configuration components).
 
-The `data-lib` sub-project is a React component library which will contain all the components for displaying the telemetry data as well as any functions that handle data transformations or parsing (including the data configuration file).
-
-The `app` sub-project is a React application that will contain the data displaying components of `data-lib` as well as any other features, exclusive to the telemetry decoder and relay software (such as configuration components).
-
-The `app` sub-project uses typescript and webpack aliasing to link `@estcube/data-components` to `data-lib/src/`. This means that the library does not have to be built separately, but when building the `app`, the compiler considers the library a part of the project.
+The `app` sub-project uses typescript and webpack.
 
 ## Running
 

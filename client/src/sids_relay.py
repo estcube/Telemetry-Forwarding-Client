@@ -46,9 +46,20 @@ class SIDSRelay(object):
     def ping_connection(self):
         """ Function to check if endpoint is online. """
         url = self.config.get_conf("Mission Control", "mcs-relay-url")
-        response = requests.get(url)
-        if 200 <= response.status_code < 300:
-            return True
+        try:
+            response = requests.get(url)
+            if 200 <= response.status_code < 300:
+                return True
+            else:
+                self._logger.warning("Connection failed to SIDS endpoint with status code %s", str(response.status_code))
+        except requests.ConnectionError:
+            self._logger.warning("Connection failed to SIDS endpoint %s", url)
+        except requests.Timeout:
+            self._logger.warning("Connection to SIDS endpoint %s timed out.", url)
+        except requests.RequestException:
+            self._logger.warning("Something went wrong with the SIDS endpoint %s request.", url)
+        except Exception as exc:
+            raise exc
         return False
 
     def relay_unrelayed_packets(self):

@@ -86,7 +86,7 @@ class TelemetryDB:
     def mark_as_relayed(self, frame: AXFrame):
         self.conn.setbusytimeout(CONN_TIMEOUT)
         cur = self.conn.cursor()
-        cur.execute("UPDATE ax_frame SET needs_relay = FALSE WHERE time = ? AND data = ?;",
+        cur.execute("UPDATE ax_frame SET needs_relay = FALSE WHERE frame_timestamp = ? AND frame_data = ?;",
                     (frame.recv_time.isoformat(), frame.frame))
 
     def add_telemetry_frame(self, frame: "TelemetryFrame"):
