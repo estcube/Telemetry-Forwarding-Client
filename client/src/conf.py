@@ -72,8 +72,7 @@ CONSTRAINTS = {
         "tnc-connection-type": {
             "type": "select",
             "requiresRestart": True,
-            "options": ["TCP/IP"],
-            "disabledOptions": ["RS232"],
+            "options": ["TCP/IP", "RS232"],
             "label": "TNC connection type",
             "value": "TCP/IP"
         },
