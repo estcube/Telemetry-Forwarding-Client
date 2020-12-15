@@ -22,14 +22,14 @@ class ConnectionStatus(Enum):
 
 class ConnectionType(Enum):
     """ Possible connection types. RS232 is currently unsupported. """
-    TCPIP = 0,
+    TCPIP = 0
     RS232 = 1
 
 
 class ConnectionProtocol(Enum):
     """ Possible connection protocols. """
     KISS = 0
-
+    RS232 = 1
 
 class ConnectionConfiguration:
     """ Struct for a tnc connection configuration. """
@@ -76,6 +76,7 @@ class TNCThread(Thread):
         """ Abstract function. Returns the state of the TNC Connection. """
 
 
+
 class TCPKISSThread(TNCThread):
     """ Implementation for running a tnc connection over tcp in a thread. """
 
@@ -102,8 +103,8 @@ class TCPKISSThread(TNCThread):
                                   self.conn_conf.ip, self.conn_conf.port)
                 if conn_tries < self.conn_conf.retry_attempts:
                     conn_tries += 1
-                    self._log.info("(%s/%s) Retrying TNC %s connection in %d seconds...",conn_tries,self.conn_conf.retry_attempts, self.name,
-                                  self.conn_conf.retry_time)
+                    self._log.info("Retrying TNC %s connection in %d seconds...", self.name,
+                                   self.conn_conf.retry_time)
                     time.sleep(self.conn_conf.retry_time)
                 else:
                     self._log.warning("Maximum TNC %s connection retries reached.", self.name)
@@ -135,9 +136,61 @@ class TCPKISSThread(TNCThread):
                 return ConnectionStatus.CONNECTING
 
 
+class RS232KISSThread(TNCThread):
+    def __init__(self, name: str, conn_conf: ConnectionConfiguration, callback: Callable):
+        TNCThread.__init__(self, name)
+        self.kiss = kiss.SerialKISS("COM3", "115200", strip_df_start=True)
+        self.conn_conf = conn_conf
+        self.callback = callback
+        self.stop_signal = False
+    def run(self):
+        conn_tries = 0
+        while True:
+            with self.lock:
+                if self.stop_signal:
+                    return
+            try:
+                self.kiss.start()
+                break
+            except ConnectionRefusedError:
+                self._log.warning("Could not initialize a RS232 connection to %s",
+                                  "COM3 PORT")
+                if conn_tries < self.conn_conf.retry_attempts:
+                    conn_tries += 1
+                    self._log.info("Retrying SERIAL %s connection in %d seconds...", self.name,
+                                   self.conn_conf.retry_time)
+                    time.sleep(self.conn_conf.retry_time)
+                else:
+                    self._log.warning("Maximum TNC %s connection retries reached.", self.name)
+                    return
+        try:
+            self.set_connected(True)
+            self.kiss.read(callback=self.callback)
+        except Exception as err:
+            self._log.error(err)
+        finally:
+            self.kiss.stop()
+            self.set_connected(False)
+
+    def stop(self):
+        with self.lock:
+            self.stop_signal = True
+        self.kiss.stop_read()
+
+    def status(self) -> ConnectionStatus:
+        with self.lock:
+            if not self.isAlive():
+                return ConnectionStatus.DISCONNECTED
+            elif self.connected:
+                if self.stop_signal:
+                    return ConnectionStatus.DISCONNECTING
+                else:
+                    return ConnectionStatus.CONNECTED
+            else:
+                return ConnectionStatus.CONNECTING
+
 class TNCPool:
     """ Implementation of the pool for managing tnc connections. """
-
     _log = logging.getLogger(__name__)
 
     def __init__(self, conf: Configuration, ax_listener: AXListener):
@@ -153,16 +206,28 @@ class TNCPool:
     def connect_main_tnc(self):
         """
         Creates a connection with the name "Main" and the configuration parameters from the conf.
+        #TODO: Change the serial port from the menu
         """
-
-        self.connect_tnc("Main", ConnectionConfiguration(
-            ConnectionType.TCPIP,
-            ConnectionProtocol.KISS,
-            self.conf.get_conf("TNC interface", "tnc-ip"),
-            self.conf.get_conf("TNC interface", "tnc-port"),
-            int(self.conf.get_conf("TNC interface", "max-connection-attempts")),
-            int(self.conf.get_conf("TNC interface", "connection-retry-time"))
-        ), self.main_listener.receive)
+        TNC_Conn_Type = self.conf.get_conf("TNC interface", "tnc-connection-type")
+        self._log.info("Connection type %s", TNC_Conn_Type)
+        if TNC_Conn_Type == "RS232":
+            self.connect_tnc("Main", ConnectionConfiguration(
+                ConnectionType.RS232,
+                ConnectionProtocol.KISS,
+                "COM3",
+                "115200",
+                int(self.conf.get_conf("TNC interface", "max-connection-attempts")),
+                int(self.conf.get_conf("TNC interface", "connection-retry-time"))
+            ), self.main_listener.receive)
+        else:
+            self.connect_tnc("Main", ConnectionConfiguration(
+                ConnectionType.TCPIP,
+                ConnectionProtocol.KISS,
+                self.conf.get_conf("TNC interface", "tnc-ip"),
+                self.conf.get_conf("TNC interface", "tnc-port"),
+                int(self.conf.get_conf("TNC interface", "max-connection-attempts")),
+                int(self.conf.get_conf("TNC interface", "connection-retry-time"))
+            ), self.main_listener.receive)
 
     def connect_tnc(self, name: str, conn_conf: ConnectionConfiguration, callback: Callable):
         """
@@ -186,6 +251,10 @@ class TNCPool:
                     return
 
             if conn_conf.protocol == ConnectionProtocol.KISS:
+                if conn_conf.type == ConnectionType.RS232:
+                    serial_thread = RS232KISSThread(name, conn_conf, callback)
+                    serial_thread.start()
+                    self.tnc_connections[name] = serial_thread
                 if conn_conf.type == ConnectionType.TCPIP:
                     tcp_thread = TCPKISSThread(name, conn_conf, callback)
                     tcp_thread.start()
