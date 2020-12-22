@@ -2,6 +2,7 @@
 
 sudo apt update
 sudo apt install python3-pip
+sudo apt install git
 pip3 install -r requirements.txt
 sudo apt install yarnpkg
 sudo apt install curl
