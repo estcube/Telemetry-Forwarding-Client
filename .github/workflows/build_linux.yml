@@ -21,7 +21,7 @@ jobs:
         sudo apt install curl
         sudo cp requirements.txt ../dist
         sudo cp linux_setup.sh ../dist
-        sudo cd ../dist/
+        cd ../dist/
         sudo wget https://dl.grafana.com/oss/release/grafana-7.3.5.linux-amd64.tar.gz
         sudo tar -zxvf grafana-7.3.5.linux-amd64.tar.gz
         sudo rm grafana-7.3.5.linux-amd64.tar.gz
