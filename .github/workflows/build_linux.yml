@@ -33,6 +33,7 @@ jobs:
         sudo curl --output "grafana-natel-discrete-panel-0.1.0.zip" -L https://grafana.com/api/plugins/natel-discrete-panel/versions/0.1.0/download
         sudo unzip grafana-natel-discrete-panel-0.1.0.zip
         sudo rm grafana-natel-discrete-panel-0.1.0.zip
+        cd ../../..
         sudo cp -rf ./grafana_data/* ./dist/grafana
 
     - name: Archive the production artifact.
