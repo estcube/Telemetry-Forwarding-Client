@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - LinuxRelease
+      - linuxFix
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +17,25 @@ jobs:
     - name: Package the client
       run : |
         cd client
-        sh build.sh
+        sudo sh build.sh
+        sudo apt install curl
+        sudo cp requirements.txt ../dist
+        sudo cp linux_setup.sh ../dist
+        cd ../dist/
+        sudo wget https://dl.grafana.com/oss/release/grafana-7.3.5.linux-amd64.tar.gz
+        sudo tar -zxvf grafana-7.3.5.linux-amd64.tar.gz
+        sudo rm grafana-7.3.5.linux-amd64.tar.gz
+        sudo mv grafana-7.3.5/ grafana
+        cd grafana/plugins-bundled/
+        sudo wget https://github.com/estcube/grafana-sqlite-datasource/archive/v0.1.3.zip
+        sudo unzip v0.1.3.zip
+        sudo rm v0.1.3.zip
+        sudo curl --output "grafana-natel-discrete-panel-0.1.0.zip" -L https://grafana.com/api/plugins/natel-discrete-panel/versions/0.1.0/download
+        sudo unzip grafana-natel-discrete-panel-0.1.0.zip
+        sudo rm grafana-natel-discrete-panel-0.1.0.zip
+        cd ../../..
+        sudo cp -rf ./grafana_data/* ./dist/grafana
+
     - name: Archive the production artifact.
       uses: actions/upload-artifact@v1
       with:
