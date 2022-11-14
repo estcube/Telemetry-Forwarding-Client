@@ -21,7 +21,7 @@ CONSTRAINTS = {
         "mcs-relay-url": {
             "type": "str",
             "label": "MCS relay URL",
-            "value": "https://staging.estcube.eu/sids/ax.25",
+            "value": "https://mcs.estcube.eu/telemetry_reception/sids/ax.25",
             "regexType": "url"
         },
         "relay-request-type": {
@@ -165,7 +165,7 @@ CONSTRAINTS = {
             "regexType": "url",
             "description": "URL of the latest version check endpoint.",
             "label": "Version Check URL",
-            "value": "https://staging.estcube.eu/sids/index"
+            "value": "https://mcs.estcube.eu/telemetry_reception/icp/index"
         },
         "debug-log": {
             "type": "bool",
@@ -184,7 +184,7 @@ CONSTRAINTS = {
             "regexType": "url",
             "description": "URL of the tle",
             "label": "TLE URL",
-            "value": "http://staging.estcube.eu/sids/tle"
+            "value": "https://mcs.estcube.eu/telemetry_reception/sids/tle"
         },
         "relay-interval": {
             "type": "int",
