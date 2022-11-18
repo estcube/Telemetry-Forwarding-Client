@@ -11,6 +11,7 @@ jobs:
     - name: Build the frontend.
       run : |
         sudo apt-get update -y
+        sudo apt-get install -y build-essential
         cd frontend
         yarnpkg install
         yarnpkg build:prod
