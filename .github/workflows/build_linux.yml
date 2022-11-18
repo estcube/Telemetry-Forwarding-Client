@@ -12,6 +12,7 @@ jobs:
       run : |
         sudo apt update -y
         cd frontend
+        yarnpkg install --no-lockfile
     - name: Package the client
       run : |
         cd client
