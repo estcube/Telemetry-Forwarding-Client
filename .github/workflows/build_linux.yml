@@ -13,6 +13,7 @@ jobs:
         sudo apt-get update -y
         cd frontend
         yarnpkg install
+        yarnpkg upgrade-interactive --latest
         yarnpkg build:prod
     - name: Package the client
       run : |
