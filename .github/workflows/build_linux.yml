@@ -13,7 +13,6 @@ jobs:
         sudo apt-get update -y
         cd frontend
         yarnpkg install
-        yarnpkg build:prod
     - name: Package the client
       run : |
         cd client
