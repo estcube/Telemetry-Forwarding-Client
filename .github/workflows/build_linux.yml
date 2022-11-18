@@ -5,14 +5,13 @@ on:
       - update-branding
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: Build the frontend.
       run : |
-        sudo apt-get update -y
+        sudo apt update -y
         cd frontend
-        yarnpkg install
     - name: Package the client
       run : |
         cd client
