@@ -10,9 +10,9 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the frontend.
       run : |
-        sudo apt update -y
         cd frontend
         yarnpkg install --no-lockfile
+        yarnpkg add node-sass
     - name: Package the client
       run : |
         cd client
