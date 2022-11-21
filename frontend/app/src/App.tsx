@@ -39,16 +39,16 @@ class App extends React.Component<WithStyles<typeof styles>> {
             <Header />
             <div className={classes.main}>
               <Switch>
-                <Route path="/" exact>
+                <Switch path="/" exact>
                   <MainPage />
                 </Route>
-                <Route path="/controls" exact>
+                <Switch path="/controls" exact>
                   <ControlsPage />
                 </Route>
-                <Route path="/configure" exact>
+                <Switch path="/configure" exact>
                   <ConfigurationPage />
                 </Route>
-                <Route path="/*">
+                <Switch path="/*">
                   <PageNotFound />
                 </Route>
               </Switch>
