@@ -13,6 +13,7 @@
         "app"
     ],
     "dependencies": {
-        "node-gyp": "^9.3.0"
+        "node-gyp": "^9.3.0",
+        "sass": "^1.56.1"
     }
 }
