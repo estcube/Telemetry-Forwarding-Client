@@ -76,9 +76,8 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new CopyPlugin({
       patterns: [
-        { from: 'public', to: '', globOptions: { ignore: ["index.html"] } }
-      ]
-    }
+      { from: 'public', to: '', globOptions: { ignore: ["index.html"] }}
+      ]}
     )
   ]
 };
