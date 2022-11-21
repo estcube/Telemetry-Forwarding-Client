@@ -41,16 +41,16 @@ class App extends React.Component<WithStyles<typeof styles>> {
               <Switch>
                 <Switch path="/" exact>
                   <MainPage />
-                </Route>
+                </Switch>
                 <Switch path="/controls" exact>
                   <ControlsPage />
-                </Route>
+                </Switch>
                 <Switch path="/configure" exact>
                   <ConfigurationPage />
-                </Route>
+                </Switch>
                 <Switch path="/*">
                   <PageNotFound />
-                </Route>
+                </Switch>
               </Switch>
             </div>
             <Footer />
