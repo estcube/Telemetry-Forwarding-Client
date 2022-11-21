@@ -11,7 +11,5 @@
     },
     "workspaces": [
         "app"
-    ],
-    "dependencies": {
-    }
+    ]
 }

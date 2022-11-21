@@ -40,10 +40,7 @@ module.exports = {
   },
 
   output: {
-    path: undefined,
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist'),
-    chunkFilename: '[id].[chunkhash].js'
+    path: path.resolve(__dirname, 'dist')
   },
 
   resolve: {
