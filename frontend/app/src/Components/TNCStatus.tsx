@@ -8,7 +8,6 @@ import {
   IconButton,
   withStyles,
   Divider,
-  Switch,
   Tooltip
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -16,6 +15,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import StopIcon from '@material-ui/icons/Stop';
 import { withSnackbar, WithSnackbarProps } from 'notistack';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 enum SIDSStatusType {
   NO_REQUESTS = 'NO_REQUESTS',
@@ -231,10 +231,9 @@ class TNCStatus extends React.Component<Props, TNCStatusState> {
             </div>
             <div className={classes.rowFill} />
             <Tooltip title={sidsStatus?.lastStatus !== SIDSStatusType.TURNED_OFF ? 'Disable relay' : 'Enable relay'}>
-              <Switch
-                checked={sidsStatus?.lastStatus !== SIDSStatusType.TURNED_OFF}
-                onChange={this.handleRelayToggle}
-              />
+                <Route checked={sidsStatus?.lastStatus !== SIDSStatusType.TURNED_OFF}
+                  onChange={this.handleRelayToggle}
+                />
             </Tooltip>
           </div>
         </CardContent>

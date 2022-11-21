@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { CssBaseline, createStyles, withStyles, WithStyles } from '@material-ui/core';
 import 'typeface-roboto';
 import { SnackbarProvider } from 'notistack';
@@ -38,20 +38,20 @@ class App extends React.Component<WithStyles<typeof styles>> {
           <div className={classes.root}>
             <Header />
             <div className={classes.main}>
-              <Switch>
-                <Switch path="/" exact>
+              <Routes>
+                <Route path="/" exact>
                   <MainPage />
-                </Switch>
-                <Switch path="/controls" exact>
+                </Route>
+                <Route path="/controls" exact>
                   <ControlsPage />
-                </Switch>
-                <Switch path="/configure" exact>
+                </Route>
+                <Route path="/configure" exact>
                   <ConfigurationPage />
-                </Switch>
-                <Switch path="/*">
+                </Route>
+                <Route path="/*">
                   <PageNotFound />
-                </Switch>
-              </Switch>
+                </Route>
+              </Routes>
             </div>
             <Footer />
           </div>

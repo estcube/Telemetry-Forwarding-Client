@@ -12,7 +12,6 @@ jobs:
       run : |
         sudo apt-get update -y
         cd frontend
-        yarn add node-gyp@latest
         yarn install
     - name: Package the client
       run : |
