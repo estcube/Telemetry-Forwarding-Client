@@ -40,7 +40,10 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'dist')
+    path: undefined,
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist'),
+    chunkFilename: '[id].[chunkhash].js'
   },
 
   resolve: {
@@ -76,8 +79,9 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new CopyPlugin({
       patterns: [
-      { from: 'public', to: '', globOptions: { ignore: ["index.html"] }}
-      ]}
+        { from: 'public', to: '', globOptions: { ignore: ["index.html"] } }
+      ]
+    }
     )
   ]
 };
