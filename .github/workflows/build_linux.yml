@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - update-branding
+      - npm-update
 jobs:
   build:
     runs-on: ubuntu-latest
