@@ -11,6 +11,7 @@ jobs:
     - name: Build the frontend
       run : |
         cd frontend
+        yarn install --no-lockfile
     - name: Package the client
       run : |
         cd client
