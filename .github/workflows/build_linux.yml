@@ -2,8 +2,7 @@ name: Build Linux
 on:
   push:
     branches:
-      - master
-      - linuxFix
+      - fix-build
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,9 +10,10 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build the frontend.
       run : |
+        sudo apt-get install -y
         cd frontend
-        yarnpkg install
-        yarnpkg build:prod
+        yarn install --no-lockfile
+        yarn build:prod
     - name: Package the client
       run : |
         cd client
