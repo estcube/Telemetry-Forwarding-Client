@@ -12,7 +12,8 @@ jobs:
       run : |
         sudo apt-get install -y
         cd frontend
-        yarn install --no-lockfile
+        yarnpkg install --no-lockfile
+        yarnpkg build:prod
     - name: Package the client
       run : |
         cd client
