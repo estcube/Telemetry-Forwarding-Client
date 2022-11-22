@@ -11,8 +11,8 @@ jobs:
     - name: Build the frontend
       run : |
         cd frontend
-        - name: Package the client
-        run : |
+    - name: Package the client
+      run : |
         cd client
         sudo sh build.sh
         sudo apt install curl
