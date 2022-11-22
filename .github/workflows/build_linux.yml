@@ -13,9 +13,9 @@ jobs:
         sudo apt-get update -y
         cd frontend
         yarnpkg install
-        yarnpkg build:prod
-    - name: Package the client
-      run : |
+        yarnpkg jest 
+        - name: Package the client
+        run : |
         cd client
         sudo sh build.sh
         sudo apt install curl
