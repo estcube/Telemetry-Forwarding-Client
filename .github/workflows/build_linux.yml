@@ -12,8 +12,7 @@ jobs:
       run : |
         sudo apt-get update -y
         cd frontend
-        yarnpkg install
-        yarnpkg jest 
+        yarn install 
         - name: Package the client
         run : |
         cd client
