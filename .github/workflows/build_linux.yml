@@ -13,7 +13,7 @@ jobs:
         sudo apt-get update -y
         cd frontend
         yarn install --no-lockfile
-        yarn build
+        yarn run build:prod
     - name: Package the client
       run : |
         cd client
