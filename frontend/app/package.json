@@ -11,16 +11,16 @@
         "lint:fix": "eslint \"{src/**,test/**}\" --ignore-path=../.eslintignore --fix"
     },
     "dependencies": {
-        "@material-ui/core": "^4.7.0",
-        "@material-ui/icons": "^4.5.1",
-        "copy-webpack-plugin": "^6.3.2",
-        "leaflet": "^1.5.1",
-        "notistack": "^0.9.7",
-        "react": "^16.12.0",
-        "react-dom": "^16.12.0",
-        "react-leaflet": "^2.4.0",
+        "@material-ui/core": "^4.12.4",
+        "@material-ui/icons": "^4.11.13",
+        "copy-webpack-plugin": "^11.0.0",
+        "leaflet": "^1.9.3",
+        "notistack": "^2.0.8",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-leaflet": "^4.1.0",
         "react-router-dom": "^6.4.3",
-        "typeface-roboto": "^0.0.75",
+        "typeface-roboto": "^1.1.13",
         "node-gyp": "^9.3.0"
     },
     "devDependencies": {
