@@ -1,7 +1,7 @@
-requests>=2.22.0
-flask>=1.1.0
-flask-cors>= 3.0.8
-flask-swagger-ui>=3.20.9
-kaitaistruct>=0.8
+requests>=2.28.2
+flask>=2.2.3
+flask-cors>=3.0.10
+flask-swagger-ui>=4.11.1
+kaitaistruct>=0.10
 git+https://github.com/estcube/kiss
-https://github.com/rogerbinns/apsw/releases/download/3.33.0-r1/apsw-3.33.0-r1.zip --global-option=fetch --global-option=--version --global-option=3.33.0 --global-option=--all --global-option=build --global-option=--enable-all-extensions
+    https://github.com/rogerbinns/apsw/releases/download/3.41.2.0/apsw-3.41.2.0.zip --global-option=fetch --global-option=--version --global-option=3.33.0 --global-option=--all --global-option=build --global-option=--enable-all-extensions
